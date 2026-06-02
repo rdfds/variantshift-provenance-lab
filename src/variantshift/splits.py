@@ -7,7 +7,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GroupShuffleSplit
 
 from .mutations import mutated_positions
 
@@ -33,9 +33,12 @@ def random_variant_split(
     frame: pd.DataFrame, *, test_size: float = 0.2, seed: int = 42
 ) -> VariantSplit:
     indices = np.arange(len(frame))
-    train, test = train_test_split(indices, test_size=test_size, random_state=seed)
+    splitter = GroupShuffleSplit(n_splits=1, test_size=test_size, random_state=seed)
+    train, test = next(
+        splitter.split(indices, groups=frame["mutation_codes"].astype(str).to_numpy())
+    )
     return VariantSplit(
-        name="random",
+        name="random_variant",
         train_indices=np.sort(train),
         test_indices=np.sort(test),
         metadata={"test_size": test_size, "seed": seed},
@@ -130,4 +133,3 @@ def leakage_audit(frame: pd.DataFrame, split: VariantSplit) -> dict[str, Any]:
         "shared_position_count": len(shared_positions),
         "shared_positions": shared_positions,
     }
-
