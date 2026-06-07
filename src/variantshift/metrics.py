@@ -47,12 +47,11 @@ def conformal_radius(residuals: np.ndarray, coverage: float = 0.8) -> float:
         raise ValueError("Coverage must lie strictly between zero and one")
     if residuals.size == 0:
         raise ValueError("At least one calibration residual is required")
-    level = min(1.0, np.ceil((residuals.size + 1) * coverage) / residuals.size)
-    return float(np.quantile(np.abs(residuals), level, method="higher"))
+    rank = min(residuals.size, int(np.ceil((residuals.size + 1) * coverage)))
+    return float(np.sort(np.abs(residuals))[rank - 1])
 
 
 def interval_coverage(observed: np.ndarray, predicted: np.ndarray, radius: float) -> float:
     observed = np.asarray(observed, dtype=float)
     predicted = np.asarray(predicted, dtype=float)
     return float(np.mean(np.abs(observed - predicted) <= radius))
-
