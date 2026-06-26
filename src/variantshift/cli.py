@@ -9,6 +9,7 @@ from typing import Sequence
 
 from .data import download_dataset, quality_filter, read_tev_dataset, summarize
 from .evaluate import DEFAULT_TARGETS, run_benchmark
+from .report import render_report
 
 
 def _dataset_arguments(parser: argparse.ArgumentParser) -> None:
@@ -39,6 +40,11 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark.add_argument("--output", type=Path, default=Path("artifacts/benchmark.csv"))
     benchmark.add_argument("--target", action="append", choices=DEFAULT_TARGETS)
     benchmark.add_argument("--seed", type=int, default=42)
+
+    report = subparsers.add_parser("report", help="Render a standalone HTML benchmark report")
+    report.add_argument("benchmark", type=Path, help="Benchmark CSV produced by this CLI")
+    report.add_argument("--output", type=Path, default=Path("artifacts/report.html"))
+    report.add_argument("--filtered-rows", type=int, required=True)
     return parser
 
 
@@ -77,5 +83,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(arguments.output)
         return 0
 
-    raise AssertionError(f"Unhandled command: {arguments.command}")
+    if arguments.command == "report":
+        import pandas as pd
 
+        output = render_report(
+            pd.read_csv(arguments.benchmark),
+            arguments.output,
+            filtered_rows=arguments.filtered_rows,
+        )
+        print(output)
+        return 0
+
+    raise AssertionError(f"Unhandled command: {arguments.command}")

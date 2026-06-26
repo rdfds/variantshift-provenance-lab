@@ -28,7 +28,7 @@ def regression_metrics(observed: np.ndarray, predicted: np.ndarray) -> Regressio
     if not np.isfinite(observed).all() or not np.isfinite(predicted).all():
         raise ValueError("Metrics require finite values")
 
-    if np.std(observed) == 0 or np.std(predicted) == 0:
+    if np.std(observed) < 1e-12 or np.std(predicted) < 1e-12:
         spearman = 0.0
     else:
         spearman = float(spearmanr(observed, predicted).statistic)
