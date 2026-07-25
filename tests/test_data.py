@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from variantshift.data import quality_filter, read_tev_dataset, summarize
+from variantshift.data import download_dataset, quality_filter, read_tev_dataset, summarize
 
 
 def example_frame() -> pd.DataFrame:
@@ -41,3 +41,7 @@ def test_reader_fails_fast_on_wrong_schema(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="missing required columns"):
         read_tev_dataset(path)
 
+
+def test_download_requires_explicit_data_terms_acceptance(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="accept-data-use-agreement"):
+        download_dataset(tmp_path, accept_data_use_agreement=False)
