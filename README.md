@@ -64,7 +64,8 @@ outside version control.
 
 Each training set is further divided into fit and calibration subsets. Reported uncertainty is
 an 80% split-conformal interval; its coverage is measured independently on every shifted test
-set.
+set. See the complete [`docs/METHODS.md`](docs/METHODS.md) for cohort construction, feature
+definitions, split invariants, and uncertainty methodology.
 
 ## Baselines
 

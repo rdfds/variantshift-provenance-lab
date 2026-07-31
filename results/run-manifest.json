@@ -1,0 +1,30 @@
+{
+  "dataset": {
+    "name": "TEV_Pilot_SSVL_EP_output_v1.1.csv",
+    "sha256": "5280aaf88ddf6d543e4c1ed22e16a42e6bc8d694b300840e767617eeae62a187",
+    "source": "https://data.alignbio.org/groqseq/groqseq-014/",
+    "version": "1.1.0"
+  },
+  "environment": {
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "scikit_learn": "1.8.0",
+    "scipy": "1.17.1"
+  },
+  "filters": {
+    "exclude_indels": true,
+    "exclude_stops": true,
+    "min_total_counts": 1000,
+    "rows_after_filtering": 9514
+  },
+  "run": {
+    "calibration_fraction": 0.2,
+    "nominal_coverage": 0.8,
+    "seed": 42,
+    "targets": [
+      "log_ec50_prot_Sal10",
+      "log_ec50_prot_Sal25"
+    ]
+  }
+}
+

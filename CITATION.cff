@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use VariantShift, please cite the software and the underlying Align dataset."
+title: "VariantShift: Leakage-aware evaluation for protein variant-effect models"
+type: software
+authors:
+  - family-names: Variankaval
+    given-names: Rohan
+version: 0.1.0
+repository-code: "https://github.com/rdfds/variantshift-provenance-lab"
+license: MIT
+
