@@ -79,6 +79,15 @@ The baselines are intentionally interpretable. Protein language model comparison
 separate experiment because model pretraining can introduce sequence-level leakage that this
 benchmark must document explicitly.
 
+An optional ESM-2 8M scorer is included for that next experiment. It computes fast wild-type
+marginal log odds in one forward pass and labels the strategy explicitly; it is not mixed into
+the reported supervised table until its scores and pretraining assumptions are audited.
+
+```bash
+pip install -e '.[plm]'
+variantshift esm-score data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
+```
+
 ## Data
 
 VariantShift never vendors the source measurements. Downloading the dataset requires

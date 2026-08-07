@@ -45,6 +45,12 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("benchmark", type=Path, help="Benchmark CSV produced by this CLI")
     report.add_argument("--output", type=Path, default=Path("artifacts/report.html"))
     report.add_argument("--filtered-rows", type=int, required=True)
+
+    esm_score = subparsers.add_parser(
+        "esm-score", help="Compute optional ESM-2 wild-type-marginal scores"
+    )
+    _dataset_arguments(esm_score)
+    esm_score.add_argument("--output", type=Path, default=Path("artifacts/esm2-scores.csv"))
     return parser
 
 
@@ -92,6 +98,23 @@ def main(argv: Sequence[str] | None = None) -> int:
             filtered_rows=arguments.filtered_rows,
         )
         print(output)
+        return 0
+
+    if arguments.command == "esm-score":
+        from .plm import esm2_wild_type_marginals
+
+        frame = _load_filtered(arguments)
+        wild_types = frame.loc[
+            frame["goi_amino_mutations"].eq(0), "goi_amino_seq"
+        ].drop_duplicates()
+        if len(wild_types) != 1:
+            raise ValueError(f"Expected one wild-type sequence, found {len(wild_types)}")
+        scores = esm2_wild_type_marginals(
+            wild_types.item(), frame["mutation_codes"].astype(str)
+        )
+        arguments.output.parent.mkdir(parents=True, exist_ok=True)
+        scores.to_csv(arguments.output, index=False)
+        print(arguments.output)
         return 0
 
     raise AssertionError(f"Unhandled command: {arguments.command}")
