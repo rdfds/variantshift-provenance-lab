@@ -9,7 +9,6 @@ from zipfile import ZipFile
 
 import pandas as pd
 
-
 DATASET_URL = (
     "https://zenodo.org/records/19713341/files/"
     "TEV_Pilot_SSVL_EP_output_v1.1.zip?download=1"

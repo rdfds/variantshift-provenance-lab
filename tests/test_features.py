@@ -1,8 +1,8 @@
 import numpy as np
 
 from variantshift.features import (
-    AdditiveMutationEncoder,
     BIOPHYSICAL_FEATURE_NAMES,
+    AdditiveMutationEncoder,
     biophysical_feature_dict,
     biophysical_matrix,
 )

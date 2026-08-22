@@ -16,7 +16,7 @@ from .features import AdditiveMutationEncoder, biophysical_matrix
 class VariantRegressor(Protocol):
     name: str
 
-    def fit(self, codes: Iterable[str], target: np.ndarray) -> "VariantRegressor": ...
+    def fit(self, codes: Iterable[str], target: np.ndarray) -> VariantRegressor: ...
 
     def predict(self, codes: Iterable[str]) -> np.ndarray: ...
 
@@ -27,7 +27,7 @@ class MeanBaseline:
     def __init__(self) -> None:
         self.mean_: float | None = None
 
-    def fit(self, codes: Iterable[str], target: np.ndarray) -> "MeanBaseline":
+    def fit(self, codes: Iterable[str], target: np.ndarray) -> MeanBaseline:
         del codes
         self.mean_ = float(np.mean(target))
         return self
@@ -44,7 +44,7 @@ class BiophysicalRidge:
     def __init__(self, alpha: float = 10.0) -> None:
         self.model = make_pipeline(StandardScaler(), Ridge(alpha=alpha))
 
-    def fit(self, codes: Iterable[str], target: np.ndarray) -> "BiophysicalRidge":
+    def fit(self, codes: Iterable[str], target: np.ndarray) -> BiophysicalRidge:
         self.model.fit(biophysical_matrix(codes), target)
         return self
 
@@ -59,7 +59,7 @@ class AdditiveRidge:
         self.encoder = AdditiveMutationEncoder()
         self.model = Ridge(alpha=alpha)
 
-    def fit(self, codes: Iterable[str], target: np.ndarray) -> "AdditiveRidge":
+    def fit(self, codes: Iterable[str], target: np.ndarray) -> AdditiveRidge:
         matrix = self.encoder.fit_transform(codes)
         self.model.fit(matrix, target)
         return self
@@ -69,7 +69,7 @@ class AdditiveRidge:
         return np.asarray(self.model.predict(matrix), dtype=float)
 
 
-def baseline_factories() -> dict[str, type[MeanBaseline] | type[BiophysicalRidge] | type[AdditiveRidge]]:
+def baseline_factories() -> dict[str, type[MeanBaseline | BiophysicalRidge | AdditiveRidge]]:
     return {
         MeanBaseline.name: MeanBaseline,
         BiophysicalRidge.name: BiophysicalRidge,
