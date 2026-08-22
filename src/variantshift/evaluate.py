@@ -18,7 +18,6 @@ from .splits import (
     random_variant_split,
 )
 
-
 DEFAULT_TARGETS = ("log_ec50_prot_Sal10", "log_ec50_prot_Sal25")
 
 

@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import re
-
+from dataclasses import dataclass
 
 AMINO_ACIDS = frozenset("ACDEFGHIKLMNPQRSTVWY")
 SUBSTITUTION_PATTERN = re.compile(r"^([A-Z])(\d+)([A-Z*])$")

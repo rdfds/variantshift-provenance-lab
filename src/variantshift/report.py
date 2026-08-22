@@ -7,7 +7,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 SPLIT_LABELS = {
     "random_variant": "Random variant",
     "position_holdout": "Unseen position",

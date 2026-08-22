@@ -9,7 +9,6 @@ from sklearn.feature_extraction import DictVectorizer
 
 from .mutations import Mutation, parse_variant
 
-
 # Kyte-Doolittle hydropathy, approximate side-chain volume, charge at neutral pH,
 # and coarse residue-class indicators. Values are intentionally transparent rather
 # than learned from the evaluation dataset.

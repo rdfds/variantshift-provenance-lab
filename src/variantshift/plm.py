@@ -42,8 +42,8 @@ def esm2_wild_type_marginals(
     Install the optional dependency group with ``pip install -e '.[plm]'``.
     """
     try:
-        import torch
         import esm
+        import torch
     except ImportError as error:
         raise RuntimeError("ESM scoring requires the optional 'plm' dependencies") from error
 
