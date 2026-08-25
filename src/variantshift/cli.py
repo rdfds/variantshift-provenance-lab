@@ -7,7 +7,7 @@ import json
 from collections.abc import Sequence
 from pathlib import Path
 
-from .data import download_dataset, quality_filter, read_tev_dataset, summarize
+from .data import condition_columns, download_dataset, quality_filter, read_tev_dataset, summarize
 from .evaluate import DEFAULT_TARGETS, run_benchmark
 from .report import render_report
 from .robustness import (
@@ -16,6 +16,7 @@ from .robustness import (
     summarize_generalization_gaps,
     summarize_robustness,
 )
+from .transfer import run_condition_transfer, summarize_condition_transfer
 
 
 def _dataset_arguments(parser: argparse.ArgumentParser) -> None:
@@ -55,6 +56,24 @@ def build_parser() -> argparse.ArgumentParser:
     robustness.add_argument("--target", action="append", choices=DEFAULT_TARGETS)
     robustness.add_argument("--start-seed", type=int, default=42)
     robustness.add_argument("--repeats", type=int, default=10)
+
+    transfer = subparsers.add_parser(
+        "condition-transfer",
+        help="Measure source-to-target assay transfer under biological shifts",
+    )
+    _dataset_arguments(transfer)
+    transfer.add_argument("--output-dir", type=Path, default=Path("artifacts/transfer"))
+    transfer.add_argument(
+        "--condition",
+        action="append",
+        help="Condition column to include; defaults to every measured mean_y condition",
+    )
+    transfer.add_argument(
+        "--model",
+        choices=("biophysical_ridge", "additive_ridge"),
+        default="additive_ridge",
+    )
+    transfer.add_argument("--seed", type=int, default=42)
 
     report = subparsers.add_parser("report", help="Render a standalone HTML benchmark report")
     report.add_argument("benchmark", type=Path, help="Benchmark CSV produced by this CLI")
@@ -128,6 +147,28 @@ def main(argv: Sequence[str] | None = None) -> int:
         summarize_generalization_gaps(gaps).to_csv(
             outputs["gap_summary"], index=False
         )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "condition-transfer":
+        from .models import baseline_factories
+
+        frame = _load_filtered(arguments)
+        conditions = tuple(arguments.condition or condition_columns(frame))
+        results = run_condition_transfer(
+            frame,
+            conditions=conditions,
+            seed=arguments.seed,
+            model_factory=baseline_factories()[arguments.model],
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "matrix": output_dir / "condition-transfer.csv",
+            "summary": output_dir / "condition-transfer-summary.csv",
+        }
+        results.to_csv(outputs["matrix"], index=False)
+        summarize_condition_transfer(results).to_csv(outputs["summary"], index=False)
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
