@@ -9,6 +9,12 @@ from pathlib import Path
 
 from .data import condition_columns, download_dataset, quality_filter, read_tev_dataset, summarize
 from .evaluate import DEFAULT_TARGETS, run_benchmark
+from .provenance import (
+    build_run_manifest,
+    git_revision,
+    verify_manifest_artifacts,
+    write_manifest,
+)
 from .report import render_report
 from .robustness import (
     generalization_gaps,
@@ -74,6 +80,21 @@ def build_parser() -> argparse.ArgumentParser:
         default="additive_ridge",
     )
     transfer.add_argument("--seed", type=int, default=42)
+
+    provenance = subparsers.add_parser(
+        "provenance", help="Create a hash-linked manifest for committed results"
+    )
+    _dataset_arguments(provenance)
+    provenance.add_argument("--artifact", type=Path, action="append", required=True)
+    provenance.add_argument("--output", type=Path, default=Path("results/run-manifest.json"))
+    provenance.add_argument("--seed", type=int, default=42)
+    provenance.add_argument("--robustness-start-seed", type=int, default=42)
+    provenance.add_argument("--robustness-repeats", type=int, default=10)
+
+    verify = subparsers.add_parser(
+        "verify-artifacts", help="Verify committed artifacts against a run manifest"
+    )
+    verify.add_argument("manifest", type=Path)
 
     report = subparsers.add_parser("report", help="Render a standalone HTML benchmark report")
     report.add_argument("benchmark", type=Path, help="Benchmark CSV produced by this CLI")
@@ -170,6 +191,46 @@ def main(argv: Sequence[str] | None = None) -> int:
         results.to_csv(outputs["matrix"], index=False)
         summarize_condition_transfer(results).to_csv(outputs["summary"], index=False)
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "provenance":
+        frame = _load_filtered(arguments)
+        root = Path.cwd()
+        manifest = build_run_manifest(
+            repository_root=root,
+            dataset_path=arguments.dataset,
+            dataset_name=arguments.dataset.name,
+            dataset_source="https://data.alignbio.org/groqseq/groqseq-014/",
+            dataset_version="1.1.0",
+            rows_after_filtering=len(frame),
+            filters={
+                "exclude_indels": not arguments.include_indels,
+                "exclude_stops": not arguments.include_stops,
+                "min_total_counts": arguments.min_total_counts,
+            },
+            run={
+                "seed": arguments.seed,
+                "robustness_start_seed": arguments.robustness_start_seed,
+                "robustness_repeats": arguments.robustness_repeats,
+                "calibration_fraction": 0.2,
+                "nominal_coverage": 0.8,
+                "targets": list(DEFAULT_TARGETS),
+                "condition_transfer": "all mean_y conditions",
+            },
+            artifact_paths=arguments.artifact,
+            source_revision=git_revision(root),
+        )
+        print(write_manifest(manifest, arguments.output))
+        return 0
+
+    if arguments.command == "verify-artifacts":
+        print(
+            json.dumps(
+                verify_manifest_artifacts(arguments.manifest),
+                indent=2,
+                sort_keys=True,
+            )
+        )
         return 0
 
     if arguments.command == "report":
