@@ -16,26 +16,40 @@ variants measured across 24 conditions at NIST's Living Measurement Systems Foun
 3. Do single-mutant models transfer to combinatorial variants?
 4. Is model confidence calibrated when the biological distribution shifts?
 
-## Result
+## Main result
 
-On 9,514 quality-filtered substitution variants, the additive baseline reaches **0.77 mean
-Spearman** under a random variant split but only **0.40** when every test residue position is
-absent from training. Its nominal 80% conformal interval coverage also falls from **81% to
-63%** under the position shift.
+On 9,514 quality-filtered variants, the additive baseline loses **0.393 Spearman on Sal10**
+and **0.373 on Sal25** when every test residue position is absent from training. These are
+means across 10 complete benchmark repetitions (seeds 42–51), not a single favorable split.
+Nominal 80% conformal coverage falls by **14.0** and **21.3 percentage points** respectively.
 
-![VariantShift benchmark overview](docs/benchmark-overview.svg)
+![VariantShift robustness and condition-transfer analysis](docs/shift-analysis.svg)
 
 The result is the point of the project: preventing exact-variant overlap is not enough. A model
 can interpolate mutations at residue positions it has already observed and still fail to
 generalize to unmeasured regions of the protein.
 
-| Model | Random variant | Unseen position | Higher mutation depth |
-| --- | ---: | ---: | ---: |
-| Biophysical ridge | 0.58 | 0.39 | 0.43 |
-| Additive ridge | **0.77** | **0.40** | **0.68** |
+| Target | Random Spearman | Unseen-position Spearman | Paired gap | 80% coverage shift |
+| --- | ---: | ---: | ---: | ---: |
+| Sal10 EC50 | 0.795 | 0.401 | **0.393** | 79.5% → 65.5% |
+| Sal25 EC50 | 0.763 | 0.389 | **0.373** | 79.9% → 58.5% |
 
-Values are mean Spearman correlations across the Sal10 and Sal25 EC50 targets. Full aggregate
-results are in [`results/benchmark.csv`](results/benchmark.csv).
+The paired gap remained positive in all 20 target/seed comparisons. Full seed-level and
+aggregate results are in [`results/robustness/`](results/robustness/).
+
+## Condition transfer
+
+VariantShift also trains on each of the 20 measured assay conditions and evaluates the resulting
+ranking against all 20 target conditions. This produces a complete 20×20 transfer matrix under
+both random-variant and unseen-position splits: **800 source/target evaluations** with zero exact
+variant overlap.
+
+At unseen positions, mean in-condition Spearman is 0.345 and mean cross-condition Spearman is
+0.340. Average transfer is stable, but the worst source/target pair falls to 0.132 and the largest
+pair-specific transfer gap is 0.167. That distinction matters: condition shift is not uniformly
+damaging, while residue-position novelty produces a large, persistent penalty.
+
+The full matrix and summary are in [`results/transfer/`](results/transfer/).
 
 ## Quick start
 
@@ -48,6 +62,8 @@ variantshift download data/raw --accept-data-use-agreement
 variantshift inspect data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 variantshift benchmark data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 variantshift report artifacts/benchmark.csv --filtered-rows 9514
+variantshift robustness data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
+variantshift condition-transfer data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 ```
 
 Every command is deterministic at the default seed. Raw data and per-variant predictions stay
@@ -66,6 +82,10 @@ Each training set is further divided into fit and calibration subsets. Reported 
 an 80% split-conformal interval; its coverage is measured independently on every shifted test
 set. See the complete [`docs/METHODS.md`](docs/METHODS.md) for cohort construction, feature
 definitions, split invariants, and uncertainty methodology.
+
+The repeated benchmark uses consecutive seeds 42–51 and pairs random-versus-position results
+within each seed. Seed ranges measure split sensitivity; they are not treated as independent
+biological replicates or confidence intervals.
 
 ## Baselines
 
@@ -109,16 +129,34 @@ src/variantshift/
   models.py        # transparent supervised baselines
   metrics.py       # ranking, error, and conformal coverage
   evaluate.py      # benchmark orchestration
+  robustness.py    # repeated splits and paired generalization gaps
+  transfer.py      # source-to-target assay-condition transfer
+  provenance.py    # data/source/artifact integrity manifests
+  visualize.py     # dependency-free shift-analysis SVG
   report.py        # standalone HTML result report
 tests/             # unit and invariant tests
 results/           # aggregate, reproducible benchmark outputs
 ```
+
+## Result integrity
+
+[`results/run-manifest.json`](results/run-manifest.json) binds the dataset SHA-256, source commit,
+filter and evaluation configuration, dependency versions, and ten committed artifacts. CI verifies
+every artifact byte-for-byte without requiring the licensed raw measurements:
+
+```bash
+variantshift verify-artifacts results/run-manifest.json
+```
+
+When the dataset is available locally, the same command verifies its hash as well.
 
 ## Limitations
 
 - The first result covers two fitted EC50 endpoints, not every raw assay condition.
 - Position holdout measures extrapolation within one protein, not transfer to new protein
   families.
+- Repeated seeds characterize split sensitivity on this cohort rather than uncertainty across
+  proteins, assays, or biological replicates.
 - Conformal coverage is guaranteed only under exchangeability; its breakdown under shift is a
   diagnostic, not a surprising violation of the method.
 - Aggregate performance does not establish that a model is ready to prioritize wet-lab
