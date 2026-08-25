@@ -23,6 +23,7 @@ from .robustness import (
     summarize_robustness,
 )
 from .transfer import run_condition_transfer, summarize_condition_transfer
+from .visualize import render_shift_figure
 
 
 def _dataset_arguments(parser: argparse.ArgumentParser) -> None:
@@ -95,6 +96,15 @@ def build_parser() -> argparse.ArgumentParser:
         "verify-artifacts", help="Verify committed artifacts against a run manifest"
     )
     verify.add_argument("manifest", type=Path)
+
+    figure = subparsers.add_parser(
+        "shift-figure", help="Render repeated-split and condition-transfer results as SVG"
+    )
+    figure.add_argument("gaps", type=Path)
+    figure.add_argument("transfer", type=Path)
+    figure.add_argument("--output", type=Path, default=Path("artifacts/shift-analysis.svg"))
+    figure.add_argument("--model", default="additive_ridge")
+    figure.add_argument("--transfer-split", default="position_holdout")
 
     report = subparsers.add_parser("report", help="Render a standalone HTML benchmark report")
     report.add_argument("benchmark", type=Path, help="Benchmark CSV produced by this CLI")
@@ -231,6 +241,19 @@ def main(argv: Sequence[str] | None = None) -> int:
                 sort_keys=True,
             )
         )
+        return 0
+
+    if arguments.command == "shift-figure":
+        import pandas as pd
+
+        output = render_shift_figure(
+            pd.read_csv(arguments.gaps),
+            pd.read_csv(arguments.transfer),
+            arguments.output,
+            model=arguments.model,
+            transfer_split=arguments.transfer_split,
+        )
+        print(output)
         return 0
 
     if arguments.command == "report":
