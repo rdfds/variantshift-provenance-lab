@@ -82,6 +82,7 @@ def run_benchmark(
                 results.append(
                     {
                         "split": split.name,
+                        "seed": seed,
                         "target": target,
                         "model": model_name,
                         **metrics.to_dict(),
@@ -93,11 +94,13 @@ def run_benchmark(
                         "fit_rows": len(fit_indices),
                         "calibration_rows": len(calibration_indices),
                         "test_rows": len(test_indices),
+                        "excluded_rows": audit["excluded_rows"],
                         "exact_variant_overlap": audit["exact_variant_overlap"],
+                        "train_positions": audit["train_positions"],
+                        "test_positions": audit["test_positions"],
                         "shared_position_count": audit["shared_position_count"],
                     }
                 )
     return pd.DataFrame(results).sort_values(["target", "split", "model"]).reset_index(
         drop=True
     )
-

@@ -10,6 +10,12 @@ from pathlib import Path
 from .data import download_dataset, quality_filter, read_tev_dataset, summarize
 from .evaluate import DEFAULT_TARGETS, run_benchmark
 from .report import render_report
+from .robustness import (
+    generalization_gaps,
+    run_repeated_benchmark,
+    summarize_generalization_gaps,
+    summarize_robustness,
+)
 
 
 def _dataset_arguments(parser: argparse.ArgumentParser) -> None:
@@ -40,6 +46,15 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark.add_argument("--output", type=Path, default=Path("artifacts/benchmark.csv"))
     benchmark.add_argument("--target", action="append", choices=DEFAULT_TARGETS)
     benchmark.add_argument("--seed", type=int, default=42)
+
+    robustness = subparsers.add_parser(
+        "robustness", help="Repeat all split regimes and summarize seed sensitivity"
+    )
+    _dataset_arguments(robustness)
+    robustness.add_argument("--output-dir", type=Path, default=Path("artifacts/robustness"))
+    robustness.add_argument("--target", action="append", choices=DEFAULT_TARGETS)
+    robustness.add_argument("--start-seed", type=int, default=42)
+    robustness.add_argument("--repeats", type=int, default=10)
 
     report = subparsers.add_parser("report", help="Render a standalone HTML benchmark report")
     report.add_argument("benchmark", type=Path, help="Benchmark CSV produced by this CLI")
@@ -87,6 +102,33 @@ def main(argv: Sequence[str] | None = None) -> int:
         arguments.output.parent.mkdir(parents=True, exist_ok=True)
         results.to_csv(arguments.output, index=False)
         print(arguments.output)
+        return 0
+
+    if arguments.command == "robustness":
+        frame = _load_filtered(arguments)
+        targets = tuple(arguments.target) if arguments.target else DEFAULT_TARGETS
+        runs = run_repeated_benchmark(
+            frame,
+            targets=targets,
+            start_seed=arguments.start_seed,
+            repeats=arguments.repeats,
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "runs": output_dir / "benchmark-runs.csv",
+            "summary": output_dir / "summary.csv",
+            "gaps": output_dir / "generalization-gaps.csv",
+            "gap_summary": output_dir / "generalization-gap-summary.csv",
+        }
+        gaps = generalization_gaps(runs)
+        runs.to_csv(outputs["runs"], index=False)
+        summarize_robustness(runs).to_csv(outputs["summary"], index=False)
+        gaps.to_csv(outputs["gaps"], index=False)
+        summarize_generalization_gaps(gaps).to_csv(
+            outputs["gap_summary"], index=False
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
     if arguments.command == "report":
