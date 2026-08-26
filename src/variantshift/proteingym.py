@@ -65,13 +65,23 @@ def _download(url: str, destination: Path) -> Path:
     return destination
 
 
-def download_proteingym(destination: Path) -> dict[str, Path]:
-    """Download the public ProteinGym substitution archive and reference index."""
+def download_proteingym(
+    destination: Path,
+    *,
+    include_zero_shot_scores: bool = False,
+) -> dict[str, Path]:
+    """Download public ProteinGym inputs, optionally including the 1.9 GB score archive."""
     destination = Path(destination)
-    return {
+    outputs = {
         "archive": _download(PROTEINGYM_ARCHIVE_URL, destination / PROTEINGYM_ARCHIVE_NAME),
         "reference": _download(PROTEINGYM_REFERENCE_URL, destination / "DMS_substitutions.csv"),
     }
+    if include_zero_shot_scores:
+        outputs["zero_shot_scores"] = _download(
+            PROTEINGYM_SCORE_ARCHIVE_URL,
+            destination / PROTEINGYM_SCORE_ARCHIVE_NAME,
+        )
+    return outputs
 
 
 def read_reference_index(path: Path) -> pd.DataFrame:

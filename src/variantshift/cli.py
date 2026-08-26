@@ -146,6 +146,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Download the public ProteinGym substitution benchmark",
     )
     pg_download.add_argument("destination", type=Path)
+    pg_download.add_argument("--include-zero-shot-scores", action="store_true")
 
     pg_audit = subparsers.add_parser(
         "proteingym-audit",
@@ -267,7 +268,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             targets=targets,
             start_seed=arguments.start_seed,
             repeats=arguments.repeats,
-            workers=arguments.workers,
         )
         output_dir = arguments.output_dir
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -391,7 +391,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     if arguments.command == "proteingym-download":
-        outputs = download_proteingym(arguments.destination)
+        outputs = download_proteingym(
+            arguments.destination,
+            include_zero_shot_scores=arguments.include_zero_shot_scores,
+        )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
@@ -427,6 +430,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             eligibility,
             start_seed=arguments.start_seed,
             repeats=arguments.repeats,
+            workers=arguments.workers,
         )
         gaps = multiprotein_gaps(runs)
         assays = summarize_assays(gaps)
