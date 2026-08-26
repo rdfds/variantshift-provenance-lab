@@ -9,6 +9,7 @@ from pathlib import Path
 
 from .data import condition_columns, download_dataset, quality_filter, read_tev_dataset, summarize
 from .evaluate import DEFAULT_TARGETS, run_benchmark
+from .proteingym import EligibilityCriteria, audit_archive, download_proteingym
 from .provenance import (
     build_run_manifest,
     git_revision,
@@ -116,6 +117,23 @@ def build_parser() -> argparse.ArgumentParser:
     )
     _dataset_arguments(esm_score)
     esm_score.add_argument("--output", type=Path, default=Path("artifacts/esm2-scores.csv"))
+
+    pg_download = subparsers.add_parser(
+        "proteingym-download",
+        help="Download the public ProteinGym substitution benchmark",
+    )
+    pg_download.add_argument("destination", type=Path)
+
+    pg_audit = subparsers.add_parser(
+        "proteingym-audit",
+        help="Audit every ProteinGym assay against fixed inclusion criteria",
+    )
+    pg_audit.add_argument("archive", type=Path)
+    pg_audit.add_argument("reference", type=Path)
+    pg_audit.add_argument("--output", type=Path, default=Path("artifacts/proteingym/eligibility.csv"))
+    pg_audit.add_argument("--min-single-variants", type=int, default=500)
+    pg_audit.add_argument("--min-positions", type=int, default=20)
+    pg_audit.add_argument("--min-unique-scores", type=int, default=10)
     return parser
 
 
@@ -282,6 +300,33 @@ def main(argv: Sequence[str] | None = None) -> int:
         arguments.output.parent.mkdir(parents=True, exist_ok=True)
         scores.to_csv(arguments.output, index=False)
         print(arguments.output)
+        return 0
+
+    if arguments.command == "proteingym-download":
+        outputs = download_proteingym(arguments.destination)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-audit":
+        criteria = EligibilityCriteria(
+            min_single_variants=arguments.min_single_variants,
+            min_positions=arguments.min_positions,
+            min_unique_scores=arguments.min_unique_scores,
+        )
+        audit = audit_archive(arguments.archive, arguments.reference, criteria=criteria)
+        arguments.output.parent.mkdir(parents=True, exist_ok=True)
+        audit.to_csv(arguments.output, index=False)
+        print(
+            json.dumps(
+                {
+                    "output": str(arguments.output),
+                    "assays": len(audit),
+                    "eligible": int(audit["eligible"].sum()),
+                    "criteria": criteria.to_dict(),
+                },
+                indent=2,
+            )
+        )
         return 0
 
     raise AssertionError(f"Unhandled command: {arguments.command}")
