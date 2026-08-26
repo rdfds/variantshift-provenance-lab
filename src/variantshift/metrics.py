@@ -28,7 +28,9 @@ def regression_metrics(observed: np.ndarray, predicted: np.ndarray) -> Regressio
     if not np.isfinite(observed).all() or not np.isfinite(predicted).all():
         raise ValueError("Metrics require finite values")
 
-    if np.std(observed) < 1e-12 or np.std(predicted) < 1e-12:
+    # Peak-to-peak avoids cancellation in ``std`` for a constant vector with a
+    # large offset (observed in a small number of ProteinGym assay/model pairs).
+    if np.ptp(observed) < 1e-12 or np.ptp(predicted) < 1e-12:
         spearman = 0.0
     else:
         spearman = float(spearmanr(observed, predicted).statistic)
