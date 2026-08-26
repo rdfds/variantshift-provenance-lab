@@ -43,6 +43,25 @@ def test_collection_manifest_hashes_multiple_inputs(tmp_path: Path) -> None:
     assert verification["input_status"] == {"assays": "verified", "index": "verified"}
 
 
+def test_nested_manifest_discovers_repository_root(tmp_path: Path) -> None:
+    (tmp_path / ".git").mkdir()
+    artifact = tmp_path / "docs" / "figure.svg"
+    artifact.parent.mkdir()
+    artifact.write_text("<svg/>")
+    manifest = build_collection_manifest(
+        repository_root=tmp_path,
+        inputs={},
+        protocol={},
+        artifact_paths=[artifact],
+        source_revision="abc123",
+    )
+    manifest_path = write_manifest(
+        manifest, tmp_path / "results" / "study" / "run-manifest.json"
+    )
+    verification = verify_manifest_artifacts(manifest_path)
+    assert verification["verified_artifacts"] == ["docs/figure.svg"]
+
+
 def test_manifest_hashes_dataset_and_artifacts(tmp_path: Path) -> None:
     dataset = tmp_path / "dataset.csv"
     dataset.write_text("variant,value\nA1C,1\n")

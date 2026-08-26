@@ -148,7 +148,17 @@ def verify_manifest_artifacts(
     repository_root: Path | None = None,
 ) -> dict[str, Any]:
     manifest_path = Path(manifest_path).resolve()
-    root = (repository_root or manifest_path.parent.parent).resolve()
+    if repository_root is not None:
+        root = repository_root.resolve()
+    else:
+        root = next(
+            (
+                parent
+                for parent in (manifest_path.parent, *manifest_path.parents)
+                if (parent / ".git").exists()
+            ),
+            manifest_path.parent.parent,
+        ).resolve()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     artifacts = manifest.get("artifacts")
     if not isinstance(artifacts, dict) or not artifacts:
