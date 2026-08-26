@@ -14,7 +14,8 @@ variants measured across 24 conditions at NIST's Living Measurement Systems Foun
 1. How much does random splitting overstate performance?
 2. Which models retain rank accuracy at residue positions absent from training?
 3. Do single-mutant models transfer to combinatorial variants?
-4. Is model confidence calibrated when the biological distribution shifts?
+4. Which experimental conditions preserve variant rankings across assay shifts?
+5. Is model confidence calibrated when the biological distribution shifts?
 
 ## Main result
 
@@ -152,7 +153,8 @@ When the dataset is available locally, the same command verifies its hash as wel
 
 ## Limitations
 
-- The first result covers two fitted EC50 endpoints, not every raw assay condition.
+- The primary robustness result covers two fitted EC50 endpoints; the transfer matrix covers 20
+  complete `mean_y` condition readouts rather than every raw measurement column.
 - Position holdout measures extrapolation within one protein, not transfer to new protein
   families.
 - Repeated seeds characterize split sensitivity on this cohort rather than uncertainty across
