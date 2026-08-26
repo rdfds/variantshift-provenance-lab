@@ -31,6 +31,13 @@ from .robustness import (
 )
 from .transfer import run_condition_transfer, summarize_condition_transfer
 from .visualize import render_shift_figure
+from .zero_shot import (
+    DEFAULT_ESM_MODELS,
+    run_zero_shot_benchmark,
+    summarize_zero_shot,
+    summarize_zero_shot_assays,
+    zero_shot_subset_differences,
+)
 
 
 def _dataset_arguments(parser: argparse.ArgumentParser) -> None:
@@ -155,6 +162,27 @@ def build_parser() -> argparse.ArgumentParser:
     pg_benchmark.add_argument("--repeats", type=int, default=10)
     pg_benchmark.add_argument("--bootstrap-repeats", type=int, default=10_000)
     pg_benchmark.add_argument("--workers", type=int, default=1)
+
+    pg_zero_shot = subparsers.add_parser(
+        "proteingym-zero-shot",
+        help="Audit and evaluate official ProteinGym zero-shot ESM scores",
+    )
+    pg_zero_shot.add_argument("source_archive", type=Path)
+    pg_zero_shot.add_argument("score_archive", type=Path)
+    pg_zero_shot.add_argument("reference", type=Path)
+    pg_zero_shot.add_argument("eligibility", type=Path)
+    pg_zero_shot.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym")
+    )
+    pg_zero_shot.add_argument(
+        "--model",
+        action="append",
+        help="Official score column; defaults to the complete ESM-1v/ESM-2 series",
+    )
+    pg_zero_shot.add_argument("--start-seed", type=int, default=42)
+    pg_zero_shot.add_argument("--repeats", type=int, default=10)
+    pg_zero_shot.add_argument("--min-common-coverage", type=float, default=0.95)
+    pg_zero_shot.add_argument("--bootstrap-repeats", type=int, default=10_000)
     return parser
 
 
@@ -394,6 +422,58 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "proteins": int(runs["uniprot_id"].nunique()),
                     "seeds": int(runs["seed"].nunique()),
                     "leakage_checks": "passed",
+                },
+                indent=2,
+            )
+        )
+        return 0
+
+    if arguments.command == "proteingym-zero-shot":
+        import pandas as pd
+
+        models = tuple(arguments.model or DEFAULT_ESM_MODELS)
+        eligibility = pd.read_csv(arguments.eligibility)
+        runs, score_audit = run_zero_shot_benchmark(
+            arguments.source_archive,
+            arguments.score_archive,
+            arguments.reference,
+            eligibility,
+            model_columns=models,
+            start_seed=arguments.start_seed,
+            repeats=arguments.repeats,
+            min_common_coverage=arguments.min_common_coverage,
+        )
+        differences = zero_shot_subset_differences(runs)
+        assays = summarize_zero_shot_assays(differences)
+        aggregate = summarize_zero_shot(
+            differences,
+            bootstrap_repeats=arguments.bootstrap_repeats,
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "score_audit": output_dir / "esm-score-audit.csv",
+            "runs": output_dir / "esm-subset-runs.csv",
+            "differences": output_dir / "esm-subset-differences.csv",
+            "assays": output_dir / "esm-assay-summary.csv",
+            "aggregate": output_dir / "esm-aggregate-summary.csv",
+        }
+        score_audit.to_csv(outputs["score_audit"], index=False)
+        runs.to_csv(outputs["runs"], index=False)
+        differences.to_csv(outputs["differences"], index=False)
+        assays.to_csv(outputs["assays"], index=False)
+        aggregate.to_csv(outputs["aggregate"], index=False)
+        print(
+            json.dumps(
+                {
+                    "outputs": {key: str(path) for key, path in outputs.items()},
+                    "models": list(models),
+                    "audited_assays": len(score_audit),
+                    "eligible_assays": int(score_audit["eligible_for_zero_shot"].sum()),
+                    "score_semantics": (
+                        "fixed zero-shot scores; split differences are subset sensitivity, "
+                        "not supervised generalization gaps"
+                    ),
                 },
                 indent=2,
             )
