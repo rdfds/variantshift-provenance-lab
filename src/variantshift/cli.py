@@ -15,6 +15,7 @@ from .multiprotein import (
     summarize_assays,
     summarize_multiprotein_gaps,
 )
+from .multiprotein_visualize import render_multiprotein_figure
 from .proteingym import (
     PROTEINGYM_ARCHIVE_URL,
     PROTEINGYM_REFERENCE_URL,
@@ -209,6 +210,17 @@ def build_parser() -> argparse.ArgumentParser:
     pg_provenance.add_argument("--repeats", type=int, default=10)
     pg_provenance.add_argument("--bootstrap-repeats", type=int, default=10_000)
     pg_provenance.add_argument("--source-revision")
+
+    pg_figure = subparsers.add_parser(
+        "proteingym-figure",
+        help="Render the multi-protein supervised and ESM result summary",
+    )
+    pg_figure.add_argument("supervised_assays", type=Path)
+    pg_figure.add_argument("supervised_aggregate", type=Path)
+    pg_figure.add_argument("esm_aggregate", type=Path)
+    pg_figure.add_argument(
+        "--output", type=Path, default=Path("artifacts/proteingym-analysis.svg")
+    )
     return parser
 
 
@@ -556,6 +568,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             source_revision=arguments.source_revision,
         )
         print(write_manifest(manifest, arguments.output))
+        return 0
+
+    if arguments.command == "proteingym-figure":
+        import pandas as pd
+
+        output = render_multiprotein_figure(
+            pd.read_csv(arguments.supervised_assays),
+            pd.read_csv(arguments.supervised_aggregate),
+            pd.read_csv(arguments.esm_aggregate),
+            arguments.output,
+        )
+        print(output)
         return 0
 
     raise AssertionError(f"Unhandled command: {arguments.command}")
