@@ -1,6 +1,49 @@
 {
+  "artifacts": {
+    "docs/benchmark-overview.svg": {
+      "bytes": 2461,
+      "sha256": "10d03f627c9076dc549b70e66eaeb02578060605169d6c15895fe05c60a9985b"
+    },
+    "docs/shift-analysis.svg": {
+      "bytes": 56468,
+      "sha256": "500237dec616147defaeb82c1d490bd3a3c3cee11e61e316b0a3ab5249570dc2"
+    },
+    "results/benchmark.csv": {
+      "bytes": 3757,
+      "sha256": "c816fdc7d97a70ce1b373787344cd4b78f27d8955cd150e702d1188acafa3521"
+    },
+    "results/report.html": {
+      "bytes": 8403,
+      "sha256": "65ce28cbff169ef33594ad129d56da6543797bec1c3034edaf14dc5faeed60ce"
+    },
+    "results/robustness/benchmark-runs.csv": {
+      "bytes": 35519,
+      "sha256": "60dc96a369ae5bce80af847e10f1a91f783f364742ed074a7a98d01ba84b9599"
+    },
+    "results/robustness/generalization-gap-summary.csv": {
+      "bytes": 1691,
+      "sha256": "949f635c6469c059ce6d3708496faf9b7986f4909d68ac325840784b120ffa00"
+    },
+    "results/robustness/generalization-gaps.csv": {
+      "bytes": 8238,
+      "sha256": "cecdaa0183a4924a7642c3e849219038c755881be7435656c45a99841f9447e3"
+    },
+    "results/robustness/summary.csv": {
+      "bytes": 6934,
+      "sha256": "f12d93247211ef92639da66e286bd791a8d0ec470489e52fd84a5b58d5ef3d28"
+    },
+    "results/transfer/condition-transfer-summary.csv": {
+      "bytes": 433,
+      "sha256": "6455df30c5070110f9f805213020fac116f3b9aa2a08171c1a801ecfe214b040"
+    },
+    "results/transfer/condition-transfer.csv": {
+      "bytes": 117727,
+      "sha256": "36869a6ea1f65decb65a658bf89b06e8f5da38faf356ac8ac34a4c697210aef3"
+    }
+  },
   "dataset": {
     "name": "TEV_Pilot_SSVL_EP_output_v1.1.csv",
+    "path": "data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv",
     "sha256": "5280aaf88ddf6d543e4c1ed22e16a42e6bc8d694b300840e767617eeae62a187",
     "source": "https://data.alignbio.org/groqseq/groqseq-014/",
     "version": "1.1.0"
@@ -8,8 +51,11 @@
   "environment": {
     "numpy": "2.4.4",
     "pandas": "3.0.2",
+    "platform": "macOS-15.3-arm64-arm-64bit-Mach-O",
+    "python": "3.13.0",
     "scikit_learn": "1.8.0",
-    "scipy": "1.17.1"
+    "scipy": "1.17.1",
+    "variantshift": "0.1.0"
   },
   "filters": {
     "exclude_indels": true,
@@ -19,12 +65,18 @@
   },
   "run": {
     "calibration_fraction": 0.2,
+    "condition_transfer": "all mean_y conditions",
     "nominal_coverage": 0.8,
+    "robustness_repeats": 10,
+    "robustness_start_seed": 42,
     "seed": 42,
     "targets": [
       "log_ec50_prot_Sal10",
       "log_ec50_prot_Sal25"
     ]
+  },
+  "schema_version": 1,
+  "source": {
+    "git_commit": "7d24b3788416274134fa6fe904bb33e54e4f09c4"
   }
 }
-
