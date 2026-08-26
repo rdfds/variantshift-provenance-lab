@@ -97,6 +97,44 @@ def build_run_manifest(
     }
 
 
+def build_collection_manifest(
+    *,
+    repository_root: Path,
+    inputs: dict[str, dict[str, Any]],
+    protocol: dict[str, Any],
+    artifact_paths: list[Path],
+    source_revision: str | None = None,
+) -> dict[str, Any]:
+    """Build a manifest for a study that combines multiple public input files."""
+    root = repository_root.resolve()
+    input_records: dict[str, dict[str, Any]] = {}
+    for name, details in sorted(inputs.items()):
+        path = Path(details["path"]).resolve()
+        input_records[name] = {
+            "path": _relative(path, root),
+            "bytes": path.stat().st_size,
+            "sha256": sha256_file(path),
+            "source": details["source"],
+            "version": details["version"],
+        }
+
+    artifacts: dict[str, dict[str, Any]] = {}
+    for artifact_path in sorted(map(Path, artifact_paths), key=lambda path: path.as_posix()):
+        resolved = artifact_path.resolve()
+        artifacts[_relative(resolved, root)] = {
+            "bytes": resolved.stat().st_size,
+            "sha256": sha256_file(resolved),
+        }
+    return {
+        "schema_version": 2,
+        "source": {"git_commit": source_revision or git_revision(root)},
+        "inputs": input_records,
+        "protocol": protocol,
+        "environment": environment_versions(),
+        "artifacts": artifacts,
+    }
+
+
 def write_manifest(manifest: dict[str, Any], output: Path) -> Path:
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -135,15 +173,28 @@ def verify_manifest_artifacts(
     dataset = manifest.get("dataset", {})
     dataset_path = root / str(dataset.get("path", ""))
     dataset_status = "not_present"
-    if dataset_path.is_file():
+    if dataset and dataset_path.is_file():
         if sha256_file(dataset_path) != dataset.get("sha256"):
             raise ValueError(f"Dataset hash mismatch for {dataset.get('path')}")
         dataset_status = "verified"
+
+    input_status: dict[str, str] = {}
+    for name, record in sorted(manifest.get("inputs", {}).items()):
+        input_path = root / str(record.get("path", ""))
+        status = "not_present"
+        if input_path.is_file():
+            if input_path.stat().st_size != record.get("bytes"):
+                raise ValueError(f"Input size mismatch for {record.get('path')}")
+            if sha256_file(input_path) != record.get("sha256"):
+                raise ValueError(f"Input hash mismatch for {record.get('path')}")
+            status = "verified"
+        input_status[name] = status
 
     return {
         "manifest": _relative(manifest_path, root),
         "source_commit": manifest.get("source", {}).get("git_commit"),
         "verified_artifacts": verified,
         "dataset_status": dataset_status,
+        "input_status": input_status,
         "python": sys.version.split()[0],
     }

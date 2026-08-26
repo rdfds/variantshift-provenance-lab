@@ -15,8 +15,17 @@ from .multiprotein import (
     summarize_assays,
     summarize_multiprotein_gaps,
 )
-from .proteingym import EligibilityCriteria, audit_archive, download_proteingym
+from .proteingym import (
+    PROTEINGYM_ARCHIVE_URL,
+    PROTEINGYM_REFERENCE_URL,
+    PROTEINGYM_SCORE_ARCHIVE_URL,
+    PROTEINGYM_VERSION,
+    EligibilityCriteria,
+    audit_archive,
+    download_proteingym,
+)
 from .provenance import (
+    build_collection_manifest,
     build_run_manifest,
     git_revision,
     verify_manifest_artifacts,
@@ -183,6 +192,23 @@ def build_parser() -> argparse.ArgumentParser:
     pg_zero_shot.add_argument("--repeats", type=int, default=10)
     pg_zero_shot.add_argument("--min-common-coverage", type=float, default=0.95)
     pg_zero_shot.add_argument("--bootstrap-repeats", type=int, default=10_000)
+
+    pg_provenance = subparsers.add_parser(
+        "proteingym-provenance",
+        help="Create a multi-input integrity manifest for ProteinGym results",
+    )
+    pg_provenance.add_argument("source_archive", type=Path)
+    pg_provenance.add_argument("score_archive", type=Path)
+    pg_provenance.add_argument("reference", type=Path)
+    pg_provenance.add_argument("eligibility", type=Path)
+    pg_provenance.add_argument("--artifact", type=Path, action="append", required=True)
+    pg_provenance.add_argument(
+        "--output", type=Path, default=Path("results/proteingym/run-manifest.json")
+    )
+    pg_provenance.add_argument("--start-seed", type=int, default=42)
+    pg_provenance.add_argument("--repeats", type=int, default=10)
+    pg_provenance.add_argument("--bootstrap-repeats", type=int, default=10_000)
+    pg_provenance.add_argument("--source-revision")
     return parser
 
 
@@ -478,6 +504,58 @@ def main(argv: Sequence[str] | None = None) -> int:
                 indent=2,
             )
         )
+        return 0
+
+    if arguments.command == "proteingym-provenance":
+        import pandas as pd
+
+        eligibility = pd.read_csv(arguments.eligibility)
+        artifact_paths = list(dict.fromkeys([arguments.eligibility, *arguments.artifact]))
+        manifest = build_collection_manifest(
+            repository_root=Path.cwd(),
+            inputs={
+                "substitution_assays": {
+                    "path": arguments.source_archive,
+                    "source": PROTEINGYM_ARCHIVE_URL,
+                    "version": PROTEINGYM_VERSION,
+                },
+                "reference_index": {
+                    "path": arguments.reference,
+                    "source": PROTEINGYM_REFERENCE_URL,
+                    "version": PROTEINGYM_VERSION,
+                },
+                "official_zero_shot_scores": {
+                    "path": arguments.score_archive,
+                    "source": PROTEINGYM_SCORE_ARCHIVE_URL,
+                    "version": PROTEINGYM_VERSION,
+                },
+            },
+            protocol={
+                "cohort": "finite single substitutions",
+                "eligibility": EligibilityCriteria().to_dict(),
+                "audited_assays": len(eligibility),
+                "eligible_assays": int(eligibility["eligible"].sum()),
+                "splits": ["random_variant", "position_holdout"],
+                "start_seed": arguments.start_seed,
+                "repeats": arguments.repeats,
+                "calibration_fraction": 0.2,
+                "nominal_coverage": 0.8,
+                "bootstrap_unit": "UniProt_ID",
+                "bootstrap_repeats": arguments.bootstrap_repeats,
+                "supervised_models": [
+                    "mean",
+                    "biophysical_ridge",
+                    "additive_ridge",
+                ],
+                "zero_shot_models": list(DEFAULT_ESM_MODELS),
+                "zero_shot_note": (
+                    "Fixed-score subset differences are not supervised generalization gaps"
+                ),
+            },
+            artifact_paths=artifact_paths,
+            source_revision=arguments.source_revision,
+        )
+        print(write_manifest(manifest, arguments.output))
         return 0
 
     raise AssertionError(f"Unhandled command: {arguments.command}")

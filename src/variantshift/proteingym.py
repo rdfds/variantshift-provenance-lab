@@ -17,6 +17,10 @@ PROTEINGYM_BASE_URL = (
 )
 PROTEINGYM_ARCHIVE_NAME = "DMS_ProteinGym_substitutions.zip"
 PROTEINGYM_ARCHIVE_URL = f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_ARCHIVE_NAME}"
+PROTEINGYM_SCORE_ARCHIVE_NAME = "zero_shot_substitutions_scores.zip"
+PROTEINGYM_SCORE_ARCHIVE_URL = (
+    f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_SCORE_ARCHIVE_NAME}"
+)
 PROTEINGYM_REFERENCE_URL = (
     "https://raw.githubusercontent.com/OATML-Markslab/ProteinGym/"
     "main/reference_files/DMS_substitutions.csv"
