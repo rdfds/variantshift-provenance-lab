@@ -9,6 +9,12 @@ from pathlib import Path
 
 from .data import condition_columns, download_dataset, quality_filter, read_tev_dataset, summarize
 from .evaluate import DEFAULT_TARGETS, run_benchmark
+from .multiprotein import (
+    multiprotein_gaps,
+    run_multiprotein_benchmark,
+    summarize_assays,
+    summarize_multiprotein_gaps,
+)
 from .proteingym import EligibilityCriteria, audit_archive, download_proteingym
 from .provenance import (
     build_run_manifest,
@@ -134,6 +140,21 @@ def build_parser() -> argparse.ArgumentParser:
     pg_audit.add_argument("--min-single-variants", type=int, default=500)
     pg_audit.add_argument("--min-positions", type=int, default=20)
     pg_audit.add_argument("--min-unique-scores", type=int, default=10)
+
+    pg_benchmark = subparsers.add_parser(
+        "proteingym-benchmark",
+        help="Run repeated random and unseen-position evaluation across eligible assays",
+    )
+    pg_benchmark.add_argument("archive", type=Path)
+    pg_benchmark.add_argument("reference", type=Path)
+    pg_benchmark.add_argument("eligibility", type=Path)
+    pg_benchmark.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym")
+    )
+    pg_benchmark.add_argument("--start-seed", type=int, default=42)
+    pg_benchmark.add_argument("--repeats", type=int, default=10)
+    pg_benchmark.add_argument("--bootstrap-repeats", type=int, default=10_000)
+    pg_benchmark.add_argument("--workers", type=int, default=1)
     return parser
 
 
@@ -180,6 +201,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             targets=targets,
             start_seed=arguments.start_seed,
             repeats=arguments.repeats,
+            workers=arguments.workers,
         )
         output_dir = arguments.output_dir
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -323,6 +345,55 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "assays": len(audit),
                     "eligible": int(audit["eligible"].sum()),
                     "criteria": criteria.to_dict(),
+                },
+                indent=2,
+            )
+        )
+        return 0
+
+    if arguments.command == "proteingym-benchmark":
+        import pandas as pd
+
+        eligibility = pd.read_csv(arguments.eligibility)
+        runs = run_multiprotein_benchmark(
+            arguments.archive,
+            arguments.reference,
+            eligibility,
+            start_seed=arguments.start_seed,
+            repeats=arguments.repeats,
+        )
+        gaps = multiprotein_gaps(runs)
+        assays = summarize_assays(gaps)
+        aggregate = summarize_multiprotein_gaps(
+            gaps,
+            bootstrap_repeats=arguments.bootstrap_repeats,
+        )
+        if runs["exact_variant_overlap"].ne(0).any():
+            raise RuntimeError("Exact-variant leakage detected in ProteinGym benchmark")
+        position_runs = runs.loc[runs["split"].eq("position_holdout")]
+        if position_runs["shared_position_count"].ne(0).any():
+            raise RuntimeError("Residue-position leakage detected in position holdout")
+
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "runs": output_dir / "benchmark-runs.csv",
+            "gaps": output_dir / "generalization-gaps.csv",
+            "assays": output_dir / "assay-summary.csv",
+            "aggregate": output_dir / "aggregate-summary.csv",
+        }
+        runs.to_csv(outputs["runs"], index=False)
+        gaps.to_csv(outputs["gaps"], index=False)
+        assays.to_csv(outputs["assays"], index=False)
+        aggregate.to_csv(outputs["aggregate"], index=False)
+        print(
+            json.dumps(
+                {
+                    "outputs": {key: str(path) for key, path in outputs.items()},
+                    "assays": int(runs["assay_id"].nunique()),
+                    "proteins": int(runs["uniprot_id"].nunique()),
+                    "seeds": int(runs["seed"].nunique()),
+                    "leakage_checks": "passed",
                 },
                 indent=2,
             )
