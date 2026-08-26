@@ -75,6 +75,37 @@ residuals. Observed interval coverage is reported separately for each evaluation
 Under covariate shift, conformal coverage need not remain at its nominal level. The coverage
 drop is treated as a model-diagnostics result, not as a valid guarantee for unseen positions.
 
+## Repeated-split robustness
+
+The robustness analysis repeats the complete benchmark for consecutive seeds 42 through 51.
+Each seed controls the grouped random-variant split, the held-out residue-position set, and the
+fit/calibration partition. Random and unseen-position metrics are paired within seed before the
+Spearman and coverage gaps are calculated.
+
+Reported means, standard deviations, minima, maxima, and 5th/95th percentiles describe sensitivity
+to the selected split. Repeated seeds reuse the same biological observations and therefore are not
+interpreted as independent replicates or confidence intervals.
+
+## Cross-condition transfer
+
+The released dataset contains 20 complete `mean_y` assay-condition columns. For every source
+condition, an additive ridge model is fit on the training variants and used to predict the held-out
+variants once. That prediction is then ranked against every target condition without fitting on
+the target labels. The resulting 20×20 matrix is evaluated under both grouped random-variant and
+unseen-position splits.
+
+For each source/target pair, VariantShift records model-to-target Spearman, source-condition
+Spearman, the paired transfer gap, direct source/target assay correlation, split sizes, exact
+variant overlap, and shared residue-position count. Diagonal cells measure in-condition accuracy;
+off-diagonal cells measure transfer.
+
+## Artifact provenance
+
+The run manifest records the source revision, source-data SHA-256, filter and evaluation
+configuration, dependency versions, and SHA-256 plus byte length for each committed artifact.
+`variantshift verify-artifacts` checks those records in CI. The raw dataset remains outside version
+control under the provider's data-use agreement.
+
 ## Reproduction
 
 ```bash
@@ -82,7 +113,10 @@ make install
 variantshift download data/raw --accept-data-use-agreement
 make test
 make report
+make robustness
+make transfer
+make figure
+make verify
 ```
 
 Aggregate outputs can be regenerated without storing raw measurements in the repository.
-
