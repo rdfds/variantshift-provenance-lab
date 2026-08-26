@@ -12,6 +12,13 @@ def test_perfect_predictions() -> None:
     assert metrics.r2 == 1
 
 
+def test_large_offset_constant_prediction_has_zero_rank_information() -> None:
+    observed = np.array([0.0, 1.0, 2.0])
+    predicted = np.full(3, 1e16)
+    metrics = regression_metrics(observed, predicted)
+    assert metrics.spearman == 0.0
+
+
 def test_conformal_radius_uses_absolute_residuals() -> None:
     radius = conformal_radius(np.array([-1.0, 0.25, 0.5, 2.0]), coverage=0.5)
     assert radius == 1.0
@@ -21,4 +28,3 @@ def test_interval_coverage() -> None:
     observed = np.array([0.0, 1.0, 3.0])
     predicted = np.array([0.0, 2.0, 1.0])
     assert interval_coverage(observed, predicted, radius=1.0) == pytest.approx(2 / 3)
-
