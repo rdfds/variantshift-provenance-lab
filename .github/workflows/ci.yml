@@ -27,4 +27,6 @@ jobs:
       - name: Test
         run: pytest --cov=variantshift --cov-report=term-missing
       - name: Verify committed result artifacts
-        run: variantshift verify-artifacts results/run-manifest.json
+        run: |
+          variantshift verify-artifacts results/run-manifest.json
+          variantshift verify-artifacts results/proteingym/run-manifest.json
