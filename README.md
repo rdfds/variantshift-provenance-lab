@@ -16,6 +16,8 @@ variants measured across 24 conditions at NIST's Living Measurement Systems Foun
 3. Do single-mutant models transfer to combinatorial variants?
 4. Which experimental conditions preserve variant rankings across assay shifts?
 5. Is model confidence calibrated when the biological distribution shifts?
+6. Does the random-versus-unseen-position gap replicate across independent proteins?
+7. How do supervised baselines compare with audited zero-shot model scores?
 
 ## Main result
 
@@ -37,6 +39,51 @@ generalize to unmeasured regions of the protein.
 
 The paired gap remained positive in all 20 target/seed comparisons. Full seed-level and
 aggregate results are in [`results/robustness/`](results/robustness/).
+
+## Multi-protein validation
+
+The result generalizes beyond the initial case study. VariantShift audited all 217 assays in the
+ProteinGym v1.3 substitution benchmark using criteria fixed before evaluation. **195 assays across
+169 proteins** passed sequence, identifier, measurement-count, and position-coverage checks,
+yielding 689,994 single-substitution measurements.
+
+Across ten paired split seeds, the additive baseline falls from **0.617 mean Spearman on random
+variants to 0.351 at unseen positions** after first aggregating assays within UniProt ID. The mean
+gap is **0.266** with a protein-bootstrap 95% interval of **0.246–0.287**. The protein-level gap is
+positive for all 169 proteins.
+
+![VariantShift multi-protein validation](docs/proteingym-analysis.svg)
+
+| Supervised model | Random Spearman | Unseen-position Spearman | Paired gap |
+| --- | ---: | ---: | ---: |
+| Biophysical ridge | 0.371 | 0.324 | 0.048 |
+| Additive ridge | **0.617** | **0.351** | **0.266** |
+
+The complete eligibility ledger, seed-level evaluations, assay summaries, and UniProt-bootstrap
+results are in [`results/proteingym/`](results/proteingym/). The protocol is specified in
+[`docs/PROTEINGYM_METHODS.md`](docs/PROTEINGYM_METHODS.md).
+
+### Audited ESM comparison
+
+All 195 eligible assays also passed the official-score audit: complete one-to-one variant joins,
+100% common score coverage, no duplicate identifiers, and experimental values agreeing to within
+`8.9e-16`. The ESM-2 650M model has the strongest aggregate ranking performance; increasing model
+size to 3B or 15B does not improve it.
+
+| Fixed zero-shot scores | Random subset | Unseen-position subset | Subset difference |
+| --- | ---: | ---: | ---: |
+| ESM-1v ensemble | 0.404 | 0.395 | 0.008 |
+| ESM-2 8M | 0.203 | 0.200 | 0.003 |
+| ESM-2 35M | 0.314 | 0.305 | 0.009 |
+| ESM-2 150M | 0.393 | 0.385 | 0.008 |
+| **ESM-2 650M** | **0.427** | **0.420** | **0.007** |
+| ESM-2 3B | 0.421 | 0.412 | 0.008 |
+| ESM-2 15B | 0.411 | 0.402 | 0.009 |
+
+The supervised additive model is much stronger on random variants (0.617 versus 0.427) but falls
+below ESM-2 650M at unseen positions (0.351 versus 0.420). Because ESM scores are fixed and never
+fit to assay labels, their random-to-position change describes subset composition rather than the
+training-shift penalty measured for supervised models.
 
 ## Condition transfer
 
@@ -65,6 +112,16 @@ variantshift benchmark data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 variantshift report artifacts/benchmark.csv --filtered-rows 9514
 variantshift robustness data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 variantshift condition-transfer data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
+```
+
+Run the public multi-protein study separately:
+
+```bash
+make proteingym-download
+make proteingym-audit
+make proteingym-benchmark
+make proteingym-zero-shot
+make proteingym-figure
 ```
 
 Every command is deterministic at the default seed. Raw data and per-variant predictions stay
@@ -96,13 +153,14 @@ biological replicates or confidence intervals.
 - `additive_ridge`: biochemical features plus sparse residue-position, substitution-class, and
   exact-mutation effects.
 
-The baselines are intentionally interpretable. Protein language model comparisons belong in a
-separate experiment because model pretraining can introduce sequence-level leakage that this
-benchmark must document explicitly.
+The baselines are intentionally interpretable. Protein language model comparisons are kept in a
+separate audited experiment because their scores are fixed rather than trained on each assay and
+their pretraining corpora may include related sequences.
 
-An optional ESM-2 8M scorer is included for that next experiment. It computes fast wild-type
-marginal log odds in one forward pass and labels the strategy explicitly; it is not mixed into
-the reported supervised table until its scores and pretraining assumptions are audited.
+The original optional ESM-2 8M scorer remains available as a local smoke test. The published
+multi-protein comparison instead uses ProteinGym's official ESM-1v ensemble and complete ESM-2
+scaling series, with one-to-one mutation joins, DMS-value agreement, score completeness, and
+archive provenance audited before evaluation.
 
 ```bash
 pip install -e '.[plm]'
@@ -132,6 +190,9 @@ src/variantshift/
   evaluate.py      # benchmark orchestration
   robustness.py    # repeated splits and paired generalization gaps
   transfer.py      # source-to-target assay-condition transfer
+  proteingym.py    # public assay ingestion and eligibility auditing
+  multiprotein.py # repeated cross-protein supervised validation
+  zero_shot.py     # official fixed-score join and evaluation audit
   provenance.py    # data/source/artifact integrity manifests
   visualize.py     # dependency-free shift-analysis SVG
   report.py        # standalone HTML result report
@@ -155,8 +216,8 @@ When the dataset is available locally, the same command verifies its hash as wel
 
 - The primary robustness result covers two fitted EC50 endpoints; the transfer matrix covers 20
   complete `mean_y` condition readouts rather than every raw measurement column.
-- Position holdout measures extrapolation within one protein, not transfer to new protein
-  families.
+- Multi-protein validation covers 169 proteins but still evaluates models independently within
+  each assay; it does not train on one protein and transfer labels to another family.
 - Repeated seeds characterize split sensitivity on this cohort rather than uncertainty across
   proteins, assays, or biological replicates.
 - Conformal coverage is guaranteed only under exchangeability; its breakdown under shift is a

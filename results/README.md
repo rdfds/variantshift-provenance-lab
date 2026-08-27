@@ -1,6 +1,7 @@
 # Committed results
 
-All files in this directory are aggregate outputs derived from the TEV GROQ-seq v1.1 release. Raw measurements remain under the provider's data-use agreement and are not stored in Git.
+Files in this directory are aggregate outputs from the TEV GROQ-seq case study and the public
+ProteinGym v1.3 validation. Raw and per-variant source measurements are not stored in Git.
 
 | Artifact | Contents |
 | --- | --- |
@@ -14,10 +15,26 @@ All files in this directory are aggregate outputs derived from the TEV GROQ-seq 
 | [`report.html`](report.html) | Standalone seed-42 benchmark report with no external assets |
 | [`run-manifest.json`](run-manifest.json) | Dataset, source revision, configuration, environment, artifact byte lengths, and SHA-256 hashes |
 
+## ProteinGym validation
+
+| Artifact | Contents |
+| --- | --- |
+| [`proteingym/eligibility.csv`](proteingym/eligibility.csv) | All 217 assay decisions, audit counts, and explicit exclusion reasons |
+| [`proteingym/benchmark-runs.csv`](proteingym/benchmark-runs.csv) | 11,700 supervised assay/seed/split/model evaluations |
+| [`proteingym/generalization-gaps.csv`](proteingym/generalization-gaps.csv) | Random-versus-position metrics paired within assay, seed, and model |
+| [`proteingym/assay-summary.csv`](proteingym/assay-summary.csv) | Repeated-split means for every eligible assay and supervised model |
+| [`proteingym/aggregate-summary.csv`](proteingym/aggregate-summary.csv) | UniProt-aggregated supervised results and 10,000-replicate bootstrap intervals |
+| [`proteingym/esm-score-audit.csv`](proteingym/esm-score-audit.csv) | Variant joins, value agreement, duplicates, and per-model score completeness |
+| [`proteingym/esm-subset-differences.csv`](proteingym/esm-subset-differences.csv) | 13,650 random-versus-position comparisons paired within assay, seed, and model |
+| [`proteingym/esm-assay-summary.csv`](proteingym/esm-assay-summary.csv) | Per-assay ESM-1v and ESM-2 scaling results |
+| [`proteingym/esm-aggregate-summary.csv`](proteingym/esm-aggregate-summary.csv) | UniProt-aggregated zero-shot results and bootstrap intervals |
+| [`proteingym/run-manifest.json`](proteingym/run-manifest.json) | Three input hashes, protocol, environment, source revision, and result hashes |
+
 Verify the committed outputs:
 
 ```bash
 variantshift verify-artifacts results/run-manifest.json
+variantshift verify-artifacts results/proteingym/run-manifest.json
 ```
 
 Regenerate the expanded analyses after downloading the dataset:
@@ -27,3 +44,6 @@ variantshift robustness data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv --output-dir 
 variantshift condition-transfer data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv --output-dir artifacts/transfer
 variantshift shift-figure artifacts/robustness/generalization-gaps.csv artifacts/transfer/condition-transfer.csv --output artifacts/shift-analysis.svg
 ```
+
+ProteinGym commands and the exact cohort protocol are documented in
+[`docs/PROTEINGYM_METHODS.md`](../docs/PROTEINGYM_METHODS.md).
