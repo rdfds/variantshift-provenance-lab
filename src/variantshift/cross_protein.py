@@ -208,6 +208,15 @@ def evaluate_held_out_proteins(
         )
         fit_indices = outer_train[fit_relative]
         calibration_indices = outer_train[calibration_relative]
+        fit_groups = set(groups[fit_indices])
+        calibration_groups = set(groups[calibration_indices])
+        test_groups = set(groups[test_indices])
+        if (
+            fit_groups.intersection(calibration_groups)
+            or fit_groups.intersection(test_groups)
+            or calibration_groups.intersection(test_groups)
+        ):
+            raise RuntimeError("Protein-group leakage detected in transfer evaluation")
         fit_weights = _assay_balanced_weights(metadata.iloc[fit_indices])
         for model_name, factory in _model_factories(seed + fold).items():
             model = factory()
@@ -336,5 +345,23 @@ def summarize_held_out_proteins(assays: pd.DataFrame) -> pd.DataFrame:
             **{f"mean_{value}": (value, "mean") for value in values},
         )
         .sort_values(["model", "calibration_method"])
+        .reset_index(drop=True)
+    )
+
+
+def summarize_heldout_risk_coverage(risks: pd.DataFrame) -> pd.DataFrame:
+    protein_level = risks.groupby(
+        ["model", "calibration_method", "retained_fraction", "uniprot_id"],
+        as_index=False,
+    ).agg(normalized_mae=("normalized_mae", "mean"))
+    return (
+        protein_level.groupby(
+            ["model", "calibration_method", "retained_fraction"], as_index=False
+        )
+        .agg(
+            n_proteins=("uniprot_id", "nunique"),
+            mean_normalized_mae=("normalized_mae", "mean"),
+        )
+        .sort_values(["model", "calibration_method", "retained_fraction"])
         .reset_index(drop=True)
     )
