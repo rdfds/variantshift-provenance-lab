@@ -1,8 +1,8 @@
 {
   "artifacts": {
     "docs/proteingym-extended.svg": {
-      "bytes": 13163,
-      "sha256": "f5dc0d05ec00aeb57b57500276b7608822a066466d17099bb6f3ee08d007b457"
+      "bytes": 13914,
+      "sha256": "45548607c0e3874013896cf97107c5a8e8f0223c996bee6bb549e71e27b64547"
     },
     "results/proteingym/eligibility.csv": {
       "bytes": 33676,
@@ -40,6 +40,10 @@
       "bytes": 2655,
       "sha256": "37e10bd2443cd0a702b5fb58144d5ad7a94fd3fe88611417a6e4491df3376a6d"
     },
+    "results/proteingym/extended/esm2-embedding-index.csv": {
+      "bytes": 56478,
+      "sha256": "93ec01a434c66b156f807938fe17dbb49112f153ef9a0fedc644d32063c94671"
+    },
     "results/proteingym/extended/heldout-family-assays.csv": {
       "bytes": 296981,
       "sha256": "23ada3ddb2ae427dfc84a48f8d622219efa98e7cd85395464db95c7cfb68a729"
@@ -76,6 +80,30 @@
       "bytes": 792,
       "sha256": "1b4a65e2283744265a598e23882f42b973db88890e88900a01e4cf4c1a071917"
     },
+    "results/proteingym/extended/heldout-structure-family-assays.csv": {
+      "bytes": 305320,
+      "sha256": "125c0d0b970f02cc47e5dac018d5720514b28fe0ddffa63c771a6d2d5ea9bacc"
+    },
+    "results/proteingym/extended/heldout-structure-family-risk-coverage.csv": {
+      "bytes": 512882,
+      "sha256": "f82601911329765d2d4614c3b5fcaeb5344b8947e69a01cde485cfeb1d5072a5"
+    },
+    "results/proteingym/extended/heldout-structure-family-risk-summary.csv": {
+      "bytes": 1136,
+      "sha256": "8077d62401e5ef141c9bd3b5540ed83a51051bc695dea0102344e82860710dd6"
+    },
+    "results/proteingym/extended/heldout-structure-family-summary.csv": {
+      "bytes": 795,
+      "sha256": "9c20dea0c46b056e49d5ac450ab6116f0d1ac72124818a9ab2915849ebedbd03"
+    },
+    "results/proteingym/extended/heldout-structure-family-vs-protein.csv": {
+      "bytes": 5430,
+      "sha256": "eb1fb5dcb3d32a68049052f45c23b74b60c044bc038392a36f25f17b0dc3888c"
+    },
+    "results/proteingym/extended/heldout-structure-family-vs-sequence-family.csv": {
+      "bytes": 5462,
+      "sha256": "dd4d2c9e88567912e49d7692e5f4b7552deb86780d66b3a2fb36171b27f3bc46"
+    },
     "results/proteingym/extended/official-supervised-audit.csv": {
       "bytes": 61299,
       "sha256": "2d5d43f36b68d1c07db0054336c59fc7e4fa39dd8f390201c502a38f30e54e62"
@@ -103,6 +131,26 @@
     "results/proteingym/extended/sequence-family-sensitivity.csv": {
       "bytes": 338,
       "sha256": "5c61198b1f0df0a082f1bca0cbf58e609bd1488eeadc4a4a4180f9bfc702a1d4"
+    },
+    "results/proteingym/extended/sequence-structure-family-assignments.csv": {
+      "bytes": 12345,
+      "sha256": "8cbc8876d98c568f2ba0d3fa7c2a39464bb1e7097fe781ac6ecb8b4cf135a48d"
+    },
+    "results/proteingym/extended/structure-family-alignments.csv": {
+      "bytes": 1548590,
+      "sha256": "f5814478caa1157e49d0e9dc7107d555b803b2a26ef74274bccbe06274897cf5"
+    },
+    "results/proteingym/extended/structure-family-audit.csv": {
+      "bytes": 921,
+      "sha256": "fa9498bbb0fe1ecb35af8fc1bb9dd94d1eb5ebec4ab2d705b2db0be711eaa6fe"
+    },
+    "results/proteingym/extended/structure-family-sensitivity.csv": {
+      "bytes": 382,
+      "sha256": "9d74cf45e3ce277670c3bc1c1faab14809f2b00ae7760909006c13b717e2eb23"
+    },
+    "results/proteingym/extended/structure-input-audit.csv": {
+      "bytes": 18033,
+      "sha256": "2f1702f6ee25684f944f321e287454ca2f3275c6182586c4a716f72e1a19317d"
     }
   },
   "environment": {
@@ -119,10 +167,17 @@
   "inputs": {
     "esm2_embedding_index": {
       "bytes": 56478,
-      "path": "results/proteingym/extended/esm2-embedding-index.csv",
+      "path": "data/raw/proteingym/esm2_t6_8M_embeddings/index.csv",
       "sha256": "93ec01a434c66b156f807938fe17dbb49112f153ef9a0fedc644d32063c94671",
       "source": "locally cached frozen ESM-2 residue representations",
       "version": "esm2_t6_8M_UR50D"
+    },
+    "official_alphafold_structures": {
+      "bytes": 19173248,
+      "path": "data/raw/proteingym/ProteinGym_AF2_structures.zip",
+      "sha256": "ed8611bf12cfb840ea1c2561be36254901008610a49b1be475e917b6c5d6d56a",
+      "source": "https://marks.hms.harvard.edu/proteingym/ProteinGym_v1.3/ProteinGym_AF2_structures.zip",
+      "version": "v1.3"
     },
     "official_supervised_predictions": {
       "bytes": 269797108,
@@ -179,6 +234,14 @@
       "minimum_sequence_identity": 0.3,
       "sequence_scope": "ProteinGym MSA_start:MSA_end assayed segment"
     },
+    "heldout_sequence_structure_family": {
+      "clustering": "sequence-family graph union reciprocal Foldseek structure-homology connected components",
+      "folds": 5,
+      "minimum_bidirectional_coverage": 0.8,
+      "minimum_reciprocal_homology_probability": 0.95,
+      "minimum_reciprocal_tm_score": 0.5,
+      "structure_source": "official ProteinGym AlphaFold archive"
+    },
     "nominal_coverage": 0.8,
     "repeated_splits": {
       "additive_and_zero_shot": {
@@ -219,6 +282,6 @@
   },
   "schema_version": 2,
   "source": {
-    "git_commit": "a0002e5"
+    "git_commit": "a0cf2aa"
   }
 }
