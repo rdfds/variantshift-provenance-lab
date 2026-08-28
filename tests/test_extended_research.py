@@ -61,25 +61,37 @@ def test_held_out_protein_evaluation_never_mixes_protein_groups():
             "family_id": ["F01", "F01", "F23", "F23", "F4", "F5", "F6", "F7"],
         }
     )
-    family_assays, _, family_predictions = evaluate_held_out_families(
-        dataset, families, folds=3
-    )
+    family_assays, _, family_predictions = evaluate_held_out_families(dataset, families, folds=3)
     assert family_assays["evaluation_type"].eq("held_out_sequence_family").all()
     assert family_assays["test_families"].min() >= 1
-    assert (
-        family_predictions.groupby(["model", "family_id"])["fold"].nunique().max()
-        == 1
-    )
+    assert family_predictions.groupby(["model", "family_id"])["fold"].nunique().max() == 1
     protein_folds = family_predictions.groupby(["model", "uniprot_id"])["fold"].first()
-    assert protein_folds.loc[("cross_protein_ridge", "P0")] == protein_folds.loc[
-        ("cross_protein_ridge", "P1")
-    ]
-    comparison = compare_holdout_protocols(
-        assays, family_assays, bootstrap_repeats=100
+    assert (
+        protein_folds.loc[("cross_protein_ridge", "P0")]
+        == protein_folds.loc[("cross_protein_ridge", "P1")]
     )
+    comparison = compare_holdout_protocols(assays, family_assays, bootstrap_repeats=100)
     assert len(comparison) == 20
     assert comparison["n_proteins"].eq(8).all()
     assert comparison["delta_ci_low"].notna().all()
+    structure_assays, _, _ = evaluate_held_out_families(
+        dataset,
+        families,
+        folds=3,
+        group_name="sequence_structure_family",
+        evaluation_type="held_out_sequence_structure_family",
+    )
+    assert structure_assays["evaluation_type"].eq("held_out_sequence_structure_family").all()
+    structure_comparison = compare_holdout_protocols(
+        family_assays,
+        structure_assays,
+        bootstrap_repeats=100,
+        baseline_label="heldout_sequence_family",
+        alternative_label="heldout_structure_family",
+    )
+    assert "heldout_structure_family_minus_heldout_sequence_family" in (
+        structure_comparison.columns
+    )
 
 
 def test_crossover_validation_holds_out_complete_proteins():
@@ -102,9 +114,7 @@ def test_crossover_validation_holds_out_complete_proteins():
                     "supervised_wins": int(protein % 2 == 0),
                 }
             )
-    predictions, summary, coefficients = evaluate_crossover_predictor(
-        pd.DataFrame(rows), folds=4
-    )
+    predictions, summary, coefficients = evaluate_crossover_predictor(pd.DataFrame(rows), folds=4)
     assert predictions.groupby(["model", "uniprot_id"])["fold"].nunique().max() == 1
     assert summary["n_proteins"].eq(12).all()
     assert set(summary["model"]) == {"histgb", "logistic"}

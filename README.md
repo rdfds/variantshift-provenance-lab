@@ -125,6 +125,15 @@ The final experiments change the unit of generalization:
   0.512; the paired changes are −0.0019 (protein-bootstrap 95% interval −0.0068 to 0.0029) and
   +0.0002 (−0.0022 to 0.0028). Standard 80% coverage is 0.803 and 0.800. Detectable close-homolog
   label leakage therefore does not explain the cross-protein result.
+- A second exhaustive audit searches all 169 official ProteinGym AlphaFold structures with exact
+  Foldseek TM-align scoring. Sequence components are joined only when both directed alignments have
+  ≥0.95 Foldseek homology probability, ≥0.50 TM-score, and ≥80% coverage. The combined graph has
+  148 families, 14 multi-protein families covering 35 proteins, a largest component of five, and
+  zero qualifying cross-component pairs. Holding out these complete sequence-and-structure families
+  yields 0.533 Spearman for nonlinear regression and 0.511 for ridge. Relative to sequence-only
+  family holdout, paired changes are −0.0021 (95% interval −0.0077 to 0.0029) and −0.0015
+  (−0.0042 to 0.0012). Remote structure matches detected by this protocol therefore do not explain
+  the transfer result either.
 - A model-selection classifier predicts whether the local supervised probe will beat fixed ESM-2
   650M scores on unseen positions. Protein-grouped out-of-fold ROC-AUC is 0.829 and accuracy is
   0.770 across 975 decisions, versus a 0.592 majority baseline. The dominant signal is zero-shot
@@ -166,8 +175,9 @@ variantshift condition-transfer data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 
 Run the public multi-protein study separately:
 
-The family-clustering target requires the `mmseqs` executable (`brew install mmseqs2` on macOS or
-`conda install -c bioconda mmseqs2`). Its exact version is recorded in the family audit.
+The family-clustering targets require `mmseqs` (`brew install mmseqs2` on macOS or
+`conda install -c bioconda mmseqs2`) and `foldseek` (a release binary or Bioconda installation).
+Exact executable versions are recorded in their respective audits.
 
 ```bash
 make proteingym-download
@@ -181,6 +191,8 @@ make proteingym-embedding-probe
 make proteingym-heldout-protein
 make proteingym-family-clusters
 make proteingym-heldout-family
+make proteingym-structure-clusters
+make proteingym-heldout-structure-family
 make proteingym-crossover
 make proteingym-extended-figure
 ```
@@ -284,9 +296,9 @@ When the dataset is available locally, the same command verifies its hash as wel
 
 - The primary robustness result covers two fitted EC50 endpoints; the transfer matrix covers 20
   complete `mean_y` condition readouts rather than every raw measurement column.
-- Sequence-family validation uses a transparent sequence rule rather than curated Pfam or
-  structure-based families. Remote homologs below 30% identity or 80% bidirectional coverage may
-  remain in different folds.
+- Combined-family validation uses official predicted structures and explicit reciprocal Foldseek
+  thresholds, not curated Pfam clans or experimentally determined structures. Relationships missed
+  by both the declared sequence and structure rules may remain in different folds.
 - Fixed ESM scores are assay-label-independent features, but their pretrained models may have seen
   related sequences; the family split isolates experimental labels rather than pretraining data.
 - Repeated seeds characterize split sensitivity on this cohort rather than uncertainty across

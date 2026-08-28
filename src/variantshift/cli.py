@@ -25,6 +25,7 @@ from .proteingym import (
     PROTEINGYM_ARCHIVE_URL,
     PROTEINGYM_REFERENCE_URL,
     PROTEINGYM_SCORE_ARCHIVE_URL,
+    PROTEINGYM_STRUCTURE_ARCHIVE_URL,
     PROTEINGYM_SUPERVISED_ARCHIVE_URL,
     PROTEINGYM_VERSION,
     EligibilityCriteria,
@@ -59,9 +60,7 @@ from .zero_shot import (
 def _dataset_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("dataset", type=Path, help="Path to the released TEV CSV")
     parser.add_argument("--min-total-counts", type=int, default=1_000)
-    parser.add_argument(
-        "--include-stops", action="store_true", help="Retain nonsense mutations"
-    )
+    parser.add_argument("--include-stops", action="store_true", help="Retain nonsense mutations")
     parser.add_argument("--include-indels", action="store_true")
 
 
@@ -154,6 +153,7 @@ def build_parser() -> argparse.ArgumentParser:
     pg_download.add_argument("destination", type=Path)
     pg_download.add_argument("--include-zero-shot-scores", action="store_true")
     pg_download.add_argument("--include-supervised-scores", action="store_true")
+    pg_download.add_argument("--include-structures", action="store_true")
 
     pg_audit = subparsers.add_parser(
         "proteingym-audit",
@@ -161,7 +161,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     pg_audit.add_argument("archive", type=Path)
     pg_audit.add_argument("reference", type=Path)
-    pg_audit.add_argument("--output", type=Path, default=Path("artifacts/proteingym/eligibility.csv"))
+    pg_audit.add_argument(
+        "--output", type=Path, default=Path("artifacts/proteingym/eligibility.csv")
+    )
     pg_audit.add_argument("--min-single-variants", type=int, default=500)
     pg_audit.add_argument("--min-positions", type=int, default=20)
     pg_audit.add_argument("--min-unique-scores", type=int, default=10)
@@ -173,9 +175,7 @@ def build_parser() -> argparse.ArgumentParser:
     pg_benchmark.add_argument("archive", type=Path)
     pg_benchmark.add_argument("reference", type=Path)
     pg_benchmark.add_argument("eligibility", type=Path)
-    pg_benchmark.add_argument(
-        "--output-dir", type=Path, default=Path("artifacts/proteingym")
-    )
+    pg_benchmark.add_argument("--output-dir", type=Path, default=Path("artifacts/proteingym"))
     pg_benchmark.add_argument("--start-seed", type=int, default=42)
     pg_benchmark.add_argument("--repeats", type=int, default=10)
     pg_benchmark.add_argument("--bootstrap-repeats", type=int, default=10_000)
@@ -189,9 +189,7 @@ def build_parser() -> argparse.ArgumentParser:
     pg_zero_shot.add_argument("score_archive", type=Path)
     pg_zero_shot.add_argument("reference", type=Path)
     pg_zero_shot.add_argument("eligibility", type=Path)
-    pg_zero_shot.add_argument(
-        "--output-dir", type=Path, default=Path("artifacts/proteingym")
-    )
+    pg_zero_shot.add_argument("--output-dir", type=Path, default=Path("artifacts/proteingym"))
     pg_zero_shot.add_argument(
         "--model",
         action="append",
@@ -221,11 +219,16 @@ def build_parser() -> argparse.ArgumentParser:
     pg_provenance.add_argument("--family-folds", type=int, default=5)
     pg_provenance.add_argument("--family-identity-threshold", type=float, default=0.30)
     pg_provenance.add_argument("--family-coverage-threshold", type=float, default=0.80)
+    pg_provenance.add_argument("--structure-family-folds", type=int, default=5)
+    pg_provenance.add_argument("--structure-tm-threshold", type=float, default=0.50)
+    pg_provenance.add_argument("--structure-coverage-threshold", type=float, default=0.80)
+    pg_provenance.add_argument("--structure-probability-threshold", type=float, default=0.95)
     pg_provenance.add_argument("--crossover-folds", type=int, default=5)
     pg_provenance.add_argument("--bootstrap-repeats", type=int, default=10_000)
     pg_provenance.add_argument("--source-revision")
     pg_provenance.add_argument("--supervised-archive", type=Path)
     pg_provenance.add_argument("--embedding-index", type=Path)
+    pg_provenance.add_argument("--structure-archive", type=Path)
 
     pg_figure = subparsers.add_parser(
         "proteingym-figure",
@@ -234,9 +237,7 @@ def build_parser() -> argparse.ArgumentParser:
     pg_figure.add_argument("supervised_assays", type=Path)
     pg_figure.add_argument("supervised_aggregate", type=Path)
     pg_figure.add_argument("esm_aggregate", type=Path)
-    pg_figure.add_argument(
-        "--output", type=Path, default=Path("artifacts/proteingym-analysis.svg")
-    )
+    pg_figure.add_argument("--output", type=Path, default=Path("artifacts/proteingym-analysis.svg"))
 
     pg_official = subparsers.add_parser(
         "proteingym-official-supervised",
@@ -246,9 +247,7 @@ def build_parser() -> argparse.ArgumentParser:
     pg_official.add_argument("supervised_archive", type=Path)
     pg_official.add_argument("reference", type=Path)
     pg_official.add_argument("eligibility", type=Path)
-    pg_official.add_argument(
-        "--output-dir", type=Path, default=Path("artifacts/proteingym")
-    )
+    pg_official.add_argument("--output-dir", type=Path, default=Path("artifacts/proteingym"))
     pg_official.add_argument("--bootstrap-repeats", type=int, default=10_000)
 
     pg_embeddings = subparsers.add_parser(
@@ -273,9 +272,7 @@ def build_parser() -> argparse.ArgumentParser:
     pg_probe.add_argument("reference", type=Path)
     pg_probe.add_argument("eligibility", type=Path)
     pg_probe.add_argument("embedding_index", type=Path)
-    pg_probe.add_argument(
-        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
-    )
+    pg_probe.add_argument("--output-dir", type=Path, default=Path("artifacts/proteingym/extended"))
     pg_probe.add_argument("--start-seed", type=int, default=42)
     pg_probe.add_argument("--repeats", type=int, default=5)
     pg_probe.add_argument("--workers", type=int, default=1)
@@ -327,6 +324,41 @@ def build_parser() -> argparse.ArgumentParser:
     pg_heldout_family.add_argument("--protein-assays", type=Path)
     pg_heldout_family.add_argument("--bootstrap-repeats", type=int, default=10_000)
 
+    pg_structure_clusters = subparsers.add_parser(
+        "proteingym-structure-clusters",
+        help="Augment sequence families with reciprocal Foldseek structure homology",
+    )
+    pg_structure_clusters.add_argument("structure_archive", type=Path)
+    pg_structure_clusters.add_argument("reference", type=Path)
+    pg_structure_clusters.add_argument("eligibility", type=Path)
+    pg_structure_clusters.add_argument("sequence_assignments", type=Path)
+    pg_structure_clusters.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_structure_clusters.add_argument("--minimum-tm-score", type=float, default=0.50)
+    pg_structure_clusters.add_argument("--minimum-coverage", type=float, default=0.80)
+    pg_structure_clusters.add_argument("--minimum-homology-probability", type=float, default=0.95)
+    pg_structure_clusters.add_argument("--foldseek-binary", default="foldseek")
+    pg_structure_clusters.add_argument("--threads", type=int, default=8)
+
+    pg_heldout_structure = subparsers.add_parser(
+        "proteingym-heldout-structure-family",
+        help="Evaluate with complete sequence-and-structure families held out",
+    )
+    pg_heldout_structure.add_argument("source_archive", type=Path)
+    pg_heldout_structure.add_argument("score_archive", type=Path)
+    pg_heldout_structure.add_argument("reference", type=Path)
+    pg_heldout_structure.add_argument("eligibility", type=Path)
+    pg_heldout_structure.add_argument("family_assignments", type=Path)
+    pg_heldout_structure.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_heldout_structure.add_argument("--max-variants-per-assay", type=int, default=1_000)
+    pg_heldout_structure.add_argument("--folds", type=int, default=5)
+    pg_heldout_structure.add_argument("--protein-assays", type=Path)
+    pg_heldout_structure.add_argument("--sequence-family-assays", type=Path)
+    pg_heldout_structure.add_argument("--bootstrap-repeats", type=int, default=10_000)
+
     pg_crossover = subparsers.add_parser(
         "proteingym-crossover",
         help="Predict supervised-versus-zero-shot wins on held-out proteins",
@@ -352,6 +384,7 @@ def build_parser() -> argparse.ArgumentParser:
     pg_extended_figure.add_argument("heldout_summary", type=Path)
     pg_extended_figure.add_argument("crossover_summary", type=Path)
     pg_extended_figure.add_argument("--heldout-family-summary", type=Path)
+    pg_extended_figure.add_argument("--heldout-structure-family-summary", type=Path)
     pg_extended_figure.add_argument(
         "--output", type=Path, default=Path("artifacts/proteingym-extended.svg")
     )
@@ -414,9 +447,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         runs.to_csv(outputs["runs"], index=False)
         summarize_robustness(runs).to_csv(outputs["summary"], index=False)
         gaps.to_csv(outputs["gaps"], index=False)
-        summarize_generalization_gaps(gaps).to_csv(
-            outputs["gap_summary"], index=False
-        )
+        summarize_generalization_gaps(gaps).to_csv(outputs["gap_summary"], index=False)
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
@@ -515,9 +546,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         ].drop_duplicates()
         if len(wild_types) != 1:
             raise ValueError(f"Expected one wild-type sequence, found {len(wild_types)}")
-        scores = esm2_wild_type_marginals(
-            wild_types.item(), frame["mutation_codes"].astype(str)
-        )
+        scores = esm2_wild_type_marginals(wild_types.item(), frame["mutation_codes"].astype(str))
         arguments.output.parent.mkdir(parents=True, exist_ok=True)
         scores.to_csv(arguments.output, index=False)
         print(arguments.output)
@@ -528,6 +557,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             arguments.destination,
             include_zero_shot_scores=arguments.include_zero_shot_scores,
             include_supervised_scores=arguments.include_supervised_scores,
+            include_structures=arguments.include_structures,
         )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
@@ -690,6 +720,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "source": "locally cached frozen ESM-2 residue representations",
                 "version": "esm2_t6_8M_UR50D",
             }
+        if arguments.structure_archive:
+            inputs["official_alphafold_structures"] = {
+                "path": arguments.structure_archive,
+                "source": PROTEINGYM_STRUCTURE_ARCHIVE_URL,
+                "version": PROTEINGYM_VERSION,
+            }
         manifest = build_collection_manifest(
             repository_root=Path.cwd(),
             inputs=inputs,
@@ -721,6 +757,19 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "minimum_bidirectional_coverage": arguments.family_coverage_threshold,
                     "sequence_scope": "ProteinGym MSA_start:MSA_end assayed segment",
                     "clustering": "MMseqs2 exhaustive all-versus-all connected components",
+                },
+                "heldout_sequence_structure_family": {
+                    "folds": arguments.structure_family_folds,
+                    "minimum_reciprocal_tm_score": arguments.structure_tm_threshold,
+                    "minimum_bidirectional_coverage": arguments.structure_coverage_threshold,
+                    "minimum_reciprocal_homology_probability": (
+                        arguments.structure_probability_threshold
+                    ),
+                    "structure_source": "official ProteinGym AlphaFold archive",
+                    "clustering": (
+                        "sequence-family graph union reciprocal Foldseek structure-homology "
+                        "connected components"
+                    ),
                 },
                 "crossover_group_folds": arguments.crossover_folds,
                 "calibration_fraction": 0.2,
@@ -775,9 +824,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             arguments.reference,
             eligibility,
         )
-        summary = summarize_official_supervised(
-            runs, bootstrap_repeats=arguments.bootstrap_repeats
-        )
+        summary = summarize_official_supervised(runs, bootstrap_repeats=arguments.bootstrap_repeats)
         output_dir = arguments.output_dir
         output_dir.mkdir(parents=True, exist_ok=True)
         outputs = {
@@ -846,9 +893,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         metrics.to_csv(outputs["runs"], index=False)
         summarize_embedding_probe(metrics).to_csv(outputs["summary"], index=False)
         risks.to_csv(outputs["risk_coverage"], index=False)
-        summarize_probe_risk_coverage(risks).to_csv(
-            outputs["risk_summary"], index=False
-        )
+        summarize_probe_risk_coverage(risks).to_csv(outputs["risk_summary"], index=False)
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
@@ -869,9 +914,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             pd.read_csv(arguments.eligibility),
             max_variants_per_assay=arguments.max_variants_per_assay,
         )
-        assays, risks, predictions = evaluate_held_out_proteins(
-            dataset, folds=arguments.folds
-        )
+        assays, risks, predictions = evaluate_held_out_proteins(dataset, folds=arguments.folds)
         output_dir = arguments.output_dir
         output_dir.mkdir(parents=True, exist_ok=True)
         outputs = {
@@ -884,9 +927,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         assays.to_csv(outputs["assays"], index=False)
         summarize_held_out_proteins(assays).to_csv(outputs["summary"], index=False)
         risks.to_csv(outputs["risk_coverage"], index=False)
-        summarize_heldout_risk_coverage(risks).to_csv(
-            outputs["risk_summary"], index=False
-        )
+        summarize_heldout_risk_coverage(risks).to_csv(outputs["risk_summary"], index=False)
         predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
@@ -956,9 +997,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         assays.to_csv(outputs["assays"], index=False)
         summarize_held_out_proteins(assays).to_csv(outputs["summary"], index=False)
         risks.to_csv(outputs["risk_coverage"], index=False)
-        summarize_heldout_risk_coverage(risks).to_csv(
-            outputs["risk_summary"], index=False
-        )
+        summarize_heldout_risk_coverage(risks).to_csv(outputs["risk_summary"], index=False)
         predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
         if arguments.protein_assays:
             outputs["comparison"] = output_dir / "heldout-family-comparison.csv"
@@ -967,6 +1006,101 @@ def main(argv: Sequence[str] | None = None) -> int:
                 assays,
                 bootstrap_repeats=arguments.bootstrap_repeats,
             ).to_csv(outputs["comparison"], index=False)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-structure-clusters":
+        import pandas as pd
+
+        from .structure_clusters import build_sequence_structure_family_clusters
+
+        result = build_sequence_structure_family_clusters(
+            arguments.structure_archive,
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            pd.read_csv(arguments.sequence_assignments),
+            minimum_tm_score=arguments.minimum_tm_score,
+            minimum_coverage=arguments.minimum_coverage,
+            minimum_homology_probability=arguments.minimum_homology_probability,
+            binary=arguments.foldseek_binary,
+            threads=arguments.threads,
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "assignments": output_dir / "sequence-structure-family-assignments.csv",
+            "structure_inputs": output_dir / "structure-input-audit.csv",
+            "alignments": output_dir / "structure-family-alignments.csv",
+            "sensitivity": output_dir / "structure-family-sensitivity.csv",
+            "audit": output_dir / "structure-family-audit.csv",
+        }
+        result.assignments.to_csv(outputs["assignments"], index=False)
+        result.structure_inputs.to_csv(outputs["structure_inputs"], index=False)
+        result.alignments.to_csv(outputs["alignments"], index=False)
+        result.sensitivity.to_csv(outputs["sensitivity"], index=False)
+        result.audit.to_csv(outputs["audit"], index=False)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-heldout-structure-family":
+        import pandas as pd
+
+        from .cross_protein import (
+            build_cross_protein_dataset,
+            compare_holdout_protocols,
+            evaluate_held_out_families,
+            summarize_held_out_proteins,
+            summarize_heldout_risk_coverage,
+        )
+
+        dataset = build_cross_protein_dataset(
+            arguments.source_archive,
+            arguments.score_archive,
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            max_variants_per_assay=arguments.max_variants_per_assay,
+        )
+        assays, risks, predictions = evaluate_held_out_families(
+            dataset,
+            pd.read_csv(arguments.family_assignments),
+            folds=arguments.folds,
+            group_name="sequence_structure_family",
+            evaluation_type="held_out_sequence_structure_family",
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "assays": output_dir / "heldout-structure-family-assays.csv",
+            "summary": output_dir / "heldout-structure-family-summary.csv",
+            "risk_coverage": output_dir / "heldout-structure-family-risk-coverage.csv",
+            "risk_summary": output_dir / "heldout-structure-family-risk-summary.csv",
+            "predictions": output_dir / "heldout-structure-family-predictions.csv.gz",
+        }
+        assays.to_csv(outputs["assays"], index=False)
+        summarize_held_out_proteins(assays).to_csv(outputs["summary"], index=False)
+        risks.to_csv(outputs["risk_coverage"], index=False)
+        summarize_heldout_risk_coverage(risks).to_csv(outputs["risk_summary"], index=False)
+        predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
+        if arguments.protein_assays:
+            outputs["protein_comparison"] = output_dir / "heldout-structure-family-vs-protein.csv"
+            compare_holdout_protocols(
+                pd.read_csv(arguments.protein_assays),
+                assays,
+                bootstrap_repeats=arguments.bootstrap_repeats,
+                baseline_label="heldout_protein",
+                alternative_label="heldout_structure_family",
+            ).to_csv(outputs["protein_comparison"], index=False)
+        if arguments.sequence_family_assays:
+            outputs["sequence_comparison"] = (
+                output_dir / "heldout-structure-family-vs-sequence-family.csv"
+            )
+            compare_holdout_protocols(
+                pd.read_csv(arguments.sequence_family_assays),
+                assays,
+                bootstrap_repeats=arguments.bootstrap_repeats,
+                baseline_label="heldout_sequence_family",
+                alternative_label="heldout_structure_family",
+            ).to_csv(outputs["sequence_comparison"], index=False)
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
@@ -1014,6 +1148,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             heldout_family=(
                 pd.read_csv(arguments.heldout_family_summary)
                 if arguments.heldout_family_summary
+                else None
+            ),
+            heldout_structure_family=(
+                pd.read_csv(arguments.heldout_structure_family_summary)
+                if arguments.heldout_structure_family_summary
                 else None
             ),
         )

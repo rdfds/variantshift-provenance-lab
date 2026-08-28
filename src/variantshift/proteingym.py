@@ -12,21 +12,17 @@ import pandas as pd
 from .mutations import apply_variant, parse_variant, validate_against_sequence
 
 PROTEINGYM_VERSION = "v1.3"
-PROTEINGYM_BASE_URL = (
-    f"https://marks.hms.harvard.edu/proteingym/ProteinGym_{PROTEINGYM_VERSION}"
-)
+PROTEINGYM_BASE_URL = f"https://marks.hms.harvard.edu/proteingym/ProteinGym_{PROTEINGYM_VERSION}"
 PROTEINGYM_ARCHIVE_NAME = "DMS_ProteinGym_substitutions.zip"
 PROTEINGYM_ARCHIVE_URL = f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_ARCHIVE_NAME}"
 PROTEINGYM_SCORE_ARCHIVE_NAME = "zero_shot_substitutions_scores.zip"
-PROTEINGYM_SCORE_ARCHIVE_URL = (
-    f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_SCORE_ARCHIVE_NAME}"
-)
+PROTEINGYM_SCORE_ARCHIVE_URL = f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_SCORE_ARCHIVE_NAME}"
 PROTEINGYM_SUPERVISED_ARCHIVE_NAME = "DMS_supervised_substitutions_scores.zip"
-PROTEINGYM_SUPERVISED_ARCHIVE_URL = (
-    f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_SUPERVISED_ARCHIVE_NAME}"
-)
+PROTEINGYM_SUPERVISED_ARCHIVE_URL = f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_SUPERVISED_ARCHIVE_NAME}"
 PROTEINGYM_CV_FOLDS_NAME = "cv_folds_singles_substitutions.zip"
 PROTEINGYM_CV_FOLDS_URL = f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_CV_FOLDS_NAME}"
+PROTEINGYM_STRUCTURE_ARCHIVE_NAME = "ProteinGym_AF2_structures.zip"
+PROTEINGYM_STRUCTURE_ARCHIVE_URL = f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_STRUCTURE_ARCHIVE_NAME}"
 PROTEINGYM_REFERENCE_URL = (
     "https://raw.githubusercontent.com/OATML-Markslab/ProteinGym/"
     "main/reference_files/DMS_substitutions.csv"
@@ -76,8 +72,9 @@ def download_proteingym(
     *,
     include_zero_shot_scores: bool = False,
     include_supervised_scores: bool = False,
+    include_structures: bool = False,
 ) -> dict[str, Path]:
-    """Download public ProteinGym inputs, optionally including the 1.9 GB score archive."""
+    """Download public ProteinGym inputs and selected optional benchmark archives."""
     destination = Path(destination)
     outputs = {
         "archive": _download(PROTEINGYM_ARCHIVE_URL, destination / PROTEINGYM_ARCHIVE_NAME),
@@ -96,6 +93,11 @@ def download_proteingym(
         outputs["cv_folds"] = _download(
             PROTEINGYM_CV_FOLDS_URL,
             destination / PROTEINGYM_CV_FOLDS_NAME,
+        )
+    if include_structures:
+        outputs["structures"] = _download(
+            PROTEINGYM_STRUCTURE_ARCHIVE_URL,
+            destination / PROTEINGYM_STRUCTURE_ARCHIVE_NAME,
         )
     return outputs
 
@@ -137,8 +139,8 @@ def canonicalize_assay(frame: pd.DataFrame, metadata: pd.Series) -> pd.DataFrame
     scores = pd.to_numeric(frame["DMS_score"], errors="coerce")
     depth = frame["mutant"].astype(str).str.count(":") + 1
     selected = frame.loc[scores.notna() & depth.eq(1), ["mutant", "DMS_score"]].copy()
-    selected["mutation_codes"] = selected.pop("mutant").astype(str).str.replace(
-        ":", "/", regex=False
+    selected["mutation_codes"] = (
+        selected.pop("mutant").astype(str).str.replace(":", "/", regex=False)
     )
     selected["DMS_score"] = pd.to_numeric(selected["DMS_score"], errors="raise")
     selected["goi_amino_mutations"] = 1
@@ -264,4 +266,7 @@ def iter_eligible_assays(
         for assay_id in eligible_ids:
             metadata = reference.loc[assay_id]
             filename = str(metadata["DMS_filename"])
-            yield canonicalize_assay(read_assay_member(archive, members[filename]), metadata), metadata
+            yield (
+                canonicalize_assay(read_assay_member(archive, members[filename]), metadata),
+                metadata,
+            )
