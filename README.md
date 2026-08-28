@@ -18,6 +18,9 @@ variants measured across 24 conditions at NIST's Living Measurement Systems Foun
 5. Is model confidence calibrated when the biological distribution shifts?
 6. Does the random-versus-unseen-position gap replicate across independent proteins?
 7. How do supervised baselines compare with audited zero-shot model scores?
+8. Do modern supervised models, conformal intervals, and top-variant rankings survive structured
+   unseen-position splits?
+9. Can models or model-selection rules transfer to proteins absent from training?
 
 ## Main result
 
@@ -85,6 +88,47 @@ below ESM-2 650M at unseen positions (0.351 versus 0.420). Because ESM scores ar
 fit to assay labels, their random-to-position change describes subset composition rather than the
 training-shift penalty measured for supervised models.
 
+## Structured-shift extension
+
+The expanded study audits ProteinGym's mutation-level out-of-fold predictions for three modern
+supervised baselines and evaluates them under the official random, modulo-position, and
+contiguous-position protocols. All 585 assay-by-split files pass one-to-one mutation joins,
+prediction completeness, and experimental-score agreement checks.
+
+| Official supervised model | Random | Modulo position | Contiguous position |
+| --- | ---: | ---: | ---: |
+| ESM-1v embedding probe | 0.667 | 0.549 | 0.507 |
+| ProteinNPT | 0.776 | 0.630 | 0.584 |
+| **Kermut** | **0.785** | **0.672** | **0.633** |
+
+This changes the earlier interpretation: the supervised-to-zero-shot reversal is a failure of the
+simple additive baseline, not a general property of strong supervised models. Kermut remains above
+the fixed ESM-2 650M score under the two structured unseen-position protocols.
+
+A separately fitted local ESM-2 8M residue probe reaches 0.688 on random variants, 0.400 on randomly
+grouped unseen positions, 0.407 on modulo positions, and 0.317 on contiguous positions. Standard
+80% split-conformal coverage falls from 0.801 on random variants to 0.607 and 0.564 on random and
+contiguous unseen positions. Distance-scaled intervals raise those values to 0.760 and 0.911, but
+normalized width grows from 1.59× to 2.24× and 5.88×. The heuristic trades sharpness for coverage;
+it does not solve calibration under shift.
+
+![VariantShift structured-shift extension](docs/proteingym-extended.svg)
+
+The final two experiments change the unit of generalization:
+
+- A nonlinear pooled model trained on disjoint proteins reaches 0.537 mean within-assay Spearman on
+  169 held-out proteins, compared with 0.512 for ridge. Standard 80% intervals achieve 0.816
+  observed coverage. This is held-out-protein transfer, not held-out-family transfer.
+- A model-selection classifier predicts whether the local supervised probe will beat fixed ESM-2
+  650M scores on unseen positions. Protein-grouped out-of-fold ROC-AUC is 0.829 and accuracy is
+  0.770 across 975 decisions, versus a 0.592 majority baseline. The dominant signal is zero-shot
+  performance measured only on the labeled training partition.
+
+The full protocol, including interval, position-conditional coverage, risk-coverage, and
+top-variant selection definitions, is in
+[`docs/EXTENDED_METHODS.md`](docs/EXTENDED_METHODS.md). Audits and evaluation outputs are in
+[`results/proteingym/extended/`](results/proteingym/extended/).
+
 ## Condition transfer
 
 VariantShift also trains on each of the 20 measured assay conditions and evaluates the resulting
@@ -122,6 +166,12 @@ make proteingym-audit
 make proteingym-benchmark
 make proteingym-zero-shot
 make proteingym-figure
+make proteingym-official-supervised
+make proteingym-esm2-embeddings
+make proteingym-embedding-probe
+make proteingym-heldout-protein
+make proteingym-crossover
+make proteingym-extended-figure
 ```
 
 Every command is deterministic at the default seed. Raw data and per-variant predictions stay
@@ -193,6 +243,12 @@ src/variantshift/
   proteingym.py    # public assay ingestion and eligibility auditing
   multiprotein.py # repeated cross-protein supervised validation
   zero_shot.py     # official fixed-score join and evaluation audit
+  official_supervised.py # official ProteinNPT, Kermut, and embedding-probe OOF audit
+  esm_embeddings.py      # hash-addressed frozen ESM-2 residue cache
+  embedding_probe.py     # four-split local representation probe and calibration study
+  cross_protein.py       # held-out-protein ridge and nonlinear transfer baselines
+  crossover.py           # protein-grouped supervised-versus-zero-shot decision model
+  calibration.py         # standard, group-aware, and distance-scaled intervals
   provenance.py    # data/source/artifact integrity manifests
   visualize.py     # dependency-free shift-analysis SVG
   report.py        # standalone HTML result report
@@ -216,12 +272,14 @@ When the dataset is available locally, the same command verifies its hash as wel
 
 - The primary robustness result covers two fitted EC50 endpoints; the transfer matrix covers 20
   complete `mean_y` condition readouts rather than every raw measurement column.
-- Multi-protein validation covers 169 proteins but still evaluates models independently within
-  each assay; it does not train on one protein and transfer labels to another family.
+- Cross-protein validation holds out complete UniProt IDs, but it does not enforce sequence-family
+  separation. Related proteins may occur in different folds.
 - Repeated seeds characterize split sensitivity on this cohort rather than uncertainty across
   proteins, assays, or biological replicates.
 - Conformal coverage is guaranteed only under exchangeability; its breakdown under shift is a
   diagnostic, not a surprising violation of the method.
+- The local ESM-2 experiment is a lightweight frozen 8M-parameter representation probe, not
+  fine-tuning and not a comprehensive 2026 frontier-model comparison.
 - Aggregate performance does not establish that a model is ready to prioritize wet-lab
   experiments.
 
