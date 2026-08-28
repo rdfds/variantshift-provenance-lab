@@ -9,6 +9,7 @@ from pathlib import Path
 
 from .data import condition_columns, download_dataset, quality_filter, read_tev_dataset, summarize
 from .evaluate import DEFAULT_TARGETS, run_benchmark
+from .extended_visualize import render_extended_figure
 from .multiprotein import (
     multiprotein_gaps,
     run_multiprotein_benchmark,
@@ -16,10 +17,15 @@ from .multiprotein import (
     summarize_multiprotein_gaps,
 )
 from .multiprotein_visualize import render_multiprotein_figure
+from .official_supervised import (
+    run_official_supervised_benchmark,
+    summarize_official_supervised,
+)
 from .proteingym import (
     PROTEINGYM_ARCHIVE_URL,
     PROTEINGYM_REFERENCE_URL,
     PROTEINGYM_SCORE_ARCHIVE_URL,
+    PROTEINGYM_SUPERVISED_ARCHIVE_URL,
     PROTEINGYM_VERSION,
     EligibilityCriteria,
     audit_archive,
@@ -147,6 +153,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     pg_download.add_argument("destination", type=Path)
     pg_download.add_argument("--include-zero-shot-scores", action="store_true")
+    pg_download.add_argument("--include-supervised-scores", action="store_true")
 
     pg_audit = subparsers.add_parser(
         "proteingym-audit",
@@ -209,8 +216,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     pg_provenance.add_argument("--start-seed", type=int, default=42)
     pg_provenance.add_argument("--repeats", type=int, default=10)
+    pg_provenance.add_argument("--probe-repeats", type=int, default=5)
+    pg_provenance.add_argument("--heldout-folds", type=int, default=5)
+    pg_provenance.add_argument("--crossover-folds", type=int, default=5)
     pg_provenance.add_argument("--bootstrap-repeats", type=int, default=10_000)
     pg_provenance.add_argument("--source-revision")
+    pg_provenance.add_argument("--supervised-archive", type=Path)
+    pg_provenance.add_argument("--embedding-index", type=Path)
 
     pg_figure = subparsers.add_parser(
         "proteingym-figure",
@@ -221,6 +233,90 @@ def build_parser() -> argparse.ArgumentParser:
     pg_figure.add_argument("esm_aggregate", type=Path)
     pg_figure.add_argument(
         "--output", type=Path, default=Path("artifacts/proteingym-analysis.svg")
+    )
+
+    pg_official = subparsers.add_parser(
+        "proteingym-official-supervised",
+        help="Audit ProteinNPT, Kermut, and embedding-probe out-of-fold predictions",
+    )
+    pg_official.add_argument("source_archive", type=Path)
+    pg_official.add_argument("supervised_archive", type=Path)
+    pg_official.add_argument("reference", type=Path)
+    pg_official.add_argument("eligibility", type=Path)
+    pg_official.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym")
+    )
+    pg_official.add_argument("--bootstrap-repeats", type=int, default=10_000)
+
+    pg_embeddings = subparsers.add_parser(
+        "proteingym-esm2-embeddings",
+        help="Cache wild-type residue embeddings for a local ESM-2 probe",
+    )
+    pg_embeddings.add_argument("reference", type=Path)
+    pg_embeddings.add_argument("eligibility", type=Path)
+    pg_embeddings.add_argument("output_dir", type=Path)
+    pg_embeddings.add_argument(
+        "--model",
+        choices=("esm2_t6_8M_UR50D", "esm2_t12_35M_UR50D"),
+        default="esm2_t6_8M_UR50D",
+    )
+    pg_embeddings.add_argument("--device", choices=("cpu", "mps", "cuda"))
+
+    pg_probe = subparsers.add_parser(
+        "proteingym-embedding-probe",
+        help="Evaluate an ESM-2 residue embedding probe under four split regimes",
+    )
+    pg_probe.add_argument("archive", type=Path)
+    pg_probe.add_argument("reference", type=Path)
+    pg_probe.add_argument("eligibility", type=Path)
+    pg_probe.add_argument("embedding_index", type=Path)
+    pg_probe.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_probe.add_argument("--start-seed", type=int, default=42)
+    pg_probe.add_argument("--repeats", type=int, default=5)
+    pg_probe.add_argument("--workers", type=int, default=1)
+
+    pg_heldout = subparsers.add_parser(
+        "proteingym-heldout-protein",
+        help="Train across assays and evaluate on entirely unseen proteins",
+    )
+    pg_heldout.add_argument("source_archive", type=Path)
+    pg_heldout.add_argument("score_archive", type=Path)
+    pg_heldout.add_argument("reference", type=Path)
+    pg_heldout.add_argument("eligibility", type=Path)
+    pg_heldout.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_heldout.add_argument("--max-variants-per-assay", type=int, default=1_000)
+    pg_heldout.add_argument("--folds", type=int, default=5)
+
+    pg_crossover = subparsers.add_parser(
+        "proteingym-crossover",
+        help="Predict supervised-versus-zero-shot wins on held-out proteins",
+    )
+    pg_crossover.add_argument("source_archive", type=Path)
+    pg_crossover.add_argument("score_archive", type=Path)
+    pg_crossover.add_argument("reference", type=Path)
+    pg_crossover.add_argument("eligibility", type=Path)
+    pg_crossover.add_argument("supervised_runs", type=Path)
+    pg_crossover.add_argument("zero_shot_runs", type=Path)
+    pg_crossover.add_argument("--supervised-model", required=True)
+    pg_crossover.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_crossover.add_argument("--folds", type=int, default=5)
+
+    pg_extended_figure = subparsers.add_parser(
+        "proteingym-extended-figure",
+        help="Render the structured-shift extension summary as SVG",
+    )
+    pg_extended_figure.add_argument("official_summary", type=Path)
+    pg_extended_figure.add_argument("probe_summary", type=Path)
+    pg_extended_figure.add_argument("heldout_summary", type=Path)
+    pg_extended_figure.add_argument("crossover_summary", type=Path)
+    pg_extended_figure.add_argument(
+        "--output", type=Path, default=Path("artifacts/proteingym-extended.svg")
     )
     return parser
 
@@ -394,6 +490,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         outputs = download_proteingym(
             arguments.destination,
             include_zero_shot_scores=arguments.include_zero_shot_scores,
+            include_supervised_scores=arguments.include_supervised_scores,
         )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
@@ -527,33 +624,61 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         eligibility = pd.read_csv(arguments.eligibility)
         artifact_paths = list(dict.fromkeys([arguments.eligibility, *arguments.artifact]))
+        inputs = {
+            "substitution_assays": {
+                "path": arguments.source_archive,
+                "source": PROTEINGYM_ARCHIVE_URL,
+                "version": PROTEINGYM_VERSION,
+            },
+            "reference_index": {
+                "path": arguments.reference,
+                "source": PROTEINGYM_REFERENCE_URL,
+                "version": PROTEINGYM_VERSION,
+            },
+            "official_zero_shot_scores": {
+                "path": arguments.score_archive,
+                "source": PROTEINGYM_SCORE_ARCHIVE_URL,
+                "version": PROTEINGYM_VERSION,
+            },
+        }
+        if arguments.supervised_archive:
+            inputs["official_supervised_predictions"] = {
+                "path": arguments.supervised_archive,
+                "source": PROTEINGYM_SUPERVISED_ARCHIVE_URL,
+                "version": PROTEINGYM_VERSION,
+            }
+        if arguments.embedding_index:
+            inputs["esm2_embedding_index"] = {
+                "path": arguments.embedding_index,
+                "source": "locally cached frozen ESM-2 residue representations",
+                "version": "esm2_t6_8M_UR50D",
+            }
         manifest = build_collection_manifest(
             repository_root=Path.cwd(),
-            inputs={
-                "substitution_assays": {
-                    "path": arguments.source_archive,
-                    "source": PROTEINGYM_ARCHIVE_URL,
-                    "version": PROTEINGYM_VERSION,
-                },
-                "reference_index": {
-                    "path": arguments.reference,
-                    "source": PROTEINGYM_REFERENCE_URL,
-                    "version": PROTEINGYM_VERSION,
-                },
-                "official_zero_shot_scores": {
-                    "path": arguments.score_archive,
-                    "source": PROTEINGYM_SCORE_ARCHIVE_URL,
-                    "version": PROTEINGYM_VERSION,
-                },
-            },
+            inputs=inputs,
             protocol={
                 "cohort": "finite single substitutions",
                 "eligibility": EligibilityCriteria().to_dict(),
                 "audited_assays": len(eligibility),
                 "eligible_assays": int(eligibility["eligible"].sum()),
-                "splits": ["random_variant", "position_holdout"],
-                "start_seed": arguments.start_seed,
-                "repeats": arguments.repeats,
+                "splits": [
+                    "random_variant",
+                    "position_holdout",
+                    "modulo_position",
+                    "contiguous_position",
+                ],
+                "repeated_splits": {
+                    "additive_and_zero_shot": {
+                        "start_seed": arguments.start_seed,
+                        "repeats": arguments.repeats,
+                    },
+                    "local_embedding_probe": {
+                        "start_seed": arguments.start_seed,
+                        "repeats": arguments.probe_repeats,
+                    },
+                },
+                "heldout_protein_folds": arguments.heldout_folds,
+                "crossover_group_folds": arguments.crossover_folds,
                 "calibration_fraction": 0.2,
                 "nominal_coverage": 0.8,
                 "bootstrap_unit": "UniProt_ID",
@@ -562,6 +687,16 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "mean",
                     "biophysical_ridge",
                     "additive_ridge",
+                    "esm2_residue_ridge_probe",
+                    "ProteinNPT (official out-of-fold)",
+                    "Kermut (official out-of-fold)",
+                    "cross_protein_ridge",
+                    "cross_protein_histgb",
+                ],
+                "calibration_methods": [
+                    "standard_split",
+                    "mondrian_substitution",
+                    "position_distance_scaled",
                 ],
                 "zero_shot_models": list(DEFAULT_ESM_MODELS),
                 "zero_shot_note": (
@@ -581,6 +716,177 @@ def main(argv: Sequence[str] | None = None) -> int:
             pd.read_csv(arguments.supervised_assays),
             pd.read_csv(arguments.supervised_aggregate),
             pd.read_csv(arguments.esm_aggregate),
+            arguments.output,
+        )
+        print(output)
+        return 0
+
+    if arguments.command == "proteingym-official-supervised":
+        import pandas as pd
+
+        eligibility = pd.read_csv(arguments.eligibility)
+        runs, audit = run_official_supervised_benchmark(
+            arguments.source_archive,
+            arguments.supervised_archive,
+            arguments.reference,
+            eligibility,
+        )
+        summary = summarize_official_supervised(
+            runs, bootstrap_repeats=arguments.bootstrap_repeats
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "audit": output_dir / "official-supervised-audit.csv",
+            "runs": output_dir / "official-supervised-runs.csv",
+            "summary": output_dir / "official-supervised-summary.csv",
+        }
+        audit.to_csv(outputs["audit"], index=False)
+        runs.to_csv(outputs["runs"], index=False)
+        summary.to_csv(outputs["summary"], index=False)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-esm2-embeddings":
+        import pandas as pd
+
+        from .esm_embeddings import build_embedding_cache
+
+        index = build_embedding_cache(
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            arguments.output_dir,
+            model_name=arguments.model,
+            device=arguments.device,
+        )
+        print(
+            json.dumps(
+                {
+                    "index": str(arguments.output_dir / "index.csv"),
+                    "assays": int(index["assay_id"].nunique()),
+                    "proteins": int(index["uniprot_id"].nunique()),
+                    "distinct_sequences": int(index["sequence_sha256"].nunique()),
+                    "model": arguments.model,
+                },
+                indent=2,
+            )
+        )
+        return 0
+
+    if arguments.command == "proteingym-embedding-probe":
+        import pandas as pd
+
+        from .embedding_probe import (
+            run_embedding_probe_benchmark,
+            summarize_embedding_probe,
+            summarize_probe_risk_coverage,
+        )
+
+        metrics, risks = run_embedding_probe_benchmark(
+            arguments.archive,
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            pd.read_csv(arguments.embedding_index),
+            start_seed=arguments.start_seed,
+            repeats=arguments.repeats,
+            workers=arguments.workers,
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "runs": output_dir / "embedding-probe-runs.csv",
+            "summary": output_dir / "embedding-probe-summary.csv",
+            "risk_coverage": output_dir / "embedding-probe-risk-coverage.csv",
+            "risk_summary": output_dir / "embedding-probe-risk-summary.csv",
+        }
+        metrics.to_csv(outputs["runs"], index=False)
+        summarize_embedding_probe(metrics).to_csv(outputs["summary"], index=False)
+        risks.to_csv(outputs["risk_coverage"], index=False)
+        summarize_probe_risk_coverage(risks).to_csv(
+            outputs["risk_summary"], index=False
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-heldout-protein":
+        import pandas as pd
+
+        from .cross_protein import (
+            build_cross_protein_dataset,
+            evaluate_held_out_proteins,
+            summarize_held_out_proteins,
+            summarize_heldout_risk_coverage,
+        )
+
+        dataset = build_cross_protein_dataset(
+            arguments.source_archive,
+            arguments.score_archive,
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            max_variants_per_assay=arguments.max_variants_per_assay,
+        )
+        assays, risks, predictions = evaluate_held_out_proteins(
+            dataset, folds=arguments.folds
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "assays": output_dir / "heldout-protein-assays.csv",
+            "summary": output_dir / "heldout-protein-summary.csv",
+            "risk_coverage": output_dir / "heldout-protein-risk-coverage.csv",
+            "risk_summary": output_dir / "heldout-protein-risk-summary.csv",
+            "predictions": output_dir / "heldout-protein-predictions.csv.gz",
+        }
+        assays.to_csv(outputs["assays"], index=False)
+        summarize_held_out_proteins(assays).to_csv(outputs["summary"], index=False)
+        risks.to_csv(outputs["risk_coverage"], index=False)
+        summarize_heldout_risk_coverage(risks).to_csv(
+            outputs["risk_summary"], index=False
+        )
+        predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-crossover":
+        import pandas as pd
+
+        from .crossover import build_crossover_examples, evaluate_crossover_predictor
+
+        examples = build_crossover_examples(
+            arguments.source_archive,
+            arguments.score_archive,
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            pd.read_csv(arguments.supervised_runs),
+            pd.read_csv(arguments.zero_shot_runs),
+            supervised_model=arguments.supervised_model,
+        )
+        predictions, summary, coefficients = evaluate_crossover_predictor(
+            examples, folds=arguments.folds
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "examples": output_dir / "crossover-examples.csv",
+            "predictions": output_dir / "crossover-heldout-predictions.csv",
+            "summary": output_dir / "crossover-summary.csv",
+            "coefficients": output_dir / "crossover-logistic-coefficients.csv",
+        }
+        examples.to_csv(outputs["examples"], index=False)
+        predictions.to_csv(outputs["predictions"], index=False)
+        summary.to_csv(outputs["summary"], index=False)
+        coefficients.to_csv(outputs["coefficients"], index=False)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-extended-figure":
+        import pandas as pd
+
+        output = render_extended_figure(
+            pd.read_csv(arguments.official_summary),
+            pd.read_csv(arguments.probe_summary),
+            pd.read_csv(arguments.heldout_summary),
+            pd.read_csv(arguments.crossover_summary),
             arguments.output,
         )
         print(output)
