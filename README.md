@@ -114,11 +114,17 @@ it does not solve calibration under shift.
 
 ![VariantShift structured-shift extension](docs/proteingym-extended.svg)
 
-The final two experiments change the unit of generalization:
+The final experiments change the unit of generalization:
 
 - A nonlinear pooled model trained on disjoint proteins reaches 0.537 mean within-assay Spearman on
-  169 held-out proteins, compared with 0.512 for ridge. Standard 80% intervals achieve 0.816
-  observed coverage. This is held-out-protein transfer, not held-out-family transfer.
+  169 held-out proteins, compared with 0.512 for ridge.
+- An exhaustive MMseqs2 audit groups the same cohort into 156 sequence-family clusters at ≥30%
+  identity and ≥80% bidirectional coverage of the ProteinGym assayed segment. Ten multi-protein
+  families contain 23 proteins, and zero qualifying homology edges cross clusters. Holding out
+  complete families changes nonlinear Spearman only from 0.537 to 0.535 and ridge from 0.512 to
+  0.512; the paired changes are −0.0019 (protein-bootstrap 95% interval −0.0068 to 0.0029) and
+  +0.0002 (−0.0022 to 0.0028). Standard 80% coverage is 0.803 and 0.800. Detectable close-homolog
+  label leakage therefore does not explain the cross-protein result.
 - A model-selection classifier predicts whether the local supervised probe will beat fixed ESM-2
   650M scores on unseen positions. Protein-grouped out-of-fold ROC-AUC is 0.829 and accuracy is
   0.770 across 975 decisions, versus a 0.592 majority baseline. The dominant signal is zero-shot
@@ -160,6 +166,9 @@ variantshift condition-transfer data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 
 Run the public multi-protein study separately:
 
+The family-clustering target requires the `mmseqs` executable (`brew install mmseqs2` on macOS or
+`conda install -c bioconda mmseqs2`). Its exact version is recorded in the family audit.
+
 ```bash
 make proteingym-download
 make proteingym-audit
@@ -170,6 +179,8 @@ make proteingym-official-supervised
 make proteingym-esm2-embeddings
 make proteingym-embedding-probe
 make proteingym-heldout-protein
+make proteingym-family-clusters
+make proteingym-heldout-family
 make proteingym-crossover
 make proteingym-extended-figure
 ```
@@ -247,6 +258,7 @@ src/variantshift/
   esm_embeddings.py      # hash-addressed frozen ESM-2 residue cache
   embedding_probe.py     # four-split local representation probe and calibration study
   cross_protein.py       # held-out-protein ridge and nonlinear transfer baselines
+  family_clusters.py     # exhaustive MMseqs2 family ledger and threshold audit
   crossover.py           # protein-grouped supervised-versus-zero-shot decision model
   calibration.py         # standard, group-aware, and distance-scaled intervals
   provenance.py    # data/source/artifact integrity manifests
@@ -272,8 +284,11 @@ When the dataset is available locally, the same command verifies its hash as wel
 
 - The primary robustness result covers two fitted EC50 endpoints; the transfer matrix covers 20
   complete `mean_y` condition readouts rather than every raw measurement column.
-- Cross-protein validation holds out complete UniProt IDs, but it does not enforce sequence-family
-  separation. Related proteins may occur in different folds.
+- Sequence-family validation uses a transparent sequence rule rather than curated Pfam or
+  structure-based families. Remote homologs below 30% identity or 80% bidirectional coverage may
+  remain in different folds.
+- Fixed ESM scores are assay-label-independent features, but their pretrained models may have seen
+  related sequences; the family split isolates experimental labels rather than pretraining data.
 - Repeated seeds characterize split sensitivity on this cohort rather than uncertainty across
   proteins, assays, or biological replicates.
 - Conformal coverage is guaranteed only under exchangeability; its breakdown under shift is a

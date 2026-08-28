@@ -1,4 +1,4 @@
-.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-crossover proteingym-figure proteingym-extended-figure clean
+.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-family-clusters proteingym-heldout-family proteingym-crossover proteingym-figure proteingym-extended-figure clean
 
 DATASET := data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 PROTEINGYM_DIR := data/raw/proteingym
@@ -59,11 +59,17 @@ proteingym-embedding-probe:
 proteingym-heldout-protein:
 	variantshift proteingym-heldout-protein $(PROTEINGYM_ASSAYS) $(PROTEINGYM_SCORES) $(PROTEINGYM_REFERENCE) artifacts/proteingym/eligibility.csv --output-dir artifacts/proteingym/extended
 
+proteingym-family-clusters:
+	variantshift proteingym-family-clusters $(PROTEINGYM_REFERENCE) artifacts/proteingym/eligibility.csv --output-dir artifacts/proteingym/extended
+
+proteingym-heldout-family:
+	variantshift proteingym-heldout-family $(PROTEINGYM_ASSAYS) $(PROTEINGYM_SCORES) $(PROTEINGYM_REFERENCE) artifacts/proteingym/eligibility.csv artifacts/proteingym/extended/sequence-family-assignments.csv --protein-assays artifacts/proteingym/extended/heldout-protein-assays.csv --output-dir artifacts/proteingym/extended
+
 proteingym-crossover:
 	variantshift proteingym-crossover $(PROTEINGYM_ASSAYS) $(PROTEINGYM_SCORES) $(PROTEINGYM_REFERENCE) artifacts/proteingym/eligibility.csv artifacts/proteingym/extended/embedding-probe-runs.csv artifacts/proteingym/esm-subset-runs.csv --supervised-model esm2_residue_ridge_probe --output-dir artifacts/proteingym/extended
 
 proteingym-extended-figure:
-	variantshift proteingym-extended-figure artifacts/proteingym/extended/official-supervised-summary.csv artifacts/proteingym/extended/embedding-probe-summary.csv artifacts/proteingym/extended/heldout-protein-summary.csv artifacts/proteingym/extended/crossover-summary.csv --output artifacts/proteingym-extended.svg
+	variantshift proteingym-extended-figure artifacts/proteingym/extended/official-supervised-summary.csv artifacts/proteingym/extended/embedding-probe-summary.csv artifacts/proteingym/extended/heldout-protein-summary.csv artifacts/proteingym/extended/crossover-summary.csv --heldout-family-summary artifacts/proteingym/extended/heldout-family-summary.csv --output artifacts/proteingym-extended.svg
 
 proteingym-figure:
 	variantshift proteingym-figure artifacts/proteingym/assay-summary.csv artifacts/proteingym/aggregate-summary.csv artifacts/proteingym/esm-aggregate-summary.csv --output artifacts/proteingym-analysis.svg

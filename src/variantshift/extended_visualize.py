@@ -42,6 +42,8 @@ def render_extended_figure(
     heldout: pd.DataFrame,
     crossover: pd.DataFrame,
     output: Path,
+    *,
+    heldout_family: pd.DataFrame | None = None,
 ) -> Path:
     """Render model, calibration, and transfer results in one audited figure."""
     requirements = (
@@ -79,6 +81,18 @@ def render_extended_figure(
     }
     if missing:
         raise ValueError(f"Extended figure input is missing: {', '.join(sorted(missing))}")
+    if heldout_family is not None:
+        family_missing = {
+            "model",
+            "calibration_method",
+            "mean_spearman",
+            "mean_observed_coverage",
+        }.difference(heldout_family.columns)
+        if family_missing:
+            raise ValueError(
+                "Family-held-out figure input is missing: "
+                f"{', '.join(sorted(family_missing))}"
+            )
 
     official_rows = official.loc[
         official["split"].isin(["random_variant", "contiguous_position"])
@@ -99,7 +113,7 @@ def render_extended_figure(
             f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">'
         ),
         '<title id="title">VariantShift structured-shift extension</title>',
-        '<desc id="desc">Modern supervised baselines, calibration diagnostics, held-out-protein transfer, and model-crossover prediction.</desc>',
+        '<desc id="desc">Modern supervised baselines, calibration diagnostics, sequence-family-held-out transfer, and model-crossover prediction.</desc>',
         (
             '<defs><linearGradient id="background" x1="0" y1="0" x2="1" y2="1">'
             '<stop stop-color="#071a2d"/><stop offset="1" stop-color="#08111f"/>'
@@ -138,7 +152,13 @@ def render_extended_figure(
 
     _panel(parts, 38, 410, "Modern supervised baselines", "Mean Spearman · UniProt-weighted")
     _panel(parts, 465, 410, "Intervals under shift", "Local ESM-2 probe · nominal coverage 0.80")
-    _panel(parts, 892, 390, "Cross-protein transfer", "Proteins absent from corresponding training folds")
+    _panel(
+        parts,
+        892,
+        390,
+        "Cross-family label transfer",
+        "Complete sequence-family clusters absent from training folds",
+    )
 
     model_order = (
         ("esm1v_embedding_probe", "ESM-1v probe"),
@@ -228,6 +248,13 @@ def render_extended_figure(
     heldout_standard = heldout.loc[
         heldout["calibration_method"].eq("standard_split")
     ].set_index("model")
+    family_standard = (
+        heldout_family.loc[
+            heldout_family["calibration_method"].eq("standard_split")
+        ].set_index("model")
+        if heldout_family is not None
+        else None
+    )
     heldout_models = (
         ("cross_protein_ridge", "Ridge"),
         ("cross_protein_histgb", "Nonlinear HistGB"),
@@ -235,12 +262,25 @@ def render_extended_figure(
     for index, (model, label) in enumerate(heldout_models):
         y = 300 + index * 86
         value = float(heldout_standard.loc[model, "mean_spearman"])
-        _text(parts, 920, y - 22, label, size=12, color="#cbd5e1", weight=650)
-        parts.append(
-            f'<rect x="920" y="{y - 10}" width="{value * 470:.1f}" height="18" '
-            'rx="9" fill="#5eead4"/>'
-        )
-        _text(parts, 920 + value * 470 + 8, y + 4, f"{value:.3f}", size=11)
+        _text(parts, 920, y - 27, label, size=12, color="#cbd5e1", weight=650)
+        if family_standard is None:
+            parts.append(
+                f'<rect x="920" y="{y - 10}" width="{value * 470:.1f}" height="18" '
+                'rx="9" fill="#5eead4"/>'
+            )
+            _text(parts, 920 + value * 470 + 8, y + 4, f"{value:.3f}", size=11)
+        else:
+            family_value = float(family_standard.loc[model, "mean_spearman"])
+            for offset, current, color, split_label in (
+                (-13, value, "#5eead4", "protein"),
+                (10, family_value, "#a78bfa", "family"),
+            ):
+                _text(parts, 920, y + offset + 4, split_label, size=9, color="#64748b")
+                parts.append(
+                    f'<rect x="972" y="{y + offset - 9}" width="{current * 410:.1f}" '
+                    f'height="14" rx="7" fill="{color}"/>'
+                )
+                _text(parts, 978 + current * 410, y + offset + 3, f"{current:.3f}", size=9)
     logistic = crossover.loc[crossover["model"].eq("logistic")].iloc[0]
     _text(parts, 920, 466, "Crossover predictor", size=12, color="#cbd5e1", weight=650)
     for index, (label, value, color) in enumerate(
@@ -261,7 +301,7 @@ def render_extended_figure(
         parts,
         48,
         698,
-        "Official models use ProteinGym out-of-fold predictions · local intervals are empirical under shift · held-out-protein is not held-out-family transfer",
+        "Official models use ProteinGym out-of-fold predictions · family proxy: MMseqs2 ≥30% identity and ≥80% bidirectional coverage",
         size=11,
         color="#64748b",
     )

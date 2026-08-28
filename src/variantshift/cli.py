@@ -218,6 +218,9 @@ def build_parser() -> argparse.ArgumentParser:
     pg_provenance.add_argument("--repeats", type=int, default=10)
     pg_provenance.add_argument("--probe-repeats", type=int, default=5)
     pg_provenance.add_argument("--heldout-folds", type=int, default=5)
+    pg_provenance.add_argument("--family-folds", type=int, default=5)
+    pg_provenance.add_argument("--family-identity-threshold", type=float, default=0.30)
+    pg_provenance.add_argument("--family-coverage-threshold", type=float, default=0.80)
     pg_provenance.add_argument("--crossover-folds", type=int, default=5)
     pg_provenance.add_argument("--bootstrap-repeats", type=int, default=10_000)
     pg_provenance.add_argument("--source-revision")
@@ -291,6 +294,39 @@ def build_parser() -> argparse.ArgumentParser:
     pg_heldout.add_argument("--max-variants-per-assay", type=int, default=1_000)
     pg_heldout.add_argument("--folds", type=int, default=5)
 
+    pg_family_clusters = subparsers.add_parser(
+        "proteingym-family-clusters",
+        help="Cluster eligible proteins by exhaustive assayed-sequence homology",
+    )
+    pg_family_clusters.add_argument("reference", type=Path)
+    pg_family_clusters.add_argument("eligibility", type=Path)
+    pg_family_clusters.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_family_clusters.add_argument("--identity-threshold", type=float, default=0.30)
+    pg_family_clusters.add_argument("--coverage-threshold", type=float, default=0.80)
+    pg_family_clusters.add_argument("--search-identity-floor", type=float, default=0.15)
+    pg_family_clusters.add_argument("--search-coverage-floor", type=float, default=0.50)
+    pg_family_clusters.add_argument("--mmseqs-binary", default="mmseqs")
+    pg_family_clusters.add_argument("--threads", type=int, default=8)
+
+    pg_heldout_family = subparsers.add_parser(
+        "proteingym-heldout-family",
+        help="Evaluate with complete sequence-family clusters absent from training",
+    )
+    pg_heldout_family.add_argument("source_archive", type=Path)
+    pg_heldout_family.add_argument("score_archive", type=Path)
+    pg_heldout_family.add_argument("reference", type=Path)
+    pg_heldout_family.add_argument("eligibility", type=Path)
+    pg_heldout_family.add_argument("family_assignments", type=Path)
+    pg_heldout_family.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_heldout_family.add_argument("--max-variants-per-assay", type=int, default=1_000)
+    pg_heldout_family.add_argument("--folds", type=int, default=5)
+    pg_heldout_family.add_argument("--protein-assays", type=Path)
+    pg_heldout_family.add_argument("--bootstrap-repeats", type=int, default=10_000)
+
     pg_crossover = subparsers.add_parser(
         "proteingym-crossover",
         help="Predict supervised-versus-zero-shot wins on held-out proteins",
@@ -315,6 +351,7 @@ def build_parser() -> argparse.ArgumentParser:
     pg_extended_figure.add_argument("probe_summary", type=Path)
     pg_extended_figure.add_argument("heldout_summary", type=Path)
     pg_extended_figure.add_argument("crossover_summary", type=Path)
+    pg_extended_figure.add_argument("--heldout-family-summary", type=Path)
     pg_extended_figure.add_argument(
         "--output", type=Path, default=Path("artifacts/proteingym-extended.svg")
     )
@@ -678,6 +715,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                     },
                 },
                 "heldout_protein_folds": arguments.heldout_folds,
+                "heldout_sequence_family": {
+                    "folds": arguments.family_folds,
+                    "minimum_sequence_identity": arguments.family_identity_threshold,
+                    "minimum_bidirectional_coverage": arguments.family_coverage_threshold,
+                    "sequence_scope": "ProteinGym MSA_start:MSA_end assayed segment",
+                    "clustering": "MMseqs2 exhaustive all-versus-all connected components",
+                },
                 "crossover_group_folds": arguments.crossover_folds,
                 "calibration_fraction": 0.2,
                 "nominal_coverage": 0.8,
@@ -847,6 +891,85 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
+    if arguments.command == "proteingym-family-clusters":
+        import pandas as pd
+
+        from .family_clusters import build_sequence_family_clusters
+
+        result = build_sequence_family_clusters(
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            identity_threshold=arguments.identity_threshold,
+            coverage_threshold=arguments.coverage_threshold,
+            search_identity_floor=arguments.search_identity_floor,
+            search_coverage_floor=arguments.search_coverage_floor,
+            binary=arguments.mmseqs_binary,
+            threads=arguments.threads,
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "assignments": output_dir / "sequence-family-assignments.csv",
+            "alignments": output_dir / "sequence-family-alignments.csv",
+            "sensitivity": output_dir / "sequence-family-sensitivity.csv",
+            "audit": output_dir / "sequence-family-audit.csv",
+        }
+        result.assignments.to_csv(outputs["assignments"], index=False)
+        result.alignments.to_csv(outputs["alignments"], index=False)
+        result.sensitivity.to_csv(outputs["sensitivity"], index=False)
+        result.audit.to_csv(outputs["audit"], index=False)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-heldout-family":
+        import pandas as pd
+
+        from .cross_protein import (
+            build_cross_protein_dataset,
+            compare_holdout_protocols,
+            evaluate_held_out_families,
+            summarize_held_out_proteins,
+            summarize_heldout_risk_coverage,
+        )
+
+        dataset = build_cross_protein_dataset(
+            arguments.source_archive,
+            arguments.score_archive,
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            max_variants_per_assay=arguments.max_variants_per_assay,
+        )
+        assays, risks, predictions = evaluate_held_out_families(
+            dataset,
+            pd.read_csv(arguments.family_assignments),
+            folds=arguments.folds,
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "assays": output_dir / "heldout-family-assays.csv",
+            "summary": output_dir / "heldout-family-summary.csv",
+            "risk_coverage": output_dir / "heldout-family-risk-coverage.csv",
+            "risk_summary": output_dir / "heldout-family-risk-summary.csv",
+            "predictions": output_dir / "heldout-family-predictions.csv.gz",
+        }
+        assays.to_csv(outputs["assays"], index=False)
+        summarize_held_out_proteins(assays).to_csv(outputs["summary"], index=False)
+        risks.to_csv(outputs["risk_coverage"], index=False)
+        summarize_heldout_risk_coverage(risks).to_csv(
+            outputs["risk_summary"], index=False
+        )
+        predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
+        if arguments.protein_assays:
+            outputs["comparison"] = output_dir / "heldout-family-comparison.csv"
+            compare_holdout_protocols(
+                pd.read_csv(arguments.protein_assays),
+                assays,
+                bootstrap_repeats=arguments.bootstrap_repeats,
+            ).to_csv(outputs["comparison"], index=False)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
     if arguments.command == "proteingym-crossover":
         import pandas as pd
 
@@ -888,6 +1011,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             pd.read_csv(arguments.heldout_summary),
             pd.read_csv(arguments.crossover_summary),
             arguments.output,
+            heldout_family=(
+                pd.read_csv(arguments.heldout_family_summary)
+                if arguments.heldout_family_summary
+                else None
+            ),
         )
         print(output)
         return 0
