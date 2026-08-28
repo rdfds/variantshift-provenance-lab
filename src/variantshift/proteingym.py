@@ -21,6 +21,12 @@ PROTEINGYM_SCORE_ARCHIVE_NAME = "zero_shot_substitutions_scores.zip"
 PROTEINGYM_SCORE_ARCHIVE_URL = (
     f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_SCORE_ARCHIVE_NAME}"
 )
+PROTEINGYM_SUPERVISED_ARCHIVE_NAME = "DMS_supervised_substitutions_scores.zip"
+PROTEINGYM_SUPERVISED_ARCHIVE_URL = (
+    f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_SUPERVISED_ARCHIVE_NAME}"
+)
+PROTEINGYM_CV_FOLDS_NAME = "cv_folds_singles_substitutions.zip"
+PROTEINGYM_CV_FOLDS_URL = f"{PROTEINGYM_BASE_URL}/{PROTEINGYM_CV_FOLDS_NAME}"
 PROTEINGYM_REFERENCE_URL = (
     "https://raw.githubusercontent.com/OATML-Markslab/ProteinGym/"
     "main/reference_files/DMS_substitutions.csv"
@@ -57,7 +63,7 @@ def _download(url: str, destination: Path) -> Path:
     if destination.is_file():
         return destination
     partial = destination.with_suffix(destination.suffix + ".partial")
-    request = Request(url, headers={"User-Agent": "VariantShift/0.2 research client"})
+    request = Request(url, headers={"User-Agent": "VariantShift/0.3 research client"})
     with urlopen(request, timeout=120) as response, partial.open("wb") as target:
         while chunk := response.read(1024 * 1024):
             target.write(chunk)
@@ -69,6 +75,7 @@ def download_proteingym(
     destination: Path,
     *,
     include_zero_shot_scores: bool = False,
+    include_supervised_scores: bool = False,
 ) -> dict[str, Path]:
     """Download public ProteinGym inputs, optionally including the 1.9 GB score archive."""
     destination = Path(destination)
@@ -80,6 +87,15 @@ def download_proteingym(
         outputs["zero_shot_scores"] = _download(
             PROTEINGYM_SCORE_ARCHIVE_URL,
             destination / PROTEINGYM_SCORE_ARCHIVE_NAME,
+        )
+    if include_supervised_scores:
+        outputs["supervised_scores"] = _download(
+            PROTEINGYM_SUPERVISED_ARCHIVE_URL,
+            destination / PROTEINGYM_SUPERVISED_ARCHIVE_NAME,
+        )
+        outputs["cv_folds"] = _download(
+            PROTEINGYM_CV_FOLDS_URL,
+            destination / PROTEINGYM_CV_FOLDS_NAME,
         )
     return outputs
 
