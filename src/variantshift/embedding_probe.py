@@ -336,3 +336,40 @@ def summarize_embedding_probe(metrics: pd.DataFrame) -> pd.DataFrame:
         for row in summary.itertuples(index=False)
     ]
     return summary.sort_values(["split", "calibration_method"]).reset_index(drop=True)
+
+
+def summarize_probe_risk_coverage(risks: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate selective risk without treating assays or seeds as independent proteins."""
+    assay_level = risks.groupby(
+        [
+            "model",
+            "calibration_method",
+            "split",
+            "retained_fraction",
+            "uniprot_id",
+            "assay_id",
+        ],
+        as_index=False,
+    ).agg(normalized_mae=("normalized_mae", "mean"))
+    protein_level = assay_level.groupby(
+        [
+            "model",
+            "calibration_method",
+            "split",
+            "retained_fraction",
+            "uniprot_id",
+        ],
+        as_index=False,
+    ).agg(normalized_mae=("normalized_mae", "mean"))
+    return (
+        protein_level.groupby(
+            ["model", "calibration_method", "split", "retained_fraction"],
+            as_index=False,
+        )
+        .agg(
+            n_proteins=("uniprot_id", "nunique"),
+            mean_normalized_mae=("normalized_mae", "mean"),
+        )
+        .sort_values(["split", "calibration_method", "retained_fraction"])
+        .reset_index(drop=True)
+    )
