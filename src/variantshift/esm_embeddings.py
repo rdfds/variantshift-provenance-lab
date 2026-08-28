@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 
 from .proteingym import read_reference_index
+from .provenance import sha256_file
 
 ESM2_MODELS = {
     "esm2_t6_8M_UR50D": ("esm2_t6_8M_UR50D", 6),
@@ -163,6 +164,8 @@ def build_embedding_cache(
                 "model": model_name,
                 "embedding_dimension": dimensions[digest],
                 "embedding_path": str(paths[digest]),
+                "embedding_bytes": paths[digest].stat().st_size,
+                "embedding_sha256": sha256_file(paths[digest]),
                 "device": device,
             }
         )
