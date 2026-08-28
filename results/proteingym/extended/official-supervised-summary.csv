@@ -1,0 +1,10 @@
+model,split,evaluation_type,n_assays,n_proteins,mean_spearman,spearman_ci_low,spearman_ci_high,mean_top_recall,bootstrap_unit,bootstrap_repeats
+esm1v_embedding_probe,contiguous_position,official_out_of_fold_predictions,195,169,0.5071396338939164,0.47882264377604894,0.5348240174703089,0.22969206634734177,UniProt_ID,10000
+esm1v_embedding_probe,modulo_position,official_out_of_fold_predictions,195,169,0.5494531766939522,0.521412560476485,0.5767593760226543,0.26222147653533906,UniProt_ID,10000
+esm1v_embedding_probe,random_variant,official_out_of_fold_predictions,195,169,0.667423614901634,0.6339999374263304,0.6998982998834953,0.35512819919155697,UniProt_ID,10000
+kermut,contiguous_position,official_out_of_fold_predictions,195,169,0.6328712694212085,0.6098151710363056,0.6555742248125352,0.2798160472473535,UniProt_ID,10000
+kermut,modulo_position,official_out_of_fold_predictions,195,169,0.6720557870769469,0.6496859772718693,0.69360122798582,0.3236788310813679,UniProt_ID,10000
+kermut,random_variant,official_out_of_fold_predictions,195,169,0.784903402796533,0.7616025344888273,0.8073906513733441,0.4621685114699531,UniProt_ID,10000
+protein_npt,contiguous_position,official_out_of_fold_predictions,195,169,0.5838484880996753,0.5604432314082286,0.6064305732840345,0.28052414875393705,UniProt_ID,10000
+protein_npt,modulo_position,official_out_of_fold_predictions,195,169,0.6296970868588906,0.6070908180692589,0.6515055797741798,0.3160931996296413,UniProt_ID,10000
+protein_npt,random_variant,official_out_of_fold_predictions,195,169,0.7761582144440651,0.750478449827434,0.8017860103873704,0.47637966321652775,UniProt_ID,10000
