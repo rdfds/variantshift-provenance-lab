@@ -89,6 +89,91 @@ def position_holdout_split(
     )
 
 
+def modulo_position_split(
+    frame: pd.DataFrame,
+    *,
+    fold: int,
+    n_folds: int = 5,
+) -> VariantSplit:
+    """Hold out positions assigned by their one-indexed residue number modulo ``n_folds``.
+
+    This mirrors ProteinGym's deterministic modulo protocol. Variants spanning train and
+    test positions are excluded, although the ProteinGym single-substitution benchmark has
+    no such bridging variants.
+    """
+    if n_folds < 2:
+        raise ValueError("Modulo splitting requires at least two folds")
+    if not 0 <= fold < n_folds:
+        raise ValueError("Fold must lie in [0, n_folds)")
+    position_sets = frame["mutation_codes"].map(mutated_positions)
+    all_positions = sorted(set().union(*position_sets))
+    held_out = frozenset(position for position in all_positions if position % n_folds == fold)
+    if not held_out or held_out == frozenset(all_positions):
+        raise ValueError("Modulo split produced an empty train or test position set")
+    return _split_on_held_out_positions(
+        position_sets,
+        held_out,
+        name="modulo_position",
+        metadata={"fold": fold, "n_folds": n_folds},
+    )
+
+
+def contiguous_position_split(
+    frame: pd.DataFrame,
+    *,
+    fold: int,
+    n_folds: int = 5,
+) -> VariantSplit:
+    """Hold out one contiguous block of observed residue positions.
+
+    Blocks contain nearly equal numbers of *observed mutated positions*, matching the
+    ProteinGym definition rather than dividing the full sequence coordinate range.
+    """
+    if n_folds < 2:
+        raise ValueError("Contiguous splitting requires at least two folds")
+    if not 0 <= fold < n_folds:
+        raise ValueError("Fold must lie in [0, n_folds)")
+    position_sets = frame["mutation_codes"].map(mutated_positions)
+    all_positions = np.asarray(sorted(set().union(*position_sets)), dtype=int)
+    if len(all_positions) < n_folds:
+        raise ValueError("Contiguous splitting requires at least one position per fold")
+    held_out = frozenset(map(int, np.array_split(all_positions, n_folds)[fold]))
+    return _split_on_held_out_positions(
+        position_sets,
+        held_out,
+        name="contiguous_position",
+        metadata={"fold": fold, "n_folds": n_folds},
+    )
+
+
+def _split_on_held_out_positions(
+    position_sets: pd.Series,
+    held_out: frozenset[int],
+    *,
+    name: str,
+    metadata: dict[str, Any],
+) -> VariantSplit:
+    train: list[int] = []
+    test: list[int] = []
+    excluded: list[int] = []
+    for index, positions in enumerate(position_sets):
+        if not positions:
+            excluded.append(index)
+        elif positions.issubset(held_out):
+            test.append(index)
+        elif positions.isdisjoint(held_out):
+            train.append(index)
+        else:
+            excluded.append(index)
+    return VariantSplit(
+        name=name,
+        train_indices=np.asarray(train, dtype=int),
+        test_indices=np.asarray(test, dtype=int),
+        excluded_indices=np.asarray(excluded, dtype=int),
+        metadata={**metadata, "held_out_positions": sorted(held_out)},
+    )
+
+
 def mutation_depth_split(
     frame: pd.DataFrame,
     *,
