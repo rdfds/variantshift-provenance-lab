@@ -7,7 +7,7 @@ import json
 import platform
 import subprocess
 import sys
-from importlib.metadata import version
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any
 
@@ -40,7 +40,7 @@ def _relative(path: Path, root: Path) -> str:
 
 
 def environment_versions() -> dict[str, str]:
-    return {
+    versions = {
         "python": platform.python_version(),
         "platform": platform.platform(),
         "numpy": version("numpy"),
@@ -49,6 +49,12 @@ def environment_versions() -> dict[str, str]:
         "scipy": version("scipy"),
         "variantshift": version("variantshift"),
     }
+    for package, key in (("torch", "torch"), ("fair-esm", "fair_esm")):
+        try:
+            versions[key] = version(package)
+        except PackageNotFoundError:
+            continue
+    return versions
 
 
 def build_run_manifest(
