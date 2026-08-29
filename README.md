@@ -88,6 +88,15 @@ below ESM-2 650M at unseen positions (0.351 versus 0.420). Because ESM scores ar
 fit to assay labels, their random-to-position change describes subset composition rather than the
 training-shift penalty measured for supervised models.
 
+### Paired modern zero-shot landscape
+
+A second audit compares twelve score columns from the official v1.3 archive on exactly the same
+variants in every assay. All 195 assays have 100% common finite coverage. VenusREM leads with 0.542
+protein-balanced mean Spearman, followed by ProSST at 0.528, S3F-MSA at 0.508, and ESM3 at 0.505.
+VenusREM exceeds ESM-2 650M by 0.114; the simultaneous 95% paired-bootstrap interval across all
+eleven baseline comparisons is 0.081–0.146. It ranks first in every one of 10,000 protein-bootstrap
+resamples.
+
 ## Structured-shift extension
 
 The expanded study audits ProteinGym's mutation-level out-of-fold predictions for three modern
@@ -114,26 +123,38 @@ it does not solve calibration under shift.
 
 ![VariantShift structured-shift extension](docs/proteingym-extended.svg)
 
+![VariantShift independent validation](docs/proteingym-research.svg)
+
 The final experiments change the unit of generalization:
 
-- A nonlinear pooled model trained on disjoint proteins reaches 0.537 mean within-assay Spearman on
-  169 held-out proteins, compared with 0.512 for ridge.
+- Across five shuffled group partitions, a nonlinear pooled model trained on disjoint proteins
+  reaches 0.539 mean within-assay Spearman on 169 held-out proteins, compared with 0.515 for ridge.
 - An exhaustive MMseqs2 audit groups the same cohort into 156 sequence-family clusters at ≥30%
   identity and ≥80% bidirectional coverage of the ProteinGym assayed segment. Ten multi-protein
   families contain 23 proteins, and zero qualifying homology edges cross clusters. Holding out
-  complete families changes nonlinear Spearman only from 0.537 to 0.535 and ridge from 0.512 to
-  0.512; the paired changes are −0.0019 (protein-bootstrap 95% interval −0.0068 to 0.0029) and
-  +0.0002 (−0.0022 to 0.0028). Standard 80% coverage is 0.803 and 0.800. Detectable close-homolog
-  label leakage therefore does not explain the cross-protein result.
+  complete families changes nonlinear Spearman from 0.539 to 0.533 and ridge from 0.515 to 0.513.
+  Component-bootstrap paired changes are −0.0060 (95% interval −0.0124 to −0.0011) and −0.0021
+  (−0.0038 to −0.0007). Detectable close-homolog label transfer therefore has a small but resolved
+  effect on the pooled estimate.
 - A second exhaustive audit searches all 169 official ProteinGym AlphaFold structures with exact
   Foldseek TM-align scoring. Sequence components are joined only when both directed alignments have
   ≥0.95 Foldseek homology probability, ≥0.50 TM-score, and ≥80% coverage. The combined graph has
   148 families, 14 multi-protein families covering 35 proteins, a largest component of five, and
   zero qualifying cross-component pairs. Holding out these complete sequence-and-structure families
-  yields 0.533 Spearman for nonlinear regression and 0.511 for ridge. Relative to sequence-only
-  family holdout, paired changes are −0.0021 (95% interval −0.0077 to 0.0029) and −0.0015
-  (−0.0042 to 0.0012). Remote structure matches detected by this protocol therefore do not explain
-  the transfer result either.
+  yields 0.532 Spearman for nonlinear regression and 0.512 for ridge. Relative to sequence-only
+  family holdout, component-bootstrap paired changes are −0.00045 (95% interval −0.00315 to
+  0.00235) and −0.00016 (−0.00121 to 0.00082). The declared remote structure matches do not resolve
+  an additional transfer penalty.
+- A current InterPro 109.0 / Pfam 38.2 audit maps the assayed region for 183 of 195 assays and unions
+  components through exact Pfam families. The primary graph contains 132 families; holding them out
+  yields 0.533 Spearman for nonlinear regression and 0.513 for ridge. Relative to sequence/structure
+  holdout, paired changes are +0.00068 (−0.00147 to 0.00294) and +0.00024 (−0.00078 to 0.00137).
+  A broader 97-component Pfam-clan stress test reaches 0.531 and 0.512, again without a resolved
+  additional penalty.
+- Under the strict exact-Pfam split, removing all fixed ESM score features reduces nonlinear
+  Spearman from 0.533 to 0.360 (paired family-bootstrap difference 0.174, 95% interval 0.151–0.195)
+  and ridge from 0.513 to 0.318 (difference 0.195, interval 0.169–0.219). The pooled transfer result
+  is therefore driven primarily by pretrained score priors, not assay-label learning alone.
 - A model-selection classifier predicts whether the local supervised probe will beat fixed ESM-2
   650M scores on unseen positions. Protein-grouped out-of-fold ROC-AUC is 0.829 and accuracy is
   0.770 across 975 decisions, versus a 0.592 majority baseline. The dominant signal is zero-shot
@@ -143,6 +164,8 @@ The full protocol, including interval, position-conditional coverage, risk-cover
 top-variant selection definitions, is in
 [`docs/EXTENDED_METHODS.md`](docs/EXTENDED_METHODS.md). Audits and evaluation outputs are in
 [`results/proteingym/extended/`](results/proteingym/extended/).
+The paper-style result narrative and publication boundaries are in
+[`docs/RESEARCH_REPORT.md`](docs/RESEARCH_REPORT.md).
 
 ## Condition transfer
 
@@ -204,6 +227,14 @@ make proteingym-research-figure
 
 Every command is deterministic at the default seed. Raw data and per-variant predictions stay
 outside version control.
+
+The exact public UniProt/InterPro responses used by the curated-family audit are frozen in the
+results directory. To reconstruct the cache without consulting the live APIs:
+
+```bash
+tar -xzf results/proteingym/extended/curated-api-snapshot.tar.gz -C data/raw/proteingym
+make proteingym-curated-families
+```
 
 ## Evaluation regimes
 
@@ -310,6 +341,9 @@ When the dataset is available locally, the same command verifies its hash as wel
   MMseqs2, reciprocal Foldseek, and mapped Pfam snapshots may still remain in different folds.
 - Fixed ESM scores are assay-label-independent features, but their pretrained models may have seen
   related sequences; the family split isolates experimental labels rather than pretraining data.
+- The pooled cross-family models are primarily powered by those fixed pretrained scores. The
+  mutation-only ablation is reported to prevent their performance from being misread as de novo
+  transfer from assay labels.
 - Repeated seeds characterize split sensitivity on this cohort rather than uncertainty across
   proteins, assays, or biological replicates.
 - Conformal coverage is guaranteed only under exchangeability; its breakdown under shift is a

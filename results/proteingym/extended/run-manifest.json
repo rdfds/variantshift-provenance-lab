@@ -1,12 +1,44 @@
 {
   "artifacts": {
+    "docs/RESEARCH_REPORT.md": {
+      "bytes": 9621,
+      "sha256": "74e1bfeb307eda3df1112d707fef5645df78d6f146c3bceeab6fabcc091c836c"
+    },
     "docs/proteingym-extended.svg": {
       "bytes": 13914,
-      "sha256": "45548607c0e3874013896cf97107c5a8e8f0223c996bee6bb549e71e27b64547"
+      "sha256": "04e16ae9e049094b1488b0518053f60b526e5a798000239ac30c6e554e25071e"
+    },
+    "docs/proteingym-research.svg": {
+      "bytes": 16140,
+      "sha256": "90817c0f29523442e67285f8661e9120b8b0f57bfaed5412993736d81173df3d"
     },
     "results/proteingym/eligibility.csv": {
       "bytes": 33676,
       "sha256": "28e92d1bdb8665ea2b7b01dae989c14e45059681b96e31e01a2ecf55ab5925e8"
+    },
+    "results/proteingym/extended/clan-sensitivity/heldout-clan-vs-pfam-family.csv": {
+      "bytes": 5818,
+      "sha256": "baafff1905b9994e2fd1824c2825e1039eb666fe5bc6c210320f15016d16b925"
+    },
+    "results/proteingym/extended/clan-sensitivity/heldout-curated-family-assays.csv": {
+      "bytes": 1564930,
+      "sha256": "befba309b18c9856dd6bebe5780bd9467c2e0e9c4484a5f141e4c21b15886f37"
+    },
+    "results/proteingym/extended/clan-sensitivity/heldout-curated-family-repeat-estimates.csv": {
+      "bytes": 3349,
+      "sha256": "099056360548f87eba5d13d89a2f745d294d21c6d80a347aaa0a16cc082ee2a4"
+    },
+    "results/proteingym/extended/clan-sensitivity/heldout-curated-family-risk-coverage.csv": {
+      "bytes": 2608041,
+      "sha256": "6cd71354914c3ce2932dd9d9287a5f6ed79654bb1a60f325df151f33a883c73a"
+    },
+    "results/proteingym/extended/clan-sensitivity/heldout-curated-family-risk-summary.csv": {
+      "bytes": 1131,
+      "sha256": "1f3fcad9aaa1fd19a3963deda7cde5e05f7e417d6e5a2d12ed79f250d561895e"
+    },
+    "results/proteingym/extended/clan-sensitivity/heldout-curated-family-summary.csv": {
+      "bytes": 796,
+      "sha256": "f9a81d928d45d0b86381c83d760037aca4ba60629024e76a142b1e7d93ac53fb"
     },
     "results/proteingym/extended/crossover-examples.csv": {
       "bytes": 364164,
@@ -23,6 +55,42 @@
     "results/proteingym/extended/crossover-summary.csv": {
       "bytes": 526,
       "sha256": "9c11e5625232d7478c1516e996026ecf728de4cb14052228062628bb92adec26"
+    },
+    "results/proteingym/extended/curated-api-snapshot.tar.gz": {
+      "bytes": 985220,
+      "sha256": "994e162c57426b01411ed2e5020aebe7f82346d075ff2794ddda93bbd0b8a4b1"
+    },
+    "results/proteingym/extended/curated-clan-family-assignments.csv": {
+      "bytes": 23499,
+      "sha256": "365552323adb408e6149bea758d8247b3cbdbddaeeddbd7c1b0929d41d9e195f"
+    },
+    "results/proteingym/extended/curated-clan-family-edges.csv": {
+      "bytes": 14587,
+      "sha256": "e1dd784b58202f4cc0a46e693fced3e8e4d541d0f41618fe99a3c3516eb0cbd6"
+    },
+    "results/proteingym/extended/curated-coordinate-mapping.csv": {
+      "bytes": 28526,
+      "sha256": "85ff43b702d5371c668f3529248e888c856103ba6291b564fd70d2d1d84e3e56"
+    },
+    "results/proteingym/extended/curated-family-assignments.csv": {
+      "bytes": 16457,
+      "sha256": "f36c7ce7f221182ddfffe48c646abae5cf17d58be70bd02cfee374e636edb103"
+    },
+    "results/proteingym/extended/curated-family-audit.csv": {
+      "bytes": 802,
+      "sha256": "069fa1dc67bc4c85f0b056478a03975ed8d90e1515c412174156cece6c227497"
+    },
+    "results/proteingym/extended/curated-family-edges.csv": {
+      "bytes": 4258,
+      "sha256": "4006f42df5ed3ddf026565841174cee47c241b43c18c6d2d72d7443cb1500f09"
+    },
+    "results/proteingym/extended/curated-pfam-domain-overlaps.csv": {
+      "bytes": 83880,
+      "sha256": "9d3069624e1ccbede851798ea8470880208de37c64e4eb29e77f7bd687977f09"
+    },
+    "results/proteingym/extended/curated-uniprot-mapping.csv": {
+      "bytes": 14323,
+      "sha256": "1a31e33b23b92f920b5e15abce3c0aaf1c94cfd101dd63cafdd8a50a3c3b7bad"
     },
     "results/proteingym/extended/embedding-probe-risk-coverage.csv": {
       "bytes": 8083002,
@@ -44,65 +112,145 @@
       "bytes": 56478,
       "sha256": "93ec01a434c66b156f807938fe17dbb49112f153ef9a0fedc644d32063c94671"
     },
+    "results/proteingym/extended/feature-ablation/heldout-curated-family-assays.csv": {
+      "bytes": 3463355,
+      "sha256": "54bcd64771bda92acc5763ba149b72debb955d82f188746dc91d83964e9371c6"
+    },
+    "results/proteingym/extended/feature-ablation/heldout-curated-family-repeat-estimates.csv": {
+      "bytes": 6830,
+      "sha256": "e0f664fffe199419161c89e54dd7afd4aaad92184562e4ab30d941759182ca64"
+    },
+    "results/proteingym/extended/feature-ablation/heldout-curated-family-risk-coverage.csv": {
+      "bytes": 6509613,
+      "sha256": "85ac3153e5a38b3f84bb91bfed94946ef91f662774fd0f8b5187c9250416ade9"
+    },
+    "results/proteingym/extended/feature-ablation/heldout-curated-family-risk-summary.csv": {
+      "bytes": 2421,
+      "sha256": "2de1a00464a701b171c5805710c6ed3ea4080e02327d6f03a0503dc54b62c837"
+    },
+    "results/proteingym/extended/feature-ablation/heldout-curated-family-summary.csv": {
+      "bytes": 1477,
+      "sha256": "1904b2d0d01fda67cbdadf16da0b4b1ce6bbc10f3460c97859249d6a28cd7bce"
+    },
+    "results/proteingym/extended/feature-ablation/heldout-curated-feature-ablation.csv": {
+      "bytes": 2351,
+      "sha256": "a4e6cdb5d44af39d90e0efcfcecac63785636da1c283318fdd3b9ec3f849d591"
+    },
+    "results/proteingym/extended/heldout-curated-family-assays.csv": {
+      "bytes": 1565899,
+      "sha256": "9e555e5b3e14669767c1b8af461beda92d0593c371cc3e004ec2bcf07abb66ea"
+    },
+    "results/proteingym/extended/heldout-curated-family-repeat-estimates.csv": {
+      "bytes": 3356,
+      "sha256": "94ca0bf4e930e5785aefae33fc2d4a167a0e0f759b1c05f5947d1cbebaf84f6a"
+    },
+    "results/proteingym/extended/heldout-curated-family-risk-coverage.csv": {
+      "bytes": 2607538,
+      "sha256": "a151dec6d8110deb0c7965e0a095c8f0d489b22f220f9451b627e3c688c15b5c"
+    },
+    "results/proteingym/extended/heldout-curated-family-risk-summary.csv": {
+      "bytes": 1134,
+      "sha256": "51912c6c70055daf2f9cffc4c8077f02de422364f1687c34fe6211922cac3782"
+    },
+    "results/proteingym/extended/heldout-curated-family-summary.csv": {
+      "bytes": 792,
+      "sha256": "710560c9d354f44284bbc82f02538209c80ab0e1413757eb2ff5478d12433c11"
+    },
+    "results/proteingym/extended/heldout-curated-family-vs-protein.csv": {
+      "bytes": 5974,
+      "sha256": "d8c6d7e2d823cb75f2c61336c705c9b313724298c30d62191a408ac7b840b102"
+    },
+    "results/proteingym/extended/heldout-curated-family-vs-structure-family.csv": {
+      "bytes": 6013,
+      "sha256": "0117eca05d64acd94dfdca5696a19c8918e98026f56e54a8d238403a212b3139"
+    },
     "results/proteingym/extended/heldout-family-assays.csv": {
-      "bytes": 296981,
-      "sha256": "23ada3ddb2ae427dfc84a48f8d622219efa98e7cd85395464db95c7cfb68a729"
+      "bytes": 1489844,
+      "sha256": "ff9b7e51a84ca61d260868c471f75d7ae59ca860ddae5f6815c5a6e3e74f47a8"
     },
     "results/proteingym/extended/heldout-family-comparison.csv": {
-      "bytes": 5361,
-      "sha256": "cc3ddb706996e8ba054fed0bc95dba81048298904bf5e467e81c713b2d84c3f5"
+      "bytes": 5780,
+      "sha256": "e7bbf6bfe467cbe9d5cef452c7e7aadb0344593a523f09ffb476ee9b36830f8c"
+    },
+    "results/proteingym/extended/heldout-family-repeat-estimates.csv": {
+      "bytes": 3357,
+      "sha256": "441610444c7f64ff88f3944deb478a74bb82354236aba1f92af3428c346d0f40"
     },
     "results/proteingym/extended/heldout-family-risk-coverage.csv": {
-      "bytes": 509065,
-      "sha256": "7c5625883b28da92a9bc64faea554a0135499fecdea0ee317ca8571296de253b"
+      "bytes": 2575625,
+      "sha256": "82f13a95675427057eb121544844f65e7dc7041691f0c234a30864393052c787"
     },
     "results/proteingym/extended/heldout-family-risk-summary.csv": {
-      "bytes": 1136,
-      "sha256": "fd7048e8d6d2284f2d26d1e41e44d0d10a5cb5a997f2e1a67b195b893b1a32cb"
+      "bytes": 1137,
+      "sha256": "0f87cfb779a9c61f13d40f16aa794a2b3d839c223cd451711a303f0d3284abde"
     },
     "results/proteingym/extended/heldout-family-summary.csv": {
-      "bytes": 793,
-      "sha256": "de015d08964c53e24a855b0dd794e0aec7e6e71fcc7ced330abed15d698e878e"
+      "bytes": 788,
+      "sha256": "07a9798858d9774ef1c0a326cd0a2d08052f22da8cec48861d908cd998c3eb87"
     },
     "results/proteingym/extended/heldout-protein-assays.csv": {
-      "bytes": 270499,
-      "sha256": "3c07a96b52cd1acf681586173a03afbe6fbe4f3a946195562fd1fa26f760afcd"
+      "bytes": 1359142,
+      "sha256": "0518b6edd8ffbb4630b6f9bc478d66d84591a2c907c681e056a75a14f2e03335"
+    },
+    "results/proteingym/extended/heldout-protein-repeat-estimates.csv": {
+      "bytes": 3344,
+      "sha256": "57404ff8b53d87e95dd2ae50e81985130257d9470a1ac9943081b9292d75b062"
     },
     "results/proteingym/extended/heldout-protein-risk-coverage.csv": {
-      "bytes": 459200,
-      "sha256": "f3157143dba6237ef70e88636a180b596dfe98402684a980095375ab4425e99d"
+      "bytes": 2326655,
+      "sha256": "e8f8fd3eadb59b490904bf3bdcd09a375300b68254036f80d739a6036ce0e178"
     },
     "results/proteingym/extended/heldout-protein-risk-summary.csv": {
-      "bytes": 1138,
-      "sha256": "a70a7f313821a8e8a782cea790c3c137c123d10b8b3ac16c86280f92c824df45"
+      "bytes": 1133,
+      "sha256": "de5a168a136b195bc6c10f446fdab604cda5d500dd70b6985788d9da6615410e"
     },
     "results/proteingym/extended/heldout-protein-summary.csv": {
-      "bytes": 792,
-      "sha256": "1b4a65e2283744265a598e23882f42b973db88890e88900a01e4cf4c1a071917"
+      "bytes": 785,
+      "sha256": "236d1dcd74429ecd9186a3cf6fd873b0a944eda448dab840b4cd0229054116c1"
     },
     "results/proteingym/extended/heldout-structure-family-assays.csv": {
-      "bytes": 305320,
-      "sha256": "125c0d0b970f02cc47e5dac018d5720514b28fe0ddffa63c771a6d2d5ea9bacc"
+      "bytes": 1530475,
+      "sha256": "61b7170b8754edfc79533a1a253f0dcfc95ef08879582cbd8a09e9628c7d31a4"
+    },
+    "results/proteingym/extended/heldout-structure-family-repeat-estimates.csv": {
+      "bytes": 3356,
+      "sha256": "daa552e00a21d10d5b5752be6f4e45bf9e4a7a87656bc4a568bc1526bf34014e"
     },
     "results/proteingym/extended/heldout-structure-family-risk-coverage.csv": {
-      "bytes": 512882,
-      "sha256": "f82601911329765d2d4614c3b5fcaeb5344b8947e69a01cde485cfeb1d5072a5"
+      "bytes": 2591362,
+      "sha256": "d4f75da57af6708ca00a777cfb28340c29aeae7a01a1dab0c8ebd2e4a237cb7c"
     },
     "results/proteingym/extended/heldout-structure-family-risk-summary.csv": {
-      "bytes": 1136,
-      "sha256": "8077d62401e5ef141c9bd3b5540ed83a51051bc695dea0102344e82860710dd6"
+      "bytes": 1137,
+      "sha256": "29b10490fdfbb70b3afc7311a234bcaad5a7d860329b3fed868782b28a90bc51"
     },
     "results/proteingym/extended/heldout-structure-family-summary.csv": {
-      "bytes": 795,
-      "sha256": "9c20dea0c46b056e49d5ac450ab6116f0d1ac72124818a9ab2915849ebedbd03"
+      "bytes": 793,
+      "sha256": "a60b6e1b08ac02e672e09c2e3efdaa7ddcc56176c0535a5092128c3f8fb82596"
     },
     "results/proteingym/extended/heldout-structure-family-vs-protein.csv": {
-      "bytes": 5430,
-      "sha256": "eb1fb5dcb3d32a68049052f45c23b74b60c044bc038392a36f25f17b0dc3888c"
+      "bytes": 6026,
+      "sha256": "c02f1924886c94a4ed9f13948789a891b2ca55c25c4155951f7a4068298fc1f0"
     },
     "results/proteingym/extended/heldout-structure-family-vs-sequence-family.csv": {
-      "bytes": 5462,
-      "sha256": "dd4d2c9e88567912e49d7692e5f4b7552deb86780d66b3a2fb36171b27f3bc46"
+      "bytes": 6032,
+      "sha256": "6ce14ee37035754c2f131b13bfede1a639dd50b65c4c6ac9fc4ddceaa205aa56"
+    },
+    "results/proteingym/extended/modern-zero-shot-audit.csv": {
+      "bytes": 16896,
+      "sha256": "9b2879f897de063db368ca7f136b1cc097d94ea143f2b088baf17e89c85df80e"
+    },
+    "results/proteingym/extended/modern-zero-shot-runs.csv": {
+      "bytes": 691591,
+      "sha256": "40876683653dece264539cc26a1b4ed80ec6aa786ce7f1f44c5c492411958d32"
+    },
+    "results/proteingym/extended/modern-zero-shot-summary.csv": {
+      "bytes": 3615,
+      "sha256": "4d4bd738e4784d06c7bba5ce229a72844f230604dbd2540c796541e5262450ef"
+    },
+    "results/proteingym/extended/modern-zero-shot-vs-esm2.csv": {
+      "bytes": 3190,
+      "sha256": "6f61b5fe04eadf30caef94a3ae843c557db89e3ecbf481f51ba99f8ec3ab5657"
     },
     "results/proteingym/extended/official-supervised-audit.csv": {
       "bytes": 61299,
@@ -162,7 +310,7 @@
     "scikit_learn": "1.9.0",
     "scipy": "1.17.1",
     "torch": "2.2.2",
-    "variantshift": "0.2.0"
+    "variantshift": "0.4.0"
   },
   "inputs": {
     "esm2_embedding_index": {
@@ -211,7 +359,10 @@
   "protocol": {
     "audited_assays": 217,
     "bootstrap_repeats": 10000,
-    "bootstrap_unit": "UniProt_ID",
+    "bootstrap_units": {
+      "holdout_protocol_comparisons": "alternative family_id",
+      "model_summaries": "UniProt_ID"
+    },
     "calibration_fraction": 0.2,
     "calibration_methods": [
       "standard_split",
@@ -226,7 +377,20 @@
       "min_unique_scores": 10
     },
     "eligible_assays": 195,
-    "heldout_protein_folds": 5,
+    "heldout_curated_family": {
+      "clustering": "sequence/structure graph union current InterPro Pfam components",
+      "folds": 5,
+      "minimum_coordinate_mapping_coverage": 0.8,
+      "minimum_domain_overlap_fraction_of_shorter": 0.5,
+      "primary_grouping": "Pfam family",
+      "repeats": 5,
+      "sensitivity_grouping": "Pfam clan"
+    },
+    "heldout_grouped_evaluation": {
+      "folds": 5,
+      "repeats": 5,
+      "start_seed": 2026
+    },
     "heldout_sequence_family": {
       "clustering": "MMseqs2 exhaustive all-versus-all connected components",
       "folds": 5,
@@ -269,19 +433,71 @@
       "cross_protein_ridge",
       "cross_protein_histgb"
     ],
-    "zero_shot_models": [
-      "ESM1v_ensemble",
-      "ESM2_8M",
-      "ESM2_35M",
-      "ESM2_150M",
-      "ESM2_650M",
-      "ESM2_3B",
-      "ESM2_15B"
-    ],
+    "zero_shot_models": {
+      "esm_scaling_analysis": [
+        "ESM1v_ensemble",
+        "ESM2_8M",
+        "ESM2_35M",
+        "ESM2_150M",
+        "ESM2_650M",
+        "ESM2_3B",
+        "ESM2_15B"
+      ],
+      "modern_paired_landscape": {
+        "esm2_650m": {
+          "modality": "single_sequence",
+          "score_column": "ESM2_650M"
+        },
+        "esm3_open": {
+          "modality": "sequence_structure_function",
+          "score_column": "ESM3"
+        },
+        "esmc_600m": {
+          "modality": "single_sequence",
+          "score_column": "ESMC-600M"
+        },
+        "gemme": {
+          "modality": "msa",
+          "score_column": "GEMME"
+        },
+        "progen3_3b": {
+          "modality": "single_sequence",
+          "score_column": "Progen3_3b"
+        },
+        "prosst_2048": {
+          "modality": "sequence_structure",
+          "score_column": "ProSST-2048"
+        },
+        "s3f_msa": {
+          "modality": "structure_msa",
+          "score_column": "S3F_MSA"
+        },
+        "saprot_650m": {
+          "modality": "sequence_structure",
+          "score_column": "SaProt_650M_AF2"
+        },
+        "siterm": {
+          "modality": "structure_msa",
+          "score_column": "SiteRM"
+        },
+        "tranception_l": {
+          "modality": "msa_retrieval",
+          "score_column": "Tranception_L"
+        },
+        "venusrem": {
+          "modality": "structure_msa",
+          "score_column": "VenusREM"
+        },
+        "xtrimopglm_100b": {
+          "modality": "single_sequence",
+          "score_column": "xTrimoPGLM-100B-int4"
+        }
+      }
+    },
     "zero_shot_note": "Fixed-score subset differences are not supervised generalization gaps"
   },
   "schema_version": 2,
   "source": {
-    "git_commit": "a0cf2aa"
+    "git_commit": "165526256b1306842002456221d31593de1d4ea7"
   }
 }

@@ -168,6 +168,10 @@ The fourth protocol adds an independently maintained annotation layer:
    97 components and a largest component of 24 proteins; because clans can span remote folds, it is
    a stress test rather than the primary biological-family definition.
 
+Every UniProt and InterPro response used by this analysis is cached by request and released as one
+compressed public-data snapshot. Its artifact hash and the database versions in the API response
+are recorded in the run manifest, so the curated layer does not depend on future live API state.
+
 Each outer protocol is repeated five times with independently shuffled group assignments. Within
 every outer training fold, a further 20% of complete groups are reserved for calibration.
 Consequently, fit, calibration, and test proteins—or complete family components—are disjoint.
