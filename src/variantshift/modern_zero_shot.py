@@ -201,6 +201,8 @@ def compare_modern_to_baseline(
         delta = values - baseline_values
         bootstrap = bootstrap_deltas[:, model_index]
         point_delta = float(delta.mean())
+        simultaneous_low = 0.0 if model == baseline else point_delta - simultaneous_radius
+        simultaneous_high = 0.0 if model == baseline else point_delta + simultaneous_radius
         rows.append(
             {
                 "model": model,
@@ -211,8 +213,8 @@ def compare_modern_to_baseline(
                 "mean_paired_delta": point_delta,
                 "delta_ci_low": float(np.quantile(bootstrap, 0.025)),
                 "delta_ci_high": float(np.quantile(bootstrap, 0.975)),
-                "simultaneous_delta_ci_low": point_delta - simultaneous_radius,
-                "simultaneous_delta_ci_high": point_delta + simultaneous_radius,
+                "simultaneous_delta_ci_low": simultaneous_low,
+                "simultaneous_delta_ci_high": simultaneous_high,
                 "probability_delta_above_zero": float(np.mean(bootstrap > 0)),
                 "bootstrap_probability_best": float(np.mean(best_indices == model_index)),
                 "mean_bootstrap_rank": float(bootstrap_ranks[:, model_index].mean()),
