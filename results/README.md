@@ -30,7 +30,7 @@ ProteinGym v1.3 validation. Raw and per-variant source measurements are not stor
 | [`proteingym/esm-aggregate-summary.csv`](proteingym/esm-aggregate-summary.csv) | UniProt-aggregated zero-shot results and bootstrap intervals |
 | [`proteingym/run-manifest.json`](proteingym/run-manifest.json) | Three input hashes, protocol, environment, source revision, and result hashes |
 
-The modern-baseline, calibration, selection, held-out-protein, and crossover extension is indexed
+The modern-baseline, calibration, selection, sequence-family transfer, and crossover extension is indexed
 separately in [`proteingym/extended/`](proteingym/extended/). It omits the 8.7 MB per-variant
 held-out prediction file; that file is reproducible locally and contains no aggregate claim used in
 the README.

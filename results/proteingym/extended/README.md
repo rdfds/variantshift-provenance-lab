@@ -2,7 +2,7 @@
 
 These files extend the 195-assay, 169-protein ProteinGym v1.3 cohort with modern supervised
 baselines, four structured split protocols, interval diagnostics, top-variant selection metrics,
-held-out-protein transfer, and protein-grouped model-selection evaluation. The complete protocol
+held-out-protein and sequence-family transfer, and protein-grouped model-selection evaluation. The complete protocol
 and its limits are in [`docs/EXTENDED_METHODS.md`](../../../docs/EXTENDED_METHODS.md).
 
 ## Findings
@@ -23,6 +23,12 @@ and its limits are in [`docs/EXTENDED_METHODS.md`](../../../docs/EXTENDED_METHOD
 - With complete UniProt IDs absent from training, pooled nonlinear regression reaches 0.537 mean
   within-assay Spearman versus 0.512 for ridge. Standard intervals achieve 0.816 and 0.810
   observed coverage respectively.
+- MMseqs2 groups the 169 proteins into 156 components at ≥30% identity and ≥80% bidirectional
+  assayed-segment coverage. Ten multi-protein families cover 23 proteins; zero qualifying alignments
+  cross components. Holding out complete components yields 0.535 Spearman for nonlinear regression
+  and 0.512 for ridge, with standard coverage of 0.803 and 0.800. The close-homolog safeguard does
+  not materially change the performance estimate: paired Spearman changes are −0.0019 (95% interval
+  −0.0068 to 0.0029) and +0.0002 (−0.0022 to 0.0028), using 10,000 UniProt bootstrap replicates.
 - A logistic classifier predicts local-supervised versus ESM-2-650M wins with protein-grouped
   out-of-fold ROC-AUC 0.829 and 0.770 accuracy across 975 split-specific decisions. The majority
   baseline is 0.592. These repeated splits are not independent biological replicates.
@@ -43,12 +49,21 @@ and its limits are in [`docs/EXTENDED_METHODS.md`](../../../docs/EXTENDED_METHOD
 | `heldout-protein-risk-coverage.csv` | Selective-risk results for the cross-protein models |
 | `heldout-protein-summary.csv` | Protein-weighted transfer and interval summary |
 | `heldout-protein-risk-summary.csv` | Protein-weighted selective-risk summary |
+| `sequence-family-assignments.csv` | Deterministic UniProt-to-family mapping and component membership |
+| `sequence-family-alignments.csv` | Exhaustive MMseqs2 alignment ledger with family-edge and cross-cluster audit fields |
+| `sequence-family-sensitivity.csv` | Cluster composition across identity and coverage thresholds |
+| `sequence-family-audit.csv` | MMseqs2 version, primary thresholds, cohort counts, and leakage result |
+| `heldout-family-assays.csv` | Assay-level results with complete sequence-family components held out |
+| `heldout-family-risk-coverage.csv` | Selective-risk results under family holdout |
+| `heldout-family-summary.csv` | Protein-weighted family-transfer and interval summary |
+| `heldout-family-risk-summary.csv` | Protein-weighted selective-risk summary under family holdout |
+| `heldout-family-comparison.csv` | Paired protein-bootstrap comparison against ordinary protein holdout |
 | `crossover-examples.csv` | Training-only assay properties and paired supervised/zero-shot outcomes |
 | `crossover-heldout-predictions.csv` | UniProt-grouped out-of-fold classifier probabilities |
 | `crossover-summary.csv` | Classifier discrimination, calibration, and baseline comparisons |
 | `crossover-logistic-coefficients.csv` | Standardized logistic coefficients for interpretation |
 | `run-manifest.json` | Public-input, embedding-index, source-revision, environment, and artifact hashes |
 
-The per-variant held-out-protein prediction table and frozen ESM-2 embedding matrices are generated
+The per-variant held-out-protein and held-out-family prediction tables and frozen ESM-2 embedding matrices are generated
 locally and excluded from version control. None of the aggregate claims above requires committing
 source measurements or embeddings.

@@ -95,21 +95,34 @@ the standardized gain in experimental score among selected variants, and regret 
 measured variant. These metrics test the protein-engineering use case more directly than a global
 rank correlation alone.
 
-## Held-out-protein transfer
+## Held-out-protein and sequence-family transfer
 
 Cross-protein models receive only assay-independent mutation descriptors and fixed ProteinGym
 ESM-1v/ESM-2 scores. Targets are converted to within-assay percentile ranks so unrelated assay
 units cannot leak into the pooled objective. At most 1,000 variants per assay are chosen by a
 deterministic, label-independent ordering, and sample weights give every assay equal total weight.
 
-The outer five-fold split groups by UniProt ID. Within each outer training fold, a further 20% of
-proteins are reserved for calibration. Consequently, fitted proteins, calibration proteins, and test
-proteins are disjoint. Evaluated models are a standardized ridge regression and a histogram gradient
-boosting regressor. The latter supplies a nonlinear baseline without claiming equivalence to a
-protein language model.
+Two outer five-fold protocols are reported. The first groups by UniProt ID. The second groups by a
+deterministic sequence-family proxy constructed as follows:
 
-This is held-out-protein transfer, not held-out-family transfer. Homologous proteins may occur in
-different folds; that limitation must accompany every result.
+1. Extract the exact ProteinGym `MSA_start:MSA_end` assayed segment for every eligible assay.
+2. Run MMseqs2 exhaustive all-versus-all search with a broad 15% identity and 50% bidirectional
+   coverage floor, retaining the complete alignment audit.
+3. Add a homology edge at ≥30% sequence identity and ≥80% coverage of both sequences.
+4. Form connected components across UniProt IDs. If any assay segment connects two proteins, all
+   assays for both proteins inherit the same family ID.
+5. Verify that zero qualifying alignments cross the resulting components. Report cluster
+   composition at 20%, 25%, 30%, and 40% identity and at 50% and 80% coverage.
+
+Within each outer training fold, a further 20% of groups are reserved for calibration. Consequently,
+fit, calibration, and test proteins—or complete sequence-family components—are disjoint. Evaluated
+models are a standardized ridge regression and a histogram gradient boosting regressor. The latter
+supplies a nonlinear baseline without claiming equivalence to a protein language model.
+
+The family rule is an explicit sequence-homology proxy, not a curated Pfam or structure-based family
+definition. Remote homologs below the selected thresholds may remain separated. Fixed ESM scores
+may also encode information from related pretraining sequences; the evaluation isolates assay labels,
+not language-model pretraining corpora.
 
 ## Supervised-versus-zero-shot crossover
 
@@ -132,6 +145,8 @@ treated as independent biological replicates.
 - Marginal coverage can conceal poor coverage for individual positions, which is why both are
   reported.
 - A model-selection classifier can be useful without identifying a causal mechanism.
+- The sequence-family split excludes directly detected homologous assay segments at the declared
+  thresholds; it does not prove the absence of all evolutionary or structural relationships.
 - No result establishes clinical validity or prospective protein-design success.
 
 ## Primary sources
@@ -142,3 +157,6 @@ treated as independent biological replicates.
 - [Kermut paper](https://proceedings.neurips.cc/paper_files/paper/2024/file/34547650b2ca69d91f3b3c3ae8b21962-Paper-Conference.pdf)
 - [Kermut reference implementation](https://github.com/petergroth/kermut)
 - [ESM reference implementation](https://github.com/facebookresearch/esm)
+- [MMseqs2 reference implementation](https://github.com/soedinglab/MMseqs2)
+- [MMseqs2 user guide](https://mmseqs.com/latest/userguide.pdf)
+- [MMseqs2 methods paper](https://www.nature.com/articles/nbt.3988)

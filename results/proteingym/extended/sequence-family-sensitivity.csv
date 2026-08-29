@@ -1,0 +1,9 @@
+identity_threshold,coverage_threshold,n_families,singleton_families,multi_protein_families,proteins_in_multi_protein_families,largest_family_size
+0.2,0.5,152,138,14,31,3
+0.25,0.5,153,140,13,29,3
+0.3,0.5,154,142,12,27,3
+0.4,0.5,159,151,8,18,3
+0.2,0.8,156,146,10,23,3
+0.25,0.8,156,146,10,23,3
+0.3,0.8,156,146,10,23,3
+0.4,0.8,159,151,8,18,3
