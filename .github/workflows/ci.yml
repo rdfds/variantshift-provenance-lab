@@ -30,3 +30,4 @@ jobs:
         run: |
           variantshift verify-artifacts results/run-manifest.json
           variantshift verify-artifacts results/proteingym/run-manifest.json
+          variantshift verify-artifacts results/proteingym/extended/run-manifest.json
