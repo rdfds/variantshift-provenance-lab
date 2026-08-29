@@ -674,3 +674,98 @@ def compare_holdout_protocols(
         .sort_values(["model", "calibration_method", "metric"])
         .reset_index(drop=True)
     )
+
+
+def compare_feature_ablation(
+    assays: pd.DataFrame,
+    *,
+    bootstrap_repeats: int = 10_000,
+    seed: int = 2026,
+) -> pd.DataFrame:
+    """Compare full and mutation-only transfer with a paired family bootstrap."""
+    if bootstrap_repeats < 100:
+        raise ValueError("At least 100 bootstrap repetitions are required")
+    required = {
+        "model",
+        "calibration_method",
+        "assay_id",
+        "uniprot_id",
+        "family_id",
+        "repeat",
+        "spearman",
+        "top_recall",
+        "selection_gain_sd",
+    }
+    if missing := required.difference(assays.columns):
+        raise ValueError(f"Feature-ablation results are missing: {', '.join(sorted(missing))}")
+    keys = [
+        "calibration_method",
+        "assay_id",
+        "uniprot_id",
+        "family_id",
+        "repeat",
+    ]
+    metrics = ["spearman", "top_recall", "selection_gain_sd"]
+    pairs = (
+        ("cross_protein_ridge", "cross_protein_ridge_mutation_only"),
+        ("cross_protein_histgb", "cross_protein_histgb_mutation_only"),
+    )
+    rng = np.random.default_rng(seed)
+    rows = []
+    for full_model, mutation_model in pairs:
+        full = assays.loc[assays["model"].eq(full_model), keys + metrics]
+        mutation = assays.loc[assays["model"].eq(mutation_model), keys + metrics]
+        paired = full.merge(
+            mutation,
+            on=keys,
+            how="inner",
+            validate="one_to_one",
+            suffixes=("_full", "_mutation_only"),
+        )
+        if len(paired) != len(full) or len(paired) != len(mutation):
+            raise ValueError(f"Feature sets are not exactly paired for {full_model}")
+        for calibration, group in paired.groupby("calibration_method", sort=True):
+            aggregate = {
+                "family_id": "first",
+                **{f"{metric}_full": "mean" for metric in metrics},
+                **{f"{metric}_mutation_only": "mean" for metric in metrics},
+            }
+            protein = group.groupby("uniprot_id", as_index=False).agg(aggregate)
+            if group.groupby("uniprot_id")["family_id"].nunique().max() != 1:
+                raise ValueError("Each protein must have one curated family")
+            family_codes, families = pd.factorize(protein["family_id"], sort=True)
+            family_count = len(families)
+            sampled = rng.integers(0, family_count, size=(bootstrap_repeats, family_count))
+            counts = np.bincount(family_codes).astype(float)
+            sampled_counts = counts[sampled].sum(axis=1)
+            for metric in metrics:
+                full_values = protein[f"{metric}_full"].to_numpy(dtype=float)
+                mutation_values = protein[f"{metric}_mutation_only"].to_numpy(dtype=float)
+                full_sums = np.bincount(family_codes, weights=full_values)
+                mutation_sums = np.bincount(family_codes, weights=mutation_values)
+                full_bootstrap = full_sums[sampled].sum(axis=1) / sampled_counts
+                mutation_bootstrap = mutation_sums[sampled].sum(axis=1) / sampled_counts
+                delta_bootstrap = full_bootstrap - mutation_bootstrap
+                rows.append(
+                    {
+                        "model": full_model,
+                        "calibration_method": calibration,
+                        "metric": metric,
+                        "n_proteins": len(protein),
+                        "n_families": family_count,
+                        "full_feature_mean": float(full_values.mean()),
+                        "mutation_only_mean": float(mutation_values.mean()),
+                        "full_minus_mutation_only": float(
+                            full_values.mean() - mutation_values.mean()
+                        ),
+                        "delta_ci_low": float(np.quantile(delta_bootstrap, 0.025)),
+                        "delta_ci_high": float(np.quantile(delta_bootstrap, 0.975)),
+                        "bootstrap_unit": "curated_family_id",
+                        "bootstrap_repeats": bootstrap_repeats,
+                    }
+                )
+    return (
+        pd.DataFrame(rows)
+        .sort_values(["model", "calibration_method", "metric"])
+        .reset_index(drop=True)
+    )

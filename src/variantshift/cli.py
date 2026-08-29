@@ -1259,6 +1259,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         from .cross_protein import (
             build_cross_protein_dataset,
+            compare_feature_ablation,
             compare_holdout_protocols,
             evaluate_held_out_families,
             summarize_grouped_repeat_estimates,
@@ -1298,6 +1299,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         risks.to_csv(outputs["risk_coverage"], index=False)
         summarize_heldout_risk_coverage(risks).to_csv(outputs["risk_summary"], index=False)
         predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
+        if arguments.feature_ablation:
+            outputs["feature_ablation"] = output_dir / "heldout-curated-feature-ablation.csv"
+            compare_feature_ablation(assays, bootstrap_repeats=arguments.bootstrap_repeats).to_csv(
+                outputs["feature_ablation"], index=False
+            )
         if arguments.protein_assays:
             outputs["protein_comparison"] = output_dir / "heldout-curated-family-vs-protein.csv"
             compare_holdout_protocols(
