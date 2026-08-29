@@ -270,7 +270,16 @@ def _fetch_domains(
         f"{INTERPRO_API}/", cache_dir / "interpro" / "api-metadata.json"
     )
     metadata = json.loads(metadata_payload)
-    interpro_version = str(metadata_headers.get("interpro-version", "unknown"))
+    version_path = cache_dir / "interpro" / "api-version.json"
+    if "interpro-version" in metadata_headers:
+        interpro_version = str(metadata_headers["interpro-version"])
+        version_path.write_text(
+            json.dumps({"interpro_version": interpro_version}, sort_keys=True) + "\n"
+        )
+    elif version_path.is_file():
+        interpro_version = str(json.loads(version_path.read_text())["interpro_version"])
+    else:
+        interpro_version = "unknown"
     pfam_version = str(metadata["databases"]["pfam"]["version"])
     return domains, interpro_version, pfam_version
 
