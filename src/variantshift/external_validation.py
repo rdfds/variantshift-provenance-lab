@@ -28,6 +28,7 @@ import pandas as pd
 
 from .metrics import top_selection_metrics
 from .proteingym import read_reference_index
+from .provenance import sha256_file
 
 MAVEDB_API_BASE = "https://api.mavedb.org/api/v1"
 PROTEINGYM_V13_RELEASE = date(2025, 4, 28)
@@ -673,3 +674,365 @@ def download_selected_score_tables(protocol_path: Path, output_dir: Path) -> dic
     ledger_path.write_text(json.dumps(ledger, indent=2, sort_keys=True) + "\n")
     outputs["ledger"] = ledger_path
     return outputs
+
+
+def _protein_identifier(metadata: dict[str, object]) -> str:
+    target = metadata["targetGenes"][0]
+    mapped_gene = target.get("mappedHgncName")
+    if mapped_gene:
+        return str(mapped_gene)
+    target_name = str(target.get("name") or "").strip()
+    if target_name:
+        # Domain constructs such as "TSC2 RapGAP" must share the TSC2 protein unit with the
+        # corresponding full-length target.  This rule uses frozen target metadata only.
+        return target_name.split()[0]
+    mapped_uniprot = target.get("uniprotIdFromMappedMetadata")
+    if mapped_uniprot:
+        return str(mapped_uniprot)
+    for external in target.get("externalIdentifiers") or []:
+        identifier = external.get("identifier") or {}
+        if identifier.get("dbName") == "UniProt" and identifier.get("identifier"):
+            return str(identifier["identifier"])
+    return str(metadata["urn"])
+
+
+def build_external_outcome_cohort(
+    protocol_dir: Path,
+    score_dir: Path,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Apply the frozen outcome rules and retain every assay-level audit decision."""
+    protocol_dir = Path(protocol_dir)
+    score_dir = Path(score_dir)
+    protocol = json.loads((protocol_dir / "protocol.json").read_text())
+    outcome_rules = protocol["outcome_rules"]
+    registry = pd.read_csv(protocol_dir / "metadata-registry.csv")
+    selected = registry.loc[registry["selected_for_external_validation"].astype(bool)].copy()
+    details = {
+        str(metadata["urn"]): metadata
+        for metadata in json.loads((protocol_dir / "detailed-metadata-snapshot.json").read_text())
+    }
+    cohort_frames: list[pd.DataFrame] = []
+    audit_rows: list[dict[str, object]] = []
+    for row in selected.itertuples(index=False):
+        urn = str(row.urn)
+        metadata = details[urn]
+        target = _target_record(metadata)
+        if target is None:
+            raise RuntimeError(f"Frozen MaveDB target is no longer parseable: {urn}")
+        score_path = score_dir / f"{urn.replace(':', '_')}.csv"
+        if not score_path.is_file():
+            raise FileNotFoundError(f"Frozen score table is missing: {score_path}")
+        frozen_orientation = None
+        if pd.notna(row.metadata_orientation):
+            frozen_orientation = int(row.metadata_orientation)
+        canonical, audit = canonicalize_mavedb_scores(
+            pd.read_csv(score_path, low_memory=False),
+            sequence=str(target["target_sequence"]),
+            orientation=frozen_orientation,
+            minimum_controls=int(outcome_rules["minimum_orientation_controls"]),
+        )
+        exclusion_reasons = []
+        if audit["single_missense_variants"] < int(
+            outcome_rules["minimum_single_missense_variants"]
+        ):
+            exclusion_reasons.append("too_few_single_missense_variants")
+        if audit["mutated_positions"] < int(outcome_rules["minimum_mutated_positions"]):
+            exclusion_reasons.append("too_few_mutated_positions")
+        if audit["unique_scores"] < int(outcome_rules["minimum_unique_scores"]):
+            exclusion_reasons.append("too_few_unique_scores")
+        if not audit["directed_analysis_eligible"]:
+            exclusion_reasons.append("score_direction_not_predeclared_or_control_identifiable")
+        eligible = not exclusion_reasons
+        audit_rows.append(
+            {
+                "urn": urn,
+                "target_name": str(row.target_name),
+                "protein_id": _protein_identifier(metadata),
+                "sequence_sha256": str(row.sequence_sha256),
+                "sequence_length": int(row.sequence_length),
+                "score_sha256": sha256_file(score_path),
+                **audit,
+                "eligible": eligible,
+                "exclusion_reasons": ";".join(exclusion_reasons),
+            }
+        )
+        if eligible:
+            canonical["urn"] = urn
+            canonical["target_name"] = str(row.target_name)
+            canonical["protein_id"] = _protein_identifier(metadata)
+            canonical["sequence_sha256"] = str(row.sequence_sha256)
+            cohort_frames.append(canonical)
+    audit_frame = pd.DataFrame(audit_rows).sort_values("urn").reset_index(drop=True)
+    if not cohort_frames:
+        raise RuntimeError("No frozen MaveDB assays passed the predeclared outcome rules")
+    cohort = pd.concat(cohort_frames, ignore_index=True).sort_values(
+        ["urn", "position", "mutation_codes"]
+    )
+    if cohort[["urn", "mutation_codes"]].duplicated().any():
+        raise RuntimeError("Canonical external cohort contains duplicate assay variants")
+    if cohort["DMS_score"].isna().any():
+        raise RuntimeError("Directed external cohort contains unoriented scores")
+    return cohort.reset_index(drop=True), audit_frame
+
+
+def score_external_cohort(
+    cohort: pd.DataFrame,
+    protocol_dir: Path,
+    output_dir: Path,
+    *,
+    device: str | None = None,
+    batch_size: int = 8,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Score every unique eligible sequence once under both frozen ESM-2 strategies."""
+    import esm
+    import torch
+
+    from .plm import esm2_position_log_probabilities, score_single_substitutions
+
+    protocol_dir = Path(protocol_dir)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    if device is None:
+        if torch.backends.mps.is_available():
+            device = "mps"
+        elif torch.cuda.is_available():
+            device = "cuda"
+        else:
+            device = "cpu"
+    checkpoint = Path(torch.hub.get_dir()) / "checkpoints" / "esm2_t6_8M_UR50D.pt"
+    if not checkpoint.is_file():
+        raise FileNotFoundError(f"Resolved ESM-2 checkpoint is missing: {checkpoint}")
+    details = json.loads((protocol_dir / "detailed-metadata-snapshot.json").read_text())
+    sequence_by_digest = {}
+    for metadata in details:
+        target = _target_record(metadata)
+        if target is not None:
+            sequence_by_digest[str(target["sequence_sha256"])] = str(target["target_sequence"])
+    predictions = []
+    audit_rows = []
+    for digest, sequence_frame in cohort.groupby("sequence_sha256", sort=True):
+        sequence = sequence_by_digest[str(digest)]
+        variants = sequence_frame["mutation_codes"].drop_duplicates().astype(str).tolist()
+        positions = sorted(sequence_frame["position"].astype(int).unique())
+        strategy_scores = {}
+        for strategy in ("masked-marginal", "wild-type-marginal"):
+            probabilities, token_index = esm2_position_log_probabilities(
+                sequence,
+                positions,
+                model_name="esm2_t6_8M_UR50D",
+                strategy=strategy,
+                device=device,
+                batch_size=batch_size,
+                window_size=1022,
+                overlap=256,
+            )
+            scored = score_single_substitutions(probabilities, variants, token_index)
+            strategy_scores[strategy] = scored.rename(
+                columns={"prediction": strategy.replace("-", "_")}
+            )
+        merged = strategy_scores["masked-marginal"].merge(
+            strategy_scores["wild-type-marginal"],
+            on="mutation_codes",
+            how="inner",
+            validate="one_to_one",
+        )
+        if len(merged) != len(variants):
+            raise RuntimeError(f"ESM strategy join lost variants for sequence {digest}")
+        merged["sequence_sha256"] = str(digest)
+        predictions.append(merged)
+        audit_rows.append(
+            {
+                "sequence_sha256": str(digest),
+                "sequence_length": len(sequence),
+                "mutated_positions": len(positions),
+                "unique_variants": len(variants),
+                "model": "esm2_t6_8M_UR50D",
+                "strategies": "masked-marginal;wild-type-marginal",
+                "window_size": 1022,
+                "window_overlap": 256,
+                "batch_size": batch_size,
+                "device": device,
+                "torch_version": torch.__version__,
+                "fair_esm_version": esm.__version__,
+                "checkpoint_bytes": checkpoint.stat().st_size,
+                "checkpoint_sha256": sha256_file(checkpoint),
+            }
+        )
+    prediction_frame = pd.concat(predictions, ignore_index=True)
+    if prediction_frame[["sequence_sha256", "mutation_codes"]].duplicated().any():
+        raise RuntimeError("External ESM cache contains duplicate sequence variants")
+    return prediction_frame, pd.DataFrame(audit_rows)
+
+
+def _fixed_rank_position_bootstrap(
+    frame: pd.DataFrame,
+    *,
+    prediction_column: str,
+    repeats: int,
+    rng: np.random.Generator,
+) -> np.ndarray:
+    observed_rank = frame["DMS_score"].rank(method="average").to_numpy(dtype=float)
+    predicted_rank = frame[prediction_column].rank(method="average").to_numpy(dtype=float)
+    positions = frame["position"].to_numpy(dtype=int)
+    unique_positions, inverse = np.unique(positions, return_inverse=True)
+    count = np.bincount(inverse).astype(float)
+    sum_x = np.bincount(inverse, weights=observed_rank)
+    sum_y = np.bincount(inverse, weights=predicted_rank)
+    sum_x2 = np.bincount(inverse, weights=observed_rank**2)
+    sum_y2 = np.bincount(inverse, weights=predicted_rank**2)
+    sum_xy = np.bincount(inverse, weights=observed_rank * predicted_rank)
+    output = np.empty(repeats, dtype=float)
+    chunk_size = 512
+    for start in range(0, repeats, chunk_size):
+        size = min(chunk_size, repeats - start)
+        draws = rng.integers(0, len(unique_positions), size=(size, len(unique_positions)))
+        n = count[draws].sum(axis=1)
+        sx = sum_x[draws].sum(axis=1)
+        sy = sum_y[draws].sum(axis=1)
+        sxx = sum_x2[draws].sum(axis=1) - sx**2 / n
+        syy = sum_y2[draws].sum(axis=1) - sy**2 / n
+        sxy = sum_xy[draws].sum(axis=1) - sx * sy / n
+        denominator = np.sqrt(sxx * syy)
+        output[start : start + size] = np.divide(
+            sxy,
+            denominator,
+            out=np.zeros_like(sxy),
+            where=denominator > 0,
+        )
+    return output
+
+
+def evaluate_external_cohort(
+    cohort: pd.DataFrame,
+    predictions: pd.DataFrame,
+    *,
+    bootstrap_repeats: int = 10_000,
+    bootstrap_seed: int = 2_026_0829,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Compute assay, protein-balanced, and nested position-bootstrap results."""
+    merged = cohort.merge(
+        predictions,
+        on=["sequence_sha256", "mutation_codes"],
+        how="left",
+        validate="many_to_one",
+    )
+    prediction_columns = ["masked_marginal", "wild_type_marginal"]
+    if merged[prediction_columns].isna().any().any():
+        raise RuntimeError("External predictions are incomplete after the sequence/variant join")
+    assay_rows = []
+    grouped_assays = list(merged.groupby("urn", sort=True))
+    for urn, assay in grouped_assays:
+        identity = assay.iloc[0]
+        for prediction_column in prediction_columns:
+            current = assay.rename(columns={prediction_column: "prediction"})
+            metrics = evaluate_external_predictions(current)
+            assay_rows.append(
+                {
+                    "urn": urn,
+                    "target_name": identity["target_name"],
+                    "protein_id": identity["protein_id"],
+                    "model": prediction_column,
+                    "variants": len(assay),
+                    "mutated_positions": int(assay["position"].nunique()),
+                    **metrics,
+                }
+            )
+    assay_metrics = pd.DataFrame(assay_rows)
+    metric_columns = ["spearman", "top_recall", "selection_gain_sd", "best_variant_regret_sd"]
+    protein_metrics = (
+        assay_metrics.groupby(["protein_id", "model"], as_index=False)[metric_columns]
+        .mean()
+        .sort_values(["model", "protein_id"])
+    )
+    point_summary = (
+        protein_metrics.groupby("model", as_index=False)[metric_columns]
+        .mean()
+        .rename(columns={column: f"mean_{column}" for column in metric_columns})
+    )
+
+    assay_bootstraps: dict[tuple[str, str], np.ndarray] = {}
+    for assay_index, (urn, assay) in enumerate(grouped_assays):
+        for prediction_column in prediction_columns:
+            assay_bootstraps[(str(urn), prediction_column)] = _fixed_rank_position_bootstrap(
+                assay,
+                prediction_column=prediction_column,
+                repeats=bootstrap_repeats,
+                rng=np.random.default_rng(
+                    np.random.SeedSequence([bootstrap_seed, assay_index])
+                ),
+            )
+    assays_by_protein = {
+        str(protein): sorted(group["urn"].astype(str).unique())
+        for protein, group in assay_metrics.groupby("protein_id", sort=True)
+    }
+    proteins = sorted(assays_by_protein)
+    nested_rng = np.random.default_rng(np.random.SeedSequence([bootstrap_seed, 999_999]))
+    assay_draws = {
+        protein: nested_rng.integers(
+            0,
+            len(urns),
+            size=(bootstrap_repeats, len(urns)),
+        )
+        for protein, urns in assays_by_protein.items()
+    }
+    protein_draws = nested_rng.integers(
+        0, len(proteins), size=(bootstrap_repeats, len(proteins))
+    )
+    nested: dict[str, np.ndarray] = {}
+    for model in prediction_columns:
+        protein_values = np.empty((len(proteins), bootstrap_repeats), dtype=float)
+        for protein_index, protein in enumerate(proteins):
+            urns = assays_by_protein[protein]
+            stacked = np.vstack([assay_bootstraps[(urn, model)] for urn in urns]).T
+            protein_values[protein_index] = np.take_along_axis(
+                stacked, assay_draws[protein], axis=1
+            ).mean(axis=1)
+        nested[model] = np.take_along_axis(protein_values.T, protein_draws, axis=1).mean(axis=1)
+    bootstrap_frame = pd.DataFrame(
+        {
+            "bootstrap_index": np.arange(bootstrap_repeats),
+            **nested,
+            "masked_minus_wild_type": (
+                nested["masked_marginal"] - nested["wild_type_marginal"]
+            ),
+        }
+    )
+    interval_rows = []
+    for model in prediction_columns:
+        values = nested[model]
+        interval_rows.append(
+            {
+                "model": model,
+                "mean_spearman": float(
+                    point_summary.loc[point_summary["model"].eq(model), "mean_spearman"].item()
+                ),
+                "bootstrap_mean": float(values.mean()),
+                "ci_lower": float(np.quantile(values, 0.025)),
+                "ci_upper": float(np.quantile(values, 0.975)),
+                "proteins": len(proteins),
+                "assays": int(assay_metrics.loc[assay_metrics["model"].eq(model), "urn"].nunique()),
+                "success_lower_bound_above_zero": bool(np.quantile(values, 0.025) > 0),
+            }
+        )
+    difference = bootstrap_frame["masked_minus_wild_type"].to_numpy()
+    interval_rows.append(
+        {
+            "model": "masked_minus_wild_type",
+            "mean_spearman": float(
+                point_summary.loc[
+                    point_summary["model"].eq("masked_marginal"), "mean_spearman"
+                ].item()
+                - point_summary.loc[
+                    point_summary["model"].eq("wild_type_marginal"), "mean_spearman"
+                ].item()
+            ),
+            "bootstrap_mean": float(difference.mean()),
+            "ci_lower": float(np.quantile(difference, 0.025)),
+            "ci_upper": float(np.quantile(difference, 0.975)),
+            "proteins": len(proteins),
+            "assays": int(assay_metrics["urn"].nunique()),
+            "success_lower_bound_above_zero": bool(np.quantile(difference, 0.025) > 0),
+        }
+    )
+    interval_summary = pd.DataFrame(interval_rows)
+    return assay_metrics, protein_metrics, point_summary, interval_summary, bootstrap_frame
