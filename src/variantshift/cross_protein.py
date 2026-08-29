@@ -92,16 +92,15 @@ def build_cross_protein_dataset(
     if max_variants_per_assay < 100:
         raise ValueError("At least 100 variants per assay are required")
     reference = read_reference_index(reference_path).set_index("DMS_id", drop=False)
-    eligible_ids = eligibility.loc[
-        eligibility["eligible"].astype(bool), "assay_id"
-    ].astype(str)
+    eligible_ids = eligibility.loc[eligibility["eligible"].astype(bool), "assay_id"].astype(str)
     metadata_frames: list[pd.DataFrame] = []
     feature_frames: list[np.ndarray] = []
     target_frames: list[np.ndarray] = []
     feature_names: tuple[str, ...] | None = None
-    with ZipFile(source_archive_path) as source_archive, ZipFile(
-        score_archive_path
-    ) as score_archive:
+    with (
+        ZipFile(source_archive_path) as source_archive,
+        ZipFile(score_archive_path) as score_archive,
+    ):
         source_members = _archive_members(source_archive)
         score_members = _archive_members(score_archive)
         for assay_id in eligible_ids:
@@ -138,9 +137,7 @@ def build_cross_protein_dataset(
                         "uniprot_id": str(assay_metadata["UniProt_ID"]),
                         "mutation_codes": selected["mutation_codes"].astype(str),
                         "taxon": str(assay_metadata["taxon"]),
-                        "coarse_selection_type": str(
-                            assay_metadata["coarse_selection_type"]
-                        ),
+                        "coarse_selection_type": str(assay_metadata["coarse_selection_type"]),
                         "experimental_score": experimental,
                     }
                 )
@@ -202,9 +199,7 @@ def _evaluate_group_holdout(
         outer.split(dataset.features, dataset.targets, groups)
     ):
         inner_groups = groups[outer_train]
-        inner_splitter = GroupShuffleSplit(
-            n_splits=1, test_size=0.2, random_state=seed + fold
-        )
+        inner_splitter = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=seed + fold)
         fit_relative, calibration_relative = next(
             inner_splitter.split(outer_train, groups=inner_groups)
         )
@@ -235,9 +230,7 @@ def _evaluate_group_holdout(
             calibration_prediction = np.asarray(
                 model.predict(dataset.features[calibration_indices]), dtype=float
             )
-            test_prediction = np.asarray(
-                model.predict(dataset.features[test_indices]), dtype=float
-            )
+            test_prediction = np.asarray(model.predict(dataset.features[test_indices]), dtype=float)
             standard = standard_intervals(
                 dataset.targets[calibration_indices],
                 calibration_prediction,
@@ -259,7 +252,7 @@ def _evaluate_group_holdout(
                 "mutation_codes",
                 "experimental_score",
             ]
-            if group_name == "sequence_family":
+            if group_name != "protein":
                 prediction_columns.append("family_id")
             fold_predictions = metadata.iloc[test_indices][prediction_columns].copy()
             fold_predictions["fold"] = fold
@@ -299,22 +292,16 @@ def _evaluate_group_holdout(
                         **intervals,
                         **conditional,
                         "test_rows": len(local),
-                        "fit_proteins": int(
-                            metadata.iloc[fit_indices]["uniprot_id"].nunique()
-                        ),
+                        "fit_proteins": int(metadata.iloc[fit_indices]["uniprot_id"].nunique()),
                         "calibration_proteins": int(
                             metadata.iloc[calibration_indices]["uniprot_id"].nunique()
                         ),
-                        "test_proteins": int(
-                            metadata.iloc[test_indices]["uniprot_id"].nunique()
-                        ),
+                        "test_proteins": int(metadata.iloc[test_indices]["uniprot_id"].nunique()),
                     }
-                    if group_name == "sequence_family":
+                    if group_name != "protein":
                         assay_result.update(
                             {
-                                "family_id": str(
-                                    test_metadata.iloc[local[0]]["family_id"]
-                                ),
+                                "family_id": str(test_metadata.iloc[local[0]]["family_id"]),
                                 "fit_families": len(fit_groups),
                                 "calibration_families": len(calibration_groups),
                                 "test_families": len(test_groups),
@@ -327,27 +314,31 @@ def _evaluate_group_holdout(
                         risk_result = {
                             "fold": fold,
                             "assay_id": assay_id,
-                            "uniprot_id": str(
-                                test_metadata.iloc[local[0]]["uniprot_id"]
-                            ),
+                            "uniprot_id": str(test_metadata.iloc[local[0]]["uniprot_id"]),
                             "model": model_name,
                             "calibration_method": interval.method,
                             **risk,
                         }
-                        if group_name == "sequence_family":
+                        if group_name != "protein":
                             risk_result["family_id"] = str(
                                 test_metadata.iloc[local[0]]["family_id"]
                             )
                         risk_rows.append(risk_result)
-    assays = pd.DataFrame(assay_rows).sort_values(
-        ["model", "calibration_method", "fold", "assay_id"]
-    ).reset_index(drop=True)
-    risks = pd.DataFrame(risk_rows).sort_values(
-        ["model", "calibration_method", "retained_fraction", "fold", "assay_id"]
-    ).reset_index(drop=True)
-    predictions = pd.concat(prediction_rows, ignore_index=True).sort_values(
-        ["model", "fold", "assay_id", "mutation_codes"]
-    ).reset_index(drop=True)
+    assays = (
+        pd.DataFrame(assay_rows)
+        .sort_values(["model", "calibration_method", "fold", "assay_id"])
+        .reset_index(drop=True)
+    )
+    risks = (
+        pd.DataFrame(risk_rows)
+        .sort_values(["model", "calibration_method", "retained_fraction", "fold", "assay_id"])
+        .reset_index(drop=True)
+    )
+    predictions = (
+        pd.concat(prediction_rows, ignore_index=True)
+        .sort_values(["model", "fold", "assay_id", "mutation_codes"])
+        .reset_index(drop=True)
+    )
     return assays, risks, predictions
 
 
@@ -380,32 +371,30 @@ def evaluate_held_out_families(
     folds: int = 5,
     seed: int = 2026,
     coverage: float = 0.8,
+    group_name: str = "sequence_family",
+    evaluation_type: str = "held_out_sequence_family",
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Evaluate with complete sequence-family clusters absent from training."""
+    """Evaluate with complete precomputed family clusters absent from training."""
     required_columns = ["uniprot_id", "family_id"]
     missing_columns = set(required_columns).difference(family_assignments.columns)
     if missing_columns:
-        raise ValueError(
-            f"Family assignments are missing: {', '.join(sorted(missing_columns))}"
-        )
+        raise ValueError(f"Family assignments are missing: {', '.join(sorted(missing_columns))}")
     mapping = family_assignments[required_columns].drop_duplicates()
     if mapping["uniprot_id"].duplicated().any():
-        raise ValueError("Each UniProt ID must map to exactly one sequence family")
+        raise ValueError("Each UniProt ID must map to exactly one family")
     metadata = dataset.metadata.reset_index(drop=True).merge(
         mapping, on="uniprot_id", how="left", validate="many_to_one"
     )
     if metadata["family_id"].isna().any():
-        missing = sorted(
-            metadata.loc[metadata["family_id"].isna(), "uniprot_id"].unique()
-        )
+        missing = sorted(metadata.loc[metadata["family_id"].isna(), "uniprot_id"].unique())
         raise ValueError(f"Missing family assignments for: {', '.join(missing)}")
     groups = metadata["family_id"].astype(str).to_numpy()
     return _evaluate_group_holdout(
         dataset,
         metadata,
         groups,
-        group_name="sequence_family",
-        evaluation_type="held_out_sequence_family",
+        group_name=group_name,
+        evaluation_type=evaluation_type,
         folds=folds,
         seed=seed,
         coverage=coverage,
@@ -421,9 +410,9 @@ def summarize_held_out_proteins(assays: pd.DataFrame) -> pd.DataFrame:
         "position_coverage_mean",
         "mean_interval_width",
     ]
-    protein_level = assays.groupby(
-        ["model", "calibration_method", "uniprot_id"], as_index=False
-    )[values].mean()
+    protein_level = assays.groupby(["model", "calibration_method", "uniprot_id"], as_index=False)[
+        values
+    ].mean()
     return (
         protein_level.groupby(["model", "calibration_method"], as_index=False)
         .agg(
@@ -441,9 +430,7 @@ def summarize_heldout_risk_coverage(risks: pd.DataFrame) -> pd.DataFrame:
         as_index=False,
     ).agg(normalized_mae=("normalized_mae", "mean"))
     return (
-        protein_level.groupby(
-            ["model", "calibration_method", "retained_fraction"], as_index=False
-        )
+        protein_level.groupby(["model", "calibration_method", "retained_fraction"], as_index=False)
         .agg(
             n_proteins=("uniprot_id", "nunique"),
             mean_normalized_mae=("normalized_mae", "mean"),
@@ -459,8 +446,10 @@ def compare_holdout_protocols(
     *,
     bootstrap_repeats: int = 10_000,
     seed: int = 2026,
+    baseline_label: str = "heldout_protein",
+    alternative_label: str = "heldout_family",
 ) -> pd.DataFrame:
-    """Paired protein-bootstrap comparison of protein and family holdouts."""
+    """Paired protein-bootstrap comparison of two grouped holdout protocols."""
     if bootstrap_repeats < 100:
         raise ValueError("At least 100 bootstrap repetitions are required")
     keys = ["model", "calibration_method", "assay_id", "uniprot_id"]
@@ -472,40 +461,40 @@ def compare_holdout_protocols(
         "position_coverage_mean",
     ]
     required = set(keys + metrics)
-    for label, frame in (("protein", protein_assays), ("family", family_assays)):
+    for label, frame in (
+        (baseline_label, protein_assays),
+        (alternative_label, family_assays),
+    ):
         missing = required.difference(frame.columns)
         if missing:
             raise ValueError(
-                f"{label.title()} holdout results are missing: "
-                f"{', '.join(sorted(missing))}"
+                f"{label.title()} holdout results are missing: {', '.join(sorted(missing))}"
             )
         if frame.duplicated(keys).any():
             raise ValueError(f"{label.title()} holdout results contain duplicate assays")
+    baseline_suffix = f"_{baseline_label}"
+    alternative_suffix = f"_{alternative_label}"
     paired = protein_assays[keys + metrics].merge(
         family_assays[keys + metrics],
         on=keys,
         how="inner",
         validate="one_to_one",
-        suffixes=("_protein", "_family"),
+        suffixes=(baseline_suffix, alternative_suffix),
     )
     if len(paired) != len(protein_assays) or len(paired) != len(family_assays):
         raise ValueError("Protein and family holdout results are not exactly paired")
     rng = np.random.default_rng(seed)
     rows = []
-    for (model, calibration), group in paired.groupby(
-        ["model", "calibration_method"], sort=True
-    ):
+    for (model, calibration), group in paired.groupby(["model", "calibration_method"], sort=True):
         protein_level = group.groupby("uniprot_id", as_index=False)[
-            [f"{metric}_protein" for metric in metrics]
-            + [f"{metric}_family" for metric in metrics]
+            [f"{metric}{baseline_suffix}" for metric in metrics]
+            + [f"{metric}{alternative_suffix}" for metric in metrics]
         ].mean()
         n_proteins = len(protein_level)
-        sample_indices = rng.integers(
-            0, n_proteins, size=(bootstrap_repeats, n_proteins)
-        )
+        sample_indices = rng.integers(0, n_proteins, size=(bootstrap_repeats, n_proteins))
         for metric in metrics:
-            protein_values = protein_level[f"{metric}_protein"].to_numpy(dtype=float)
-            family_values = protein_level[f"{metric}_family"].to_numpy(dtype=float)
+            protein_values = protein_level[f"{metric}{baseline_suffix}"].to_numpy(dtype=float)
+            family_values = protein_level[f"{metric}{alternative_suffix}"].to_numpy(dtype=float)
             protein_bootstrap = protein_values[sample_indices].mean(axis=1)
             family_bootstrap = family_values[sample_indices].mean(axis=1)
             delta_bootstrap = family_bootstrap - protein_bootstrap
@@ -515,21 +504,13 @@ def compare_holdout_protocols(
                     "calibration_method": calibration,
                     "metric": metric,
                     "n_proteins": n_proteins,
-                    "heldout_protein_mean": float(protein_values.mean()),
-                    "heldout_protein_ci_low": float(
-                        np.quantile(protein_bootstrap, 0.025)
-                    ),
-                    "heldout_protein_ci_high": float(
-                        np.quantile(protein_bootstrap, 0.975)
-                    ),
-                    "heldout_family_mean": float(family_values.mean()),
-                    "heldout_family_ci_low": float(
-                        np.quantile(family_bootstrap, 0.025)
-                    ),
-                    "heldout_family_ci_high": float(
-                        np.quantile(family_bootstrap, 0.975)
-                    ),
-                    "family_minus_protein": float(
+                    f"{baseline_label}_mean": float(protein_values.mean()),
+                    f"{baseline_label}_ci_low": float(np.quantile(protein_bootstrap, 0.025)),
+                    f"{baseline_label}_ci_high": float(np.quantile(protein_bootstrap, 0.975)),
+                    f"{alternative_label}_mean": float(family_values.mean()),
+                    f"{alternative_label}_ci_low": float(np.quantile(family_bootstrap, 0.025)),
+                    f"{alternative_label}_ci_high": float(np.quantile(family_bootstrap, 0.975)),
+                    f"{alternative_label}_minus_{baseline_label}": float(
                         family_values.mean() - protein_values.mean()
                     ),
                     "delta_ci_low": float(np.quantile(delta_bootstrap, 0.025)),
@@ -538,6 +519,8 @@ def compare_holdout_protocols(
                     "bootstrap_repeats": bootstrap_repeats,
                 }
             )
-    return pd.DataFrame(rows).sort_values(
-        ["model", "calibration_method", "metric"]
-    ).reset_index(drop=True)
+    return (
+        pd.DataFrame(rows)
+        .sort_values(["model", "calibration_method", "metric"])
+        .reset_index(drop=True)
+    )
