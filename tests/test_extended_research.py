@@ -3,6 +3,8 @@ import pandas as pd
 
 from variantshift.cross_protein import (
     CrossProteinDataset,
+    compare_holdout_protocols,
+    evaluate_held_out_families,
     evaluate_held_out_proteins,
     summarize_held_out_proteins,
 )
@@ -52,6 +54,32 @@ def test_held_out_protein_evaluation_never_mixes_protein_groups():
     assert predictions.groupby(["model", "uniprot_id"])["fold"].nunique().max() == 1
     assert not risks.empty
     assert summarize_held_out_proteins(assays)["n_proteins"].eq(8).all()
+
+    families = pd.DataFrame(
+        {
+            "uniprot_id": [f"P{protein}" for protein in range(8)],
+            "family_id": ["F01", "F01", "F23", "F23", "F4", "F5", "F6", "F7"],
+        }
+    )
+    family_assays, _, family_predictions = evaluate_held_out_families(
+        dataset, families, folds=3
+    )
+    assert family_assays["evaluation_type"].eq("held_out_sequence_family").all()
+    assert family_assays["test_families"].min() >= 1
+    assert (
+        family_predictions.groupby(["model", "family_id"])["fold"].nunique().max()
+        == 1
+    )
+    protein_folds = family_predictions.groupby(["model", "uniprot_id"])["fold"].first()
+    assert protein_folds.loc[("cross_protein_ridge", "P0")] == protein_folds.loc[
+        ("cross_protein_ridge", "P1")
+    ]
+    comparison = compare_holdout_protocols(
+        assays, family_assays, bootstrap_repeats=100
+    )
+    assert len(comparison) == 20
+    assert comparison["n_proteins"].eq(8).all()
+    assert comparison["delta_ci_low"].notna().all()
 
 
 def test_crossover_validation_holds_out_complete_proteins():
