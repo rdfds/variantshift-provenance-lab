@@ -34,6 +34,7 @@ and its limits are in [`docs/EXTENDED_METHODS.md`](../../../docs/EXTENDED_METHOD
 | `official-supervised-audit.csv` | Join, completeness, and target-agreement audit for 585 official assay/split files |
 | `official-supervised-runs.csv` | Assay-level official-model ranking and top-selection results |
 | `official-supervised-summary.csv` | UniProt-weighted means and 10,000-replicate bootstrap intervals |
+| `esm2-embedding-index.csv` | Sequence, model, shape, byte-length, and SHA-256 record for every cached embedding |
 | `embedding-probe-runs.csv` | Five repetitions × four splits × three interval methods for every assay |
 | `embedding-probe-summary.csv` | Protein-weighted performance, selection, coverage, and width summaries |
 | `embedding-probe-risk-coverage.csv` | Assay-level error at four retained-confidence fractions |
