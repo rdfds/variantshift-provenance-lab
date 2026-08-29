@@ -71,7 +71,12 @@ def test_render_extended_figure(tmp_path: Path) -> None:
     )
 
     output = render_extended_figure(
-        official, probe, heldout, crossover, tmp_path / "figure.svg"
+        official,
+        probe,
+        heldout,
+        crossover,
+        tmp_path / "figure.svg",
+        heldout_family=heldout,
     )
 
     rendered = output.read_text(encoding="utf-8")
