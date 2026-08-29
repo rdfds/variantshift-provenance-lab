@@ -6,6 +6,7 @@ from variantshift.cross_protein import (
     compare_holdout_protocols,
     evaluate_held_out_families,
     evaluate_held_out_proteins,
+    summarize_grouped_repeat_estimates,
     summarize_held_out_proteins,
 )
 from variantshift.crossover import evaluate_crossover_predictor
@@ -48,10 +49,14 @@ def test_held_out_protein_evaluation_never_mixes_protein_groups():
         targets=np.asarray(targets),
         feature_names=tuple(f"x{i}" for i in range(6)),
     )
-    assays, risks, predictions = evaluate_held_out_proteins(dataset, folds=3)
+    assays, risks, predictions = evaluate_held_out_proteins(dataset, folds=3, repeats=2)
     assert set(assays["model"]) == {"cross_protein_ridge", "cross_protein_histgb"}
     assert assays["test_proteins"].min() >= 2
-    assert predictions.groupby(["model", "uniprot_id"])["fold"].nunique().max() == 1
+    assert predictions.groupby(["model", "repeat", "uniprot_id"])["fold"].nunique().max() == 1
+    assert assays["repeat"].nunique() == 2
+    repeat_estimates = summarize_grouped_repeat_estimates(assays)
+    assert repeat_estimates["repeat"].nunique() == 2
+    assert repeat_estimates["n_proteins"].eq(8).all()
     assert not risks.empty
     assert summarize_held_out_proteins(assays)["n_proteins"].eq(8).all()
 
@@ -61,23 +66,28 @@ def test_held_out_protein_evaluation_never_mixes_protein_groups():
             "family_id": ["F01", "F01", "F23", "F23", "F4", "F5", "F6", "F7"],
         }
     )
-    family_assays, _, family_predictions = evaluate_held_out_families(dataset, families, folds=3)
+    family_assays, _, family_predictions = evaluate_held_out_families(
+        dataset, families, folds=3, repeats=2
+    )
     assert family_assays["evaluation_type"].eq("held_out_sequence_family").all()
     assert family_assays["test_families"].min() >= 1
-    assert family_predictions.groupby(["model", "family_id"])["fold"].nunique().max() == 1
-    protein_folds = family_predictions.groupby(["model", "uniprot_id"])["fold"].first()
+    assert family_predictions.groupby(["model", "repeat", "family_id"])["fold"].nunique().max() == 1
+    protein_folds = family_predictions.groupby(["model", "repeat", "uniprot_id"])["fold"].first()
     assert (
-        protein_folds.loc[("cross_protein_ridge", "P0")]
-        == protein_folds.loc[("cross_protein_ridge", "P1")]
+        protein_folds.loc[("cross_protein_ridge", 0, "P0")]
+        == protein_folds.loc[("cross_protein_ridge", 0, "P1")]
     )
     comparison = compare_holdout_protocols(assays, family_assays, bootstrap_repeats=100)
     assert len(comparison) == 20
     assert comparison["n_proteins"].eq(8).all()
+    assert comparison["n_bootstrap_groups"].eq(6).all()
+    assert comparison["bootstrap_unit"].eq("heldout_family:family_id").all()
     assert comparison["delta_ci_low"].notna().all()
     structure_assays, _, _ = evaluate_held_out_families(
         dataset,
         families,
         folds=3,
+        repeats=2,
         group_name="sequence_structure_family",
         evaluation_type="held_out_sequence_structure_family",
     )
@@ -92,6 +102,30 @@ def test_held_out_protein_evaluation_never_mixes_protein_groups():
     assert "heldout_structure_family_minus_heldout_sequence_family" in (
         structure_comparison.columns
     )
+
+    ablation_dataset = CrossProteinDataset(
+        metadata=dataset.metadata,
+        features=dataset.features,
+        targets=dataset.targets,
+        feature_names=dataset.feature_names,
+        score_feature_count=2,
+    )
+    ablation_assays, _, _ = evaluate_held_out_families(
+        ablation_dataset,
+        families,
+        folds=3,
+        include_feature_ablation=True,
+    )
+    assert set(ablation_assays["feature_set"]) == {
+        "mutation_descriptors_only",
+        "mutation_descriptors_plus_fixed_esm_scores",
+    }
+    assert set(ablation_assays["model"]) == {
+        "cross_protein_ridge",
+        "cross_protein_histgb",
+        "cross_protein_ridge_mutation_only",
+        "cross_protein_histgb_mutation_only",
+    }
 
 
 def test_crossover_validation_holds_out_complete_proteins():

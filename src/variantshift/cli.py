@@ -216,6 +216,7 @@ def build_parser() -> argparse.ArgumentParser:
     pg_provenance.add_argument("--repeats", type=int, default=10)
     pg_provenance.add_argument("--probe-repeats", type=int, default=5)
     pg_provenance.add_argument("--heldout-folds", type=int, default=5)
+    pg_provenance.add_argument("--heldout-repeats", type=int, default=5)
     pg_provenance.add_argument("--family-folds", type=int, default=5)
     pg_provenance.add_argument("--family-identity-threshold", type=float, default=0.30)
     pg_provenance.add_argument("--family-coverage-threshold", type=float, default=0.80)
@@ -223,6 +224,9 @@ def build_parser() -> argparse.ArgumentParser:
     pg_provenance.add_argument("--structure-tm-threshold", type=float, default=0.50)
     pg_provenance.add_argument("--structure-coverage-threshold", type=float, default=0.80)
     pg_provenance.add_argument("--structure-probability-threshold", type=float, default=0.95)
+    pg_provenance.add_argument("--curated-family-folds", type=int, default=5)
+    pg_provenance.add_argument("--curated-mapping-threshold", type=float, default=0.80)
+    pg_provenance.add_argument("--curated-overlap-threshold", type=float, default=0.50)
     pg_provenance.add_argument("--crossover-folds", type=int, default=5)
     pg_provenance.add_argument("--bootstrap-repeats", type=int, default=10_000)
     pg_provenance.add_argument("--source-revision")
@@ -290,6 +294,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     pg_heldout.add_argument("--max-variants-per-assay", type=int, default=1_000)
     pg_heldout.add_argument("--folds", type=int, default=5)
+    pg_heldout.add_argument("--repeats", type=int, default=1)
 
     pg_family_clusters = subparsers.add_parser(
         "proteingym-family-clusters",
@@ -321,6 +326,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     pg_heldout_family.add_argument("--max-variants-per-assay", type=int, default=1_000)
     pg_heldout_family.add_argument("--folds", type=int, default=5)
+    pg_heldout_family.add_argument("--repeats", type=int, default=1)
     pg_heldout_family.add_argument("--protein-assays", type=Path)
     pg_heldout_family.add_argument("--bootstrap-repeats", type=int, default=10_000)
 
@@ -355,9 +361,59 @@ def build_parser() -> argparse.ArgumentParser:
     )
     pg_heldout_structure.add_argument("--max-variants-per-assay", type=int, default=1_000)
     pg_heldout_structure.add_argument("--folds", type=int, default=5)
+    pg_heldout_structure.add_argument("--repeats", type=int, default=1)
     pg_heldout_structure.add_argument("--protein-assays", type=Path)
     pg_heldout_structure.add_argument("--sequence-family-assays", type=Path)
     pg_heldout_structure.add_argument("--bootstrap-repeats", type=int, default=10_000)
+
+    pg_curated_clusters = subparsers.add_parser(
+        "proteingym-curated-families",
+        help="Augment sequence/structure families with curated Pfam family evidence",
+    )
+    pg_curated_clusters.add_argument("reference", type=Path)
+    pg_curated_clusters.add_argument("eligibility", type=Path)
+    pg_curated_clusters.add_argument("base_assignments", type=Path)
+    pg_curated_clusters.add_argument("cache_dir", type=Path)
+    pg_curated_clusters.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_curated_clusters.add_argument("--minimum-mapping-coverage", type=float, default=0.80)
+    pg_curated_clusters.add_argument("--minimum-domain-overlap", type=float, default=0.50)
+    pg_curated_clusters.add_argument("--workers", type=int, default=4)
+
+    pg_heldout_curated = subparsers.add_parser(
+        "proteingym-heldout-curated-family",
+        help="Evaluate repeated folds with complete curated combined families held out",
+    )
+    pg_heldout_curated.add_argument("source_archive", type=Path)
+    pg_heldout_curated.add_argument("score_archive", type=Path)
+    pg_heldout_curated.add_argument("reference", type=Path)
+    pg_heldout_curated.add_argument("eligibility", type=Path)
+    pg_heldout_curated.add_argument("family_assignments", type=Path)
+    pg_heldout_curated.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_heldout_curated.add_argument("--max-variants-per-assay", type=int, default=1_000)
+    pg_heldout_curated.add_argument("--folds", type=int, default=5)
+    pg_heldout_curated.add_argument("--repeats", type=int, default=5)
+    pg_heldout_curated.add_argument("--protein-assays", type=Path)
+    pg_heldout_curated.add_argument("--structure-family-assays", type=Path)
+    pg_heldout_curated.add_argument("--bootstrap-repeats", type=int, default=10_000)
+    pg_heldout_curated.add_argument("--feature-ablation", action="store_true")
+
+    pg_modern_zero_shot = subparsers.add_parser(
+        "proteingym-modern-zero-shot",
+        help="Compare modern official zero-shot scores on an exactly paired assay cohort",
+    )
+    pg_modern_zero_shot.add_argument("source_archive", type=Path)
+    pg_modern_zero_shot.add_argument("score_archive", type=Path)
+    pg_modern_zero_shot.add_argument("reference", type=Path)
+    pg_modern_zero_shot.add_argument("eligibility", type=Path)
+    pg_modern_zero_shot.add_argument(
+        "--output-dir", type=Path, default=Path("artifacts/proteingym/extended")
+    )
+    pg_modern_zero_shot.add_argument("--minimum-common-coverage", type=float, default=0.95)
+    pg_modern_zero_shot.add_argument("--bootstrap-repeats", type=int, default=10_000)
 
     pg_crossover = subparsers.add_parser(
         "proteingym-crossover",
@@ -387,6 +443,22 @@ def build_parser() -> argparse.ArgumentParser:
     pg_extended_figure.add_argument("--heldout-structure-family-summary", type=Path)
     pg_extended_figure.add_argument(
         "--output", type=Path, default=Path("artifacts/proteingym-extended.svg")
+    )
+
+    pg_research_figure = subparsers.add_parser(
+        "proteingym-research-figure",
+        help="Render modern zero-shot, curated-family, and repeated-transfer results",
+    )
+    pg_research_figure.add_argument("modern_summary", type=Path)
+    pg_research_figure.add_argument("sequence_audit", type=Path)
+    pg_research_figure.add_argument("structure_audit", type=Path)
+    pg_research_figure.add_argument("curated_audit", type=Path)
+    pg_research_figure.add_argument("heldout_protein", type=Path)
+    pg_research_figure.add_argument("heldout_family", type=Path)
+    pg_research_figure.add_argument("heldout_structure", type=Path)
+    pg_research_figure.add_argument("heldout_curated", type=Path)
+    pg_research_figure.add_argument(
+        "--output", type=Path, default=Path("artifacts/proteingym-research.svg")
     )
     return parser
 
@@ -689,6 +761,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     if arguments.command == "proteingym-provenance":
         import pandas as pd
 
+        from .modern_zero_shot import MODERN_ZERO_SHOT_MODELS
+
         eligibility = pd.read_csv(arguments.eligibility)
         artifact_paths = list(dict.fromkeys([arguments.eligibility, *arguments.artifact]))
         inputs = {
@@ -750,7 +824,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                         "repeats": arguments.probe_repeats,
                     },
                 },
-                "heldout_protein_folds": arguments.heldout_folds,
+                "heldout_grouped_evaluation": {
+                    "folds": arguments.heldout_folds,
+                    "repeats": arguments.heldout_repeats,
+                    "start_seed": 2026,
+                },
                 "heldout_sequence_family": {
                     "folds": arguments.family_folds,
                     "minimum_sequence_identity": arguments.family_identity_threshold,
@@ -771,10 +849,26 @@ def main(argv: Sequence[str] | None = None) -> int:
                         "connected components"
                     ),
                 },
+                "heldout_curated_family": {
+                    "folds": arguments.curated_family_folds,
+                    "repeats": arguments.heldout_repeats,
+                    "minimum_coordinate_mapping_coverage": (arguments.curated_mapping_threshold),
+                    "minimum_domain_overlap_fraction_of_shorter": (
+                        arguments.curated_overlap_threshold
+                    ),
+                    "primary_grouping": "Pfam family",
+                    "sensitivity_grouping": "Pfam clan",
+                    "clustering": (
+                        "sequence/structure graph union current InterPro Pfam components"
+                    ),
+                },
                 "crossover_group_folds": arguments.crossover_folds,
                 "calibration_fraction": 0.2,
                 "nominal_coverage": 0.8,
-                "bootstrap_unit": "UniProt_ID",
+                "bootstrap_units": {
+                    "model_summaries": "UniProt_ID",
+                    "holdout_protocol_comparisons": "alternative family_id",
+                },
                 "bootstrap_repeats": arguments.bootstrap_repeats,
                 "supervised_models": [
                     "mean",
@@ -791,7 +885,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "mondrian_substitution",
                     "position_distance_scaled",
                 ],
-                "zero_shot_models": list(DEFAULT_ESM_MODELS),
+                "zero_shot_models": {
+                    "esm_scaling_analysis": list(DEFAULT_ESM_MODELS),
+                    "modern_paired_landscape": {
+                        name: {"score_column": column, "modality": modality}
+                        for name, (column, modality) in MODERN_ZERO_SHOT_MODELS.items()
+                    },
+                },
                 "zero_shot_note": (
                     "Fixed-score subset differences are not supervised generalization gaps"
                 ),
@@ -903,6 +1003,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         from .cross_protein import (
             build_cross_protein_dataset,
             evaluate_held_out_proteins,
+            summarize_grouped_repeat_estimates,
             summarize_held_out_proteins,
             summarize_heldout_risk_coverage,
         )
@@ -914,18 +1015,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             pd.read_csv(arguments.eligibility),
             max_variants_per_assay=arguments.max_variants_per_assay,
         )
-        assays, risks, predictions = evaluate_held_out_proteins(dataset, folds=arguments.folds)
+        assays, risks, predictions = evaluate_held_out_proteins(
+            dataset, folds=arguments.folds, repeats=arguments.repeats
+        )
         output_dir = arguments.output_dir
         output_dir.mkdir(parents=True, exist_ok=True)
         outputs = {
             "assays": output_dir / "heldout-protein-assays.csv",
             "summary": output_dir / "heldout-protein-summary.csv",
+            "repeat_estimates": output_dir / "heldout-protein-repeat-estimates.csv",
             "risk_coverage": output_dir / "heldout-protein-risk-coverage.csv",
             "risk_summary": output_dir / "heldout-protein-risk-summary.csv",
             "predictions": output_dir / "heldout-protein-predictions.csv.gz",
         }
         assays.to_csv(outputs["assays"], index=False)
         summarize_held_out_proteins(assays).to_csv(outputs["summary"], index=False)
+        summarize_grouped_repeat_estimates(assays).to_csv(outputs["repeat_estimates"], index=False)
         risks.to_csv(outputs["risk_coverage"], index=False)
         summarize_heldout_risk_coverage(risks).to_csv(outputs["risk_summary"], index=False)
         predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
@@ -969,6 +1074,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             build_cross_protein_dataset,
             compare_holdout_protocols,
             evaluate_held_out_families,
+            summarize_grouped_repeat_estimates,
             summarize_held_out_proteins,
             summarize_heldout_risk_coverage,
         )
@@ -984,18 +1090,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             dataset,
             pd.read_csv(arguments.family_assignments),
             folds=arguments.folds,
+            repeats=arguments.repeats,
         )
         output_dir = arguments.output_dir
         output_dir.mkdir(parents=True, exist_ok=True)
         outputs = {
             "assays": output_dir / "heldout-family-assays.csv",
             "summary": output_dir / "heldout-family-summary.csv",
+            "repeat_estimates": output_dir / "heldout-family-repeat-estimates.csv",
             "risk_coverage": output_dir / "heldout-family-risk-coverage.csv",
             "risk_summary": output_dir / "heldout-family-risk-summary.csv",
             "predictions": output_dir / "heldout-family-predictions.csv.gz",
         }
         assays.to_csv(outputs["assays"], index=False)
         summarize_held_out_proteins(assays).to_csv(outputs["summary"], index=False)
+        summarize_grouped_repeat_estimates(assays).to_csv(outputs["repeat_estimates"], index=False)
         risks.to_csv(outputs["risk_coverage"], index=False)
         summarize_heldout_risk_coverage(risks).to_csv(outputs["risk_summary"], index=False)
         predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
@@ -1049,6 +1158,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             build_cross_protein_dataset,
             compare_holdout_protocols,
             evaluate_held_out_families,
+            summarize_grouped_repeat_estimates,
             summarize_held_out_proteins,
             summarize_heldout_risk_coverage,
         )
@@ -1064,6 +1174,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             dataset,
             pd.read_csv(arguments.family_assignments),
             folds=arguments.folds,
+            repeats=arguments.repeats,
             group_name="sequence_structure_family",
             evaluation_type="held_out_sequence_structure_family",
         )
@@ -1072,12 +1183,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         outputs = {
             "assays": output_dir / "heldout-structure-family-assays.csv",
             "summary": output_dir / "heldout-structure-family-summary.csv",
+            "repeat_estimates": output_dir / "heldout-structure-family-repeat-estimates.csv",
             "risk_coverage": output_dir / "heldout-structure-family-risk-coverage.csv",
             "risk_summary": output_dir / "heldout-structure-family-risk-summary.csv",
             "predictions": output_dir / "heldout-structure-family-predictions.csv.gz",
         }
         assays.to_csv(outputs["assays"], index=False)
         summarize_held_out_proteins(assays).to_csv(outputs["summary"], index=False)
+        summarize_grouped_repeat_estimates(assays).to_csv(outputs["repeat_estimates"], index=False)
         risks.to_csv(outputs["risk_coverage"], index=False)
         summarize_heldout_risk_coverage(risks).to_csv(outputs["risk_summary"], index=False)
         predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
@@ -1101,6 +1214,145 @@ def main(argv: Sequence[str] | None = None) -> int:
                 baseline_label="heldout_sequence_family",
                 alternative_label="heldout_structure_family",
             ).to_csv(outputs["sequence_comparison"], index=False)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-curated-families":
+        import pandas as pd
+
+        from .curated_families import build_curated_family_clusters
+
+        result = build_curated_family_clusters(
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            pd.read_csv(arguments.base_assignments),
+            arguments.cache_dir,
+            minimum_mapping_coverage=arguments.minimum_mapping_coverage,
+            minimum_overlap=arguments.minimum_domain_overlap,
+            workers=arguments.workers,
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "assignments": output_dir / "curated-family-assignments.csv",
+            "clan_assignments": output_dir / "curated-clan-family-assignments.csv",
+            "uniprot_mapping": output_dir / "curated-uniprot-mapping.csv",
+            "coordinate_mapping": output_dir / "curated-coordinate-mapping.csv",
+            "domain_overlaps": output_dir / "curated-pfam-domain-overlaps.csv",
+            "edges": output_dir / "curated-family-edges.csv",
+            "clan_edges": output_dir / "curated-clan-family-edges.csv",
+            "audit": output_dir / "curated-family-audit.csv",
+        }
+        result.assignments.to_csv(outputs["assignments"], index=False)
+        result.clan_assignments.to_csv(outputs["clan_assignments"], index=False)
+        result.uniprot_mapping.to_csv(outputs["uniprot_mapping"], index=False)
+        result.coordinate_mapping.to_csv(outputs["coordinate_mapping"], index=False)
+        result.domain_overlaps.to_csv(outputs["domain_overlaps"], index=False)
+        result.curated_edges.to_csv(outputs["edges"], index=False)
+        result.clan_edges.to_csv(outputs["clan_edges"], index=False)
+        result.audit.to_csv(outputs["audit"], index=False)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-heldout-curated-family":
+        import pandas as pd
+
+        from .cross_protein import (
+            build_cross_protein_dataset,
+            compare_holdout_protocols,
+            evaluate_held_out_families,
+            summarize_grouped_repeat_estimates,
+            summarize_held_out_proteins,
+            summarize_heldout_risk_coverage,
+        )
+
+        dataset = build_cross_protein_dataset(
+            arguments.source_archive,
+            arguments.score_archive,
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            max_variants_per_assay=arguments.max_variants_per_assay,
+        )
+        assays, risks, predictions = evaluate_held_out_families(
+            dataset,
+            pd.read_csv(arguments.family_assignments),
+            folds=arguments.folds,
+            repeats=arguments.repeats,
+            group_name="curated_sequence_structure_family",
+            evaluation_type="held_out_curated_sequence_structure_family",
+            include_feature_ablation=arguments.feature_ablation,
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "assays": output_dir / "heldout-curated-family-assays.csv",
+            "summary": output_dir / "heldout-curated-family-summary.csv",
+            "repeat_estimates": output_dir / "heldout-curated-family-repeat-estimates.csv",
+            "risk_coverage": output_dir / "heldout-curated-family-risk-coverage.csv",
+            "risk_summary": output_dir / "heldout-curated-family-risk-summary.csv",
+            "predictions": output_dir / "heldout-curated-family-predictions.csv.gz",
+        }
+        assays.to_csv(outputs["assays"], index=False)
+        summarize_held_out_proteins(assays).to_csv(outputs["summary"], index=False)
+        summarize_grouped_repeat_estimates(assays).to_csv(outputs["repeat_estimates"], index=False)
+        risks.to_csv(outputs["risk_coverage"], index=False)
+        summarize_heldout_risk_coverage(risks).to_csv(outputs["risk_summary"], index=False)
+        predictions.to_csv(outputs["predictions"], index=False, compression="gzip")
+        if arguments.protein_assays:
+            outputs["protein_comparison"] = output_dir / "heldout-curated-family-vs-protein.csv"
+            compare_holdout_protocols(
+                pd.read_csv(arguments.protein_assays),
+                assays,
+                bootstrap_repeats=arguments.bootstrap_repeats,
+                baseline_label="heldout_protein",
+                alternative_label="heldout_curated_family",
+            ).to_csv(outputs["protein_comparison"], index=False)
+        if arguments.structure_family_assays:
+            outputs["structure_comparison"] = (
+                output_dir / "heldout-curated-family-vs-structure-family.csv"
+            )
+            compare_holdout_protocols(
+                pd.read_csv(arguments.structure_family_assays),
+                assays,
+                bootstrap_repeats=arguments.bootstrap_repeats,
+                baseline_label="heldout_structure_family",
+                alternative_label="heldout_curated_family",
+            ).to_csv(outputs["structure_comparison"], index=False)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "proteingym-modern-zero-shot":
+        import pandas as pd
+
+        from .modern_zero_shot import (
+            compare_modern_to_baseline,
+            run_modern_zero_shot_landscape,
+            summarize_modern_zero_shot,
+        )
+
+        runs, audit = run_modern_zero_shot_landscape(
+            arguments.source_archive,
+            arguments.score_archive,
+            arguments.reference,
+            pd.read_csv(arguments.eligibility),
+            minimum_common_coverage=arguments.minimum_common_coverage,
+        )
+        output_dir = arguments.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        outputs = {
+            "audit": output_dir / "modern-zero-shot-audit.csv",
+            "runs": output_dir / "modern-zero-shot-runs.csv",
+            "summary": output_dir / "modern-zero-shot-summary.csv",
+            "comparison": output_dir / "modern-zero-shot-vs-esm2.csv",
+        }
+        audit.to_csv(outputs["audit"], index=False)
+        runs.to_csv(outputs["runs"], index=False)
+        summarize_modern_zero_shot(runs, bootstrap_repeats=arguments.bootstrap_repeats).to_csv(
+            outputs["summary"], index=False
+        )
+        compare_modern_to_baseline(runs, bootstrap_repeats=arguments.bootstrap_repeats).to_csv(
+            outputs["comparison"], index=False
+        )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
@@ -1155,6 +1407,25 @@ def main(argv: Sequence[str] | None = None) -> int:
                 if arguments.heldout_structure_family_summary
                 else None
             ),
+        )
+        print(output)
+        return 0
+
+    if arguments.command == "proteingym-research-figure":
+        import pandas as pd
+
+        from .research_visualize import render_research_figure
+
+        output = render_research_figure(
+            pd.read_csv(arguments.modern_summary),
+            pd.read_csv(arguments.sequence_audit),
+            pd.read_csv(arguments.structure_audit),
+            pd.read_csv(arguments.curated_audit),
+            pd.read_csv(arguments.heldout_protein),
+            pd.read_csv(arguments.heldout_family),
+            pd.read_csv(arguments.heldout_structure),
+            pd.read_csv(arguments.heldout_curated),
+            arguments.output,
         )
         print(output)
         return 0

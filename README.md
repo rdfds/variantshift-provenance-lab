@@ -193,8 +193,13 @@ make proteingym-family-clusters
 make proteingym-heldout-family
 make proteingym-structure-clusters
 make proteingym-heldout-structure-family
+make proteingym-curated-families
+make proteingym-heldout-curated-family
+make proteingym-heldout-curated-family-ablation
+make proteingym-modern-zero-shot
 make proteingym-crossover
 make proteingym-extended-figure
+make proteingym-research-figure
 ```
 
 Every command is deterministic at the default seed. Raw data and per-variant predictions stay
@@ -271,10 +276,14 @@ src/variantshift/
   embedding_probe.py     # four-split local representation probe and calibration study
   cross_protein.py       # held-out-protein ridge and nonlinear transfer baselines
   family_clusters.py     # exhaustive MMseqs2 family ledger and threshold audit
+  structure_clusters.py  # exhaustive reciprocal Foldseek structure-family audit
+  curated_families.py    # UniProt/InterPro/Pfam assayed-region family validation
+  modern_zero_shot.py    # exactly paired current zero-shot model landscape
   crossover.py           # protein-grouped supervised-versus-zero-shot decision model
   calibration.py         # standard, group-aware, and distance-scaled intervals
   provenance.py    # data/source/artifact integrity manifests
   visualize.py     # dependency-free shift-analysis SVG
+  research_visualize.py # modern-model and independent-family validation SVG
   report.py        # standalone HTML result report
 tests/             # unit and invariant tests
 results/           # aggregate, reproducible benchmark outputs
@@ -296,17 +305,19 @@ When the dataset is available locally, the same command verifies its hash as wel
 
 - The primary robustness result covers two fitted EC50 endpoints; the transfer matrix covers 20
   complete `mean_y` condition readouts rather than every raw measurement column.
-- Combined-family validation uses official predicted structures and explicit reciprocal Foldseek
-  thresholds, not curated Pfam clans or experimentally determined structures. Relationships missed
-  by both the declared sequence and structure rules may remain in different folds.
+- Curated-family validation adds exact Pfam families mapped to the assayed region; the broader Pfam
+  clan graph is reported separately as a sensitivity analysis. Relationships absent from the
+  MMseqs2, reciprocal Foldseek, and mapped Pfam snapshots may still remain in different folds.
 - Fixed ESM scores are assay-label-independent features, but their pretrained models may have seen
   related sequences; the family split isolates experimental labels rather than pretraining data.
 - Repeated seeds characterize split sensitivity on this cohort rather than uncertainty across
   proteins, assays, or biological replicates.
 - Conformal coverage is guaranteed only under exchangeability; its breakdown under shift is a
   diagnostic, not a surprising violation of the method.
-- The local ESM-2 experiment is a lightweight frozen 8M-parameter representation probe, not
-  fine-tuning and not a comprehensive 2026 frontier-model comparison.
+- The local ESM-2 experiment is a lightweight frozen 8M-parameter representation probe rather than
+  fine-tuning. A separate exactly paired twelve-model analysis covers the modern score columns
+  available in the official ProteinGym v1.3 archive; it is not a claim that every unpublished or
+  unavailable model has been evaluated.
 - Aggregate performance does not establish that a model is ready to prioritize wet-lab
   experiments.
 
