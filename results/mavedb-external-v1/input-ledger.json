@@ -1,0 +1,362 @@
+[
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2910841,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-1.csv",
+    "rows": 19100,
+    "sha256": "212cfa3c5df57ff4d0f6dd705bb3cb475c4e0be137feec4c3d51eded2cf40d7f",
+    "urn": "urn:mavedb:00001239-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2051917,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-2.csv",
+    "rows": 19100,
+    "sha256": "eb873299ba5a775aa13a3e4029340d6912504d4a58a4367c18d5f0520b668764",
+    "urn": "urn:mavedb:00001239-a-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2061691,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-3.csv",
+    "rows": 19100,
+    "sha256": "f8aa47b62d1900bd86af8ee9d91ffb8c02319e91a8556f4fb516895bef40bd9b",
+    "urn": "urn:mavedb:00001239-a-3"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2336277,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-4.csv",
+    "rows": 19100,
+    "sha256": "f569a75b66315474a5e2d970a643d98720a36a27c7a0156b12cd45d55937a80a",
+    "urn": "urn:mavedb:00001239-a-4"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2331741,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-5.csv",
+    "rows": 19100,
+    "sha256": "2557e3619078e1261d0b5ded13d422491a5b89f121cb1443b6a6f8ae1c329f51",
+    "urn": "urn:mavedb:00001239-a-5"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2377479,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-6.csv",
+    "rows": 19100,
+    "sha256": "e2ef662aa1d52cf5d8a7dac5f3a8fc2a9b7e13bb3b86fbdbd581c1dfad1f60e3",
+    "urn": "urn:mavedb:00001239-a-6"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2630612,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-7.csv",
+    "rows": 19100,
+    "sha256": "04dd9d40997b14c348117878bb948deebe0a7833a534c5a938012e2fff410d7c",
+    "urn": "urn:mavedb:00001239-a-7"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 381734,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001217-a-3.csv",
+    "rows": 2906,
+    "sha256": "64a806aaf15a6c6605dc99e184a6c356c8f72bbd316bb11a6c90cf7ed63ae9f5",
+    "urn": "urn:mavedb:00001217-a-3"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 248303,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001217-a-4.csv",
+    "rows": 2910,
+    "sha256": "4f6c2784d7b79477f70a020d98de0c9c3918738d65cff30d0dace4295527d62d",
+    "urn": "urn:mavedb:00001217-a-4"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 285368,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001243-a-1.csv",
+    "rows": 1766,
+    "sha256": "74a335eb6c00ec1b374f9029c03d7096e1eae8233895d4559433e4211bc8d9ec",
+    "urn": "urn:mavedb:00001243-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 354154,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001222-a-2.csv",
+    "rows": 1427,
+    "sha256": "7b65093fb1f9f19aaa708cece68c7ee6f4e9df2a3c5413ade420f9e1f9ebff8a",
+    "urn": "urn:mavedb:00001222-a-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 517422,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001227-a-2.csv",
+    "rows": 5284,
+    "sha256": "86229873bb9a091a12897e971cfaa91dd48111c51a6373eccf0cdf54a440ae73",
+    "urn": "urn:mavedb:00001227-a-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 561459,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001222-b-2.csv",
+    "rows": 2271,
+    "sha256": "a5893b5f98b6f271c6f35097c3dcf8f6e5e6099c8fc0c73bfbee39076cb5fbec",
+    "urn": "urn:mavedb:00001222-b-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 708709,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001252-a-1.csv",
+    "rows": 8967,
+    "sha256": "1c517c0667c58d0a4bc67ee3f753eda98ce35a0f88e90e2fe1839360b4c17389",
+    "urn": "urn:mavedb:00001252-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 709922,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001252-a-2.csv",
+    "rows": 8967,
+    "sha256": "61eb9818c382d04825114e6c582d7194a2bbceeaecf480513d6fbdba256e6f0e",
+    "urn": "urn:mavedb:00001252-a-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 736964,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001266-a-1.csv",
+    "rows": 10675,
+    "sha256": "a199785536b572ae3c4d539c7a3f673a0295f203751a04cc3aff02fb1e43dabc",
+    "urn": "urn:mavedb:00001266-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 1050659,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001266-b-1.csv",
+    "rows": 10674,
+    "sha256": "f94ce07b2641e536da4c2a777a0c979e430fb87d442fd240fd7c6da720e1d043",
+    "urn": "urn:mavedb:00001266-b-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 1463596,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-0-1.csv",
+    "rows": 9253,
+    "sha256": "c00cc89dbd3de7c5e952c42deaaac8f9a2a0a7a0a4c13885fb1b45e92ba876e0",
+    "urn": "urn:mavedb:00001267-0-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 493828,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-a-1.csv",
+    "rows": 3605,
+    "sha256": "121fbb1d90d0be22c247952c386b6edbe54fd8cfb80352336ce650d3464b328e",
+    "urn": "urn:mavedb:00001267-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 771843,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-b-1.csv",
+    "rows": 5648,
+    "sha256": "c75f9e21f2d6dac39e92127c89948dcbf0b66a52da49129df301e89569fc1941",
+    "urn": "urn:mavedb:00001267-b-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 1743639,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001269-a-1.csv",
+    "rows": 17390,
+    "sha256": "63704f6f39eb2de92a3514f91ca7ac9aa15e6bbe15b8001c07aa588877ecff55",
+    "urn": "urn:mavedb:00001269-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 1682288,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001269-b-1.csv",
+    "rows": 16796,
+    "sha256": "089df05e5166e6a54393850a80a1227f01d14e6a3645e337bacba9c28c499069",
+    "urn": "urn:mavedb:00001269-b-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 754078,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001269-c-1.csv",
+    "rows": 7586,
+    "sha256": "1706fb7a844b2f5a34dc034c1e8e1ca01d16082fd19a4047667008ff2515dd67",
+    "urn": "urn:mavedb:00001269-c-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 566394,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001266-0-1.csv",
+    "rows": 9504,
+    "sha256": "f7c0987b6652a7be233ffe76cbd61d5d19f1d3b6adf90eda732f83b7abfc8b03",
+    "urn": "urn:mavedb:00001266-0-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 653533,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001266-c-1.csv",
+    "rows": 9145,
+    "sha256": "ea6df5bbffe2423e280fbb3b927eb58108bee6379de3f5adf1592be704c287ae",
+    "urn": "urn:mavedb:00001266-c-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 447230,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001200-0-1.csv",
+    "rows": 9007,
+    "sha256": "d07381c621b6a74d3da45b6ccad2cead753b07176a92cd7e5301467bc6914572",
+    "urn": "urn:mavedb:00001200-0-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2062915,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-1.csv",
+    "rows": 23723,
+    "sha256": "c7a27bc3984d7ad9e9af0391be8e96d082f05c01d1d90489945dcf1edd75901e",
+    "urn": "urn:mavedb:00001270-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2084357,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-10.csv",
+    "rows": 23720,
+    "sha256": "4d29bdb7dba1c0b668dc1c1a633446ab1110faa88e2db374b3c22ed096b47113",
+    "urn": "urn:mavedb:00001270-a-10"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2060469,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-2.csv",
+    "rows": 23723,
+    "sha256": "922861a3482373691fb1494af04448147efce6102ca98e4694154de29a3aabdd",
+    "urn": "urn:mavedb:00001270-a-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2063365,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-3.csv",
+    "rows": 23719,
+    "sha256": "8cbb735cc4479541cf06d7f387deb17479cc43aa91ba06e9a3a6e6c38cd2c318",
+    "urn": "urn:mavedb:00001270-a-3"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2063923,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-4.csv",
+    "rows": 23723,
+    "sha256": "2808cb3054e405e8f85523f2edc538d51e9a06059f81df7b9fe0be5597e01a50",
+    "urn": "urn:mavedb:00001270-a-4"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2063442,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-5.csv",
+    "rows": 23720,
+    "sha256": "979b2474eb2192b796f20ac86565d2f40c997d9f01b391c94f29252ab532155f",
+    "urn": "urn:mavedb:00001270-a-5"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2063227,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-6.csv",
+    "rows": 23723,
+    "sha256": "81dfdb0b1310b025642aca328099b37f7c8f735d92a070784a642f685b5c9e10",
+    "urn": "urn:mavedb:00001270-a-6"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2063391,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-7.csv",
+    "rows": 23719,
+    "sha256": "e2a901787d2245036c5dcbaed101accc61dfc7d81a5ae45b588b11659e665130",
+    "urn": "urn:mavedb:00001270-a-7"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2060295,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-8.csv",
+    "rows": 23720,
+    "sha256": "ff24e5847cf7a9564337d1e86e918663e4b7275eb45a17834718cb33cf24f5f2",
+    "urn": "urn:mavedb:00001270-a-8"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2062932,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-9.csv",
+    "rows": 23719,
+    "sha256": "4a4021fc77bcb86125f84bdcf4d8df0c68981c51824b2aa4c9016b3908a399da",
+    "urn": "urn:mavedb:00001270-a-9"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 2068481,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001271-a-1.csv",
+    "rows": 23698,
+    "sha256": "b0fc29b915e81c73b3028a5fd393a938c3400e303524c5970ea96aee4eb9943d",
+    "urn": "urn:mavedb:00001271-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 578391,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-a-2.csv",
+    "rows": 3951,
+    "sha256": "a0a32bf494b19f1f835983c23cf735a658e8df942f489e4b0b9847dd2afd6002",
+    "urn": "urn:mavedb:00001267-a-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 995573,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-b-2.csv",
+    "rows": 6017,
+    "sha256": "9f666e7f14ca9b57c001cda8ffdef4beff2912d5b5592a36a37e225208543bb1",
+    "urn": "urn:mavedb:00001267-b-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 326106,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001273-a-1.csv",
+    "rows": 3927,
+    "sha256": "7853d0d6543ad65f741868acffcea05dace16f746f38b3c0c5ff0b7de85ec289",
+    "urn": "urn:mavedb:00001273-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 605915,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001282-a-1.csv",
+    "rows": 8212,
+    "sha256": "00d520ca3d36e92e8d800d28c1b43547a401a080020a872f87ff9c0148a0bbe6",
+    "urn": "urn:mavedb:00001282-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 527191,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001282-a-2.csv",
+    "rows": 7152,
+    "sha256": "e7d50ed248ac18c970d210c2ed94491cc2746685b480e798a6daed836102ce0b",
+    "urn": "urn:mavedb:00001282-a-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 1282658,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-0-2.csv",
+    "rows": 9968,
+    "sha256": "d1cf196f6a202a9657ff32c5efca4de008c4e48bc7818711d9ed14b18d0e4c22",
+    "urn": "urn:mavedb:00001267-0-2"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 409593,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001278-a-1.csv",
+    "rows": 7100,
+    "sha256": "dd9390c6a1fc2d0d6013713b527a66a67bb3bfec52685aa788f1dbb7fcfdb3ff",
+    "urn": "urn:mavedb:00001278-a-1"
+  },
+  {
+    "accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "bytes": 232493,
+    "path": "data/raw/mavedb-external-v1/urn_mavedb_00001280-a-1.csv",
+    "rows": 3912,
+    "sha256": "78074499f382c0ea3c28f03be3aa9e29c6f2fb02b0e180df5dcb2a308b7c06b8",
+    "urn": "urn:mavedb:00001280-a-1"
+  }
+]

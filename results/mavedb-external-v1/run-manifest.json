@@ -1,0 +1,414 @@
+{
+  "artifacts": {
+    "docs/EXTERNAL_VALIDATION_REPORT.md": {
+      "bytes": 7987,
+      "sha256": "9f8a0b86812e9b6ae34686b696cc4f63db83fba01f079067d604bf7e20bbdbe9"
+    },
+    "docs/mavedb-external-validation.svg": {
+      "bytes": 12622,
+      "sha256": "18394a89b1eb465fe5bba7773b648e15ba85a351d5c035dc83859a6d28ffc4a2"
+    },
+    "protocols/mavedb-external-v1/detailed-metadata-snapshot.json": {
+      "bytes": 1940868,
+      "sha256": "d299aea9cc9d38bb2a5c818b9a542a3db2387dffdd2a40aa2b57b128ccbb7913"
+    },
+    "protocols/mavedb-external-v1/metadata-registry.csv": {
+      "bytes": 21536,
+      "sha256": "2ca36ef0eb997d9ab8ad1d7fd5f5b861bc8cc6d43ceb6b4db2a31bdcde632d6a"
+    },
+    "protocols/mavedb-external-v1/proteingym-family-alignments.csv": {
+      "bytes": 1597,
+      "sha256": "c6c0801c74578a52df11fe8bd684572cf820c36101b1a918829bf6a689e9d2cc"
+    },
+    "protocols/mavedb-external-v1/protocol.json": {
+      "bytes": 4864,
+      "sha256": "f8b1ebe74b35b93824aabcda065bfe9e23d2f9a71700677c6bc4dceaf5f9e5f8"
+    },
+    "results/mavedb-external-v1/assay-audit.csv": {
+      "bytes": 11651,
+      "sha256": "fa4b7f8d647ff79bb8adfda8bac7301bb543b3457e72bfdc7506e24d761d2f7e"
+    },
+    "results/mavedb-external-v1/assay-metrics.csv": {
+      "bytes": 7040,
+      "sha256": "89a71bfd5fe55bb7cfafa4385387e65efd6242d5466e328f0f0122390c0081d6"
+    },
+    "results/mavedb-external-v1/bootstrap-replicates.csv.gz": {
+      "bytes": 297659,
+      "sha256": "534afe5039cf3d82baa79653f4a6c2355bd583ed1350f7571092dc2941fec186"
+    },
+    "results/mavedb-external-v1/bootstrap-summary.csv": {
+      "bytes": 438,
+      "sha256": "20a8a071d7f237963a0947d146702480a92f20d9d0086a2fddd261b716603760"
+    },
+    "results/mavedb-external-v1/input-ledger.json": {
+      "bytes": 13415,
+      "sha256": "93444b75a8e353eb03ced74888fb8745b5a53d90179cbda8c425cc3b2c1e6ee8"
+    },
+    "results/mavedb-external-v1/model-audit.csv": {
+      "bytes": 3200,
+      "sha256": "d96efffa1a71d6e6ca85979740ea526867178e51cfbb908a20a54cccafceba78"
+    },
+    "results/mavedb-external-v1/point-summary.csv": {
+      "bytes": 279,
+      "sha256": "cbe8756ef4f614268d1d5ccdb7d91835d45cd56acf597c2e460b2e2278d3b4b6"
+    },
+    "results/mavedb-external-v1/protein-metrics.csv": {
+      "bytes": 2108,
+      "sha256": "2611998a587b7da4f6ec6487afabf198fa65ada943f0ed0ecc5a7a5baf1a5355"
+    },
+    "results/mavedb-external-v1/scoring-parity-audit.csv": {
+      "bytes": 254,
+      "sha256": "765103952f4789a07672fe255186f5948e93622fe435e47b165850cd44dc3d3c"
+    }
+  },
+  "environment": {
+    "fair_esm": "2.0.0",
+    "numpy": "1.26.4",
+    "pandas": "3.0.5",
+    "platform": "macOS-15.3-arm64-arm-64bit",
+    "python": "3.11.0",
+    "scikit_learn": "1.9.0",
+    "scipy": "1.17.1",
+    "torch": "2.2.2",
+    "variantshift": "0.4.0"
+  },
+  "inputs": {
+    "urn:mavedb:00001200-0-1": {
+      "bytes": 447230,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001200-0-1.csv",
+      "sha256": "d07381c621b6a74d3da45b6ccad2cead753b07176a92cd7e5301467bc6914572",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001200-0-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001217-a-3": {
+      "bytes": 381734,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001217-a-3.csv",
+      "sha256": "64a806aaf15a6c6605dc99e184a6c356c8f72bbd316bb11a6c90cf7ed63ae9f5",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001217-a-3/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001217-a-4": {
+      "bytes": 248303,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001217-a-4.csv",
+      "sha256": "4f6c2784d7b79477f70a020d98de0c9c3918738d65cff30d0dace4295527d62d",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001217-a-4/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001222-a-2": {
+      "bytes": 354154,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001222-a-2.csv",
+      "sha256": "7b65093fb1f9f19aaa708cece68c7ee6f4e9df2a3c5413ade420f9e1f9ebff8a",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001222-a-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001222-b-2": {
+      "bytes": 561459,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001222-b-2.csv",
+      "sha256": "a5893b5f98b6f271c6f35097c3dcf8f6e5e6099c8fc0c73bfbee39076cb5fbec",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001222-b-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001227-a-2": {
+      "bytes": 517422,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001227-a-2.csv",
+      "sha256": "86229873bb9a091a12897e971cfaa91dd48111c51a6373eccf0cdf54a440ae73",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001227-a-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001239-a-1": {
+      "bytes": 2910841,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-1.csv",
+      "sha256": "212cfa3c5df57ff4d0f6dd705bb3cb475c4e0be137feec4c3d51eded2cf40d7f",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001239-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001239-a-2": {
+      "bytes": 2051917,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-2.csv",
+      "sha256": "eb873299ba5a775aa13a3e4029340d6912504d4a58a4367c18d5f0520b668764",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001239-a-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001239-a-3": {
+      "bytes": 2061691,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-3.csv",
+      "sha256": "f8aa47b62d1900bd86af8ee9d91ffb8c02319e91a8556f4fb516895bef40bd9b",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001239-a-3/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001239-a-4": {
+      "bytes": 2336277,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-4.csv",
+      "sha256": "f569a75b66315474a5e2d970a643d98720a36a27c7a0156b12cd45d55937a80a",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001239-a-4/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001239-a-5": {
+      "bytes": 2331741,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-5.csv",
+      "sha256": "2557e3619078e1261d0b5ded13d422491a5b89f121cb1443b6a6f8ae1c329f51",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001239-a-5/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001239-a-6": {
+      "bytes": 2377479,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-6.csv",
+      "sha256": "e2ef662aa1d52cf5d8a7dac5f3a8fc2a9b7e13bb3b86fbdbd581c1dfad1f60e3",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001239-a-6/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001239-a-7": {
+      "bytes": 2630612,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001239-a-7.csv",
+      "sha256": "04dd9d40997b14c348117878bb948deebe0a7833a534c5a938012e2fff410d7c",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001239-a-7/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001243-a-1": {
+      "bytes": 285368,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001243-a-1.csv",
+      "sha256": "74a335eb6c00ec1b374f9029c03d7096e1eae8233895d4559433e4211bc8d9ec",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001243-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001252-a-1": {
+      "bytes": 708709,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001252-a-1.csv",
+      "sha256": "1c517c0667c58d0a4bc67ee3f753eda98ce35a0f88e90e2fe1839360b4c17389",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001252-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001252-a-2": {
+      "bytes": 709922,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001252-a-2.csv",
+      "sha256": "61eb9818c382d04825114e6c582d7194a2bbceeaecf480513d6fbdba256e6f0e",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001252-a-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001266-0-1": {
+      "bytes": 566394,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001266-0-1.csv",
+      "sha256": "f7c0987b6652a7be233ffe76cbd61d5d19f1d3b6adf90eda732f83b7abfc8b03",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001266-0-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001266-a-1": {
+      "bytes": 736964,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001266-a-1.csv",
+      "sha256": "a199785536b572ae3c4d539c7a3f673a0295f203751a04cc3aff02fb1e43dabc",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001266-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001266-b-1": {
+      "bytes": 1050659,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001266-b-1.csv",
+      "sha256": "f94ce07b2641e536da4c2a777a0c979e430fb87d442fd240fd7c6da720e1d043",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001266-b-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001266-c-1": {
+      "bytes": 653533,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001266-c-1.csv",
+      "sha256": "ea6df5bbffe2423e280fbb3b927eb58108bee6379de3f5adf1592be704c287ae",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001266-c-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001267-0-1": {
+      "bytes": 1463596,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-0-1.csv",
+      "sha256": "c00cc89dbd3de7c5e952c42deaaac8f9a2a0a7a0a4c13885fb1b45e92ba876e0",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001267-0-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001267-0-2": {
+      "bytes": 1282658,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-0-2.csv",
+      "sha256": "d1cf196f6a202a9657ff32c5efca4de008c4e48bc7818711d9ed14b18d0e4c22",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001267-0-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001267-a-1": {
+      "bytes": 493828,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-a-1.csv",
+      "sha256": "121fbb1d90d0be22c247952c386b6edbe54fd8cfb80352336ce650d3464b328e",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001267-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001267-a-2": {
+      "bytes": 578391,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-a-2.csv",
+      "sha256": "a0a32bf494b19f1f835983c23cf735a658e8df942f489e4b0b9847dd2afd6002",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001267-a-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001267-b-1": {
+      "bytes": 771843,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-b-1.csv",
+      "sha256": "c75f9e21f2d6dac39e92127c89948dcbf0b66a52da49129df301e89569fc1941",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001267-b-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001267-b-2": {
+      "bytes": 995573,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001267-b-2.csv",
+      "sha256": "9f666e7f14ca9b57c001cda8ffdef4beff2912d5b5592a36a37e225208543bb1",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001267-b-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001269-a-1": {
+      "bytes": 1743639,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001269-a-1.csv",
+      "sha256": "63704f6f39eb2de92a3514f91ca7ac9aa15e6bbe15b8001c07aa588877ecff55",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001269-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001269-b-1": {
+      "bytes": 1682288,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001269-b-1.csv",
+      "sha256": "089df05e5166e6a54393850a80a1227f01d14e6a3645e337bacba9c28c499069",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001269-b-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001269-c-1": {
+      "bytes": 754078,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001269-c-1.csv",
+      "sha256": "1706fb7a844b2f5a34dc034c1e8e1ca01d16082fd19a4047667008ff2515dd67",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001269-c-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-1": {
+      "bytes": 2062915,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-1.csv",
+      "sha256": "c7a27bc3984d7ad9e9af0391be8e96d082f05c01d1d90489945dcf1edd75901e",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-10": {
+      "bytes": 2084357,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-10.csv",
+      "sha256": "4d29bdb7dba1c0b668dc1c1a633446ab1110faa88e2db374b3c22ed096b47113",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-10/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-2": {
+      "bytes": 2060469,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-2.csv",
+      "sha256": "922861a3482373691fb1494af04448147efce6102ca98e4694154de29a3aabdd",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-3": {
+      "bytes": 2063365,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-3.csv",
+      "sha256": "8cbb735cc4479541cf06d7f387deb17479cc43aa91ba06e9a3a6e6c38cd2c318",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-3/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-4": {
+      "bytes": 2063923,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-4.csv",
+      "sha256": "2808cb3054e405e8f85523f2edc538d51e9a06059f81df7b9fe0be5597e01a50",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-4/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-5": {
+      "bytes": 2063442,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-5.csv",
+      "sha256": "979b2474eb2192b796f20ac86565d2f40c997d9f01b391c94f29252ab532155f",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-5/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-6": {
+      "bytes": 2063227,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-6.csv",
+      "sha256": "81dfdb0b1310b025642aca328099b37f7c8f735d92a070784a642f685b5c9e10",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-6/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-7": {
+      "bytes": 2063391,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-7.csv",
+      "sha256": "e2a901787d2245036c5dcbaed101accc61dfc7d81a5ae45b588b11659e665130",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-7/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-8": {
+      "bytes": 2060295,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-8.csv",
+      "sha256": "ff24e5847cf7a9564337d1e86e918663e4b7275eb45a17834718cb33cf24f5f2",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-8/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001270-a-9": {
+      "bytes": 2062932,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001270-a-9.csv",
+      "sha256": "4a4021fc77bcb86125f84bdcf4d8df0c68981c51824b2aa4c9016b3908a399da",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001270-a-9/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001271-a-1": {
+      "bytes": 2068481,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001271-a-1.csv",
+      "sha256": "b0fc29b915e81c73b3028a5fd393a938c3400e303524c5970ea96aee4eb9943d",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001271-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001273-a-1": {
+      "bytes": 326106,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001273-a-1.csv",
+      "sha256": "7853d0d6543ad65f741868acffcea05dace16f746f38b3c0c5ff0b7de85ec289",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001273-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001278-a-1": {
+      "bytes": 409593,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001278-a-1.csv",
+      "sha256": "dd9390c6a1fc2d0d6013713b527a66a67bb3bfec52685aa788f1dbb7fcfdb3ff",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001278-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001280-a-1": {
+      "bytes": 232493,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001280-a-1.csv",
+      "sha256": "78074499f382c0ea3c28f03be3aa9e29c6f2fb02b0e180df5dcb2a308b7c06b8",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001280-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001282-a-1": {
+      "bytes": 605915,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001282-a-1.csv",
+      "sha256": "00d520ca3d36e92e8d800d28c1b43547a401a080020a872f87ff9c0148a0bbe6",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001282-a-1/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    },
+    "urn:mavedb:00001282-a-2": {
+      "bytes": 527191,
+      "path": "data/raw/mavedb-external-v1/urn_mavedb_00001282-a-2.csv",
+      "sha256": "e7d50ed248ac18c970d210c2ed94491cc2746685b480e798a6daed836102ce0b",
+      "source": "https://api.mavedb.org/api/v1/score-sets/urn:mavedb:00001282-a-2/scores",
+      "version": "2026-08-29T16:17:31.276844+00:00"
+    }
+  },
+  "protocol": {
+    "biological_proteins": 10,
+    "bootstrap_repeats": 10000,
+    "bootstrap_seed": 20260829,
+    "checkpoint_sha256": "46f002a9870c9bdecd0ea887acb1f9a38a6b561e8f8bf8a6990b679b9d31b928",
+    "eligible_directed_assays": 21,
+    "locked_assays": 45,
+    "name": "VariantShift locked-box MaveDB external validation",
+    "outcomes_first_accessed_at_utc": "2026-08-29T16:17:31.276844+00:00",
+    "preregistered_at_utc": "2026-08-29T16:15:42.714188+00:00",
+    "preregistration_commit": "4d1f98ec5c82de7d322aab68c35076d713467501",
+    "primary_estimand": "protein-balanced mean within-assay Spearman",
+    "primary_model": "esm2_t6_8M_UR50D_masked_marginal",
+    "primary_success_rule": "nested-bootstrap 95% lower bound > 0",
+    "retained_assay_measurements": 142204,
+    "unique_sequence_substitutions": 78982,
+    "version": "1.0.0"
+  },
+  "schema_version": 2,
+  "source": {
+    "git_commit": "f56547188af3c81e0f0b5c64179ed8979c90abc1"
+  }
+}

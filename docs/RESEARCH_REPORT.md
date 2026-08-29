@@ -6,16 +6,19 @@ Variant-effect benchmarks often mix three distinct questions: interpolation amon
 mutations, extrapolation to unmeasured residue positions, and transfer to unseen proteins. This
 study separates those estimands on ProteinGym v1.3, audits official supervised and zero-shot
 predictions at mutation level, and adds repeated protein-, sequence-family-, structure-family-, and
-curated Pfam-family holdouts. The final cohort contains 195 assays, 169 proteins, and 689,994
+curated Pfam-family holdouts. The benchmark cohort contains 195 assays, 169 proteins, and 689,994
 single-substitution measurements. Across twelve exactly paired zero-shot score sets, VenusREM ranks
 first at protein-balanced mean Spearman 0.542 and leads ESM-2 650M by 0.114; a simultaneous 95%
 paired-bootstrap interval across all model comparisons is 0.081–0.146. Five repeated grouped
 partitions show a small decrease from protein holdout to sequence-family holdout, but adding remote
 structure and curated Pfam relationships does not produce an additional resolved decrease. The
 feature ablation shows that fixed ESM scores account for most of the pooled models' advantage over
-mutation descriptors alone. The results support a narrow conclusion: detectable homologous-label
-transfer slightly inflates the pooled estimate, while a largely pretrained-score-driven ranking
-signal is stable across the declared family rules.
+mutation descriptors alone. A methods-before-outcomes test on post-v1.3 MaveDB data then finds that
+ESM-2 8M retains a positive but much smaller external signal: mean Spearman 0.105 (95% interval
+0.034–0.183) across 10 proteins, with top-decile recall 0.106 against a random baseline of 0.100.
+Together, the results show that detectable homologous-label transfer only slightly inflates the
+within-benchmark estimate, while benchmark-external dataset shift causes a much larger loss and
+leaves little demonstrated utility for selecting top variants.
 
 ## Study design
 
@@ -25,7 +28,7 @@ at least 20 measured positions, and at least 10 distinct normalized scores. All 
 means first average assays within UniProt ID so proteins with multiple assays do not receive extra
 weight.
 
-The analysis has four linked layers:
+The analysis has five linked layers:
 
 1. Official supervised out-of-fold predictions under random, modulo-position, and contiguous-
    position splits.
@@ -34,6 +37,8 @@ The analysis has four linked layers:
 3. An exactly paired twelve-model zero-shot landscape with ranking and top-variant metrics.
 4. Pooled ridge and nonlinear transfer under five repeated group partitions, where groups progress
    from UniProt IDs to sequence, sequence/structure, and independently curated Pfam families.
+5. A temporally external MaveDB panel frozen and pushed before outcome access, with exhaustive
+   ProteinGym family exclusion and nested protein/assay/position uncertainty.
 
 ## Modern zero-shot landscape
 
@@ -138,11 +143,33 @@ the main family-audit result: the same exact partitions are used for both featur
   grouping at the declared thresholds.
 - Marginal coverage, position-balanced coverage, risk–coverage, top-set recovery, and best-variant
   regret are all published rather than substituting one rank correlation for every use case.
+- A small ESM-2 8M signal survives on a post-ProteinGym, family-filtered external cohort, but the
+  effect is about half its descriptive benchmark estimate and does not yield useful top-decile
+  recovery.
+
+## Locked-box external validation
+
+The external protocol was committed and pushed with `outcomes_accessed: false` before any of its 45
+MaveDB score tables was requested. Of those locked assays, 21 passed the frozen direction and
+outcome rules, yielding 142,204 measurements across 10 biological proteins. The primary ESM-2 8M
+masked-marginal estimate was 0.105 (nested-bootstrap 95% interval 0.034–0.183), satisfying the
+predeclared lower-bound-above-zero criterion. Wild-type marginal scoring was 0.103 (0.035–0.177),
+and the paired difference was unresolved at 0.0019 (−0.0057 to 0.0100).
+
+The more operational secondary metrics were weak: masked-marginal top-decile recall was 0.106
+versus a random expectation of approximately 0.100, selection gain was 0.078 assay standard
+deviations, and best-variant regret was 0.968 standard deviations. Protein-level Spearman ranged
+from 0.320 on CHEK2 to −0.065 on CPOX. An official-score parity audit achieved Spearman 1.0 and
+maximum absolute error below 1.7 × 10⁻⁵, ruling out a material local-scoring discrepancy.
+
+The full methods-before-outcomes timeline, attrition ledger, target estimates, parity audit, and
+interpretation are published in [`EXTERNAL_VALIDATION_REPORT.md`](EXTERNAL_VALIDATION_REPORT.md).
 
 ## What remains outside the evidence
 
-This is a retrospective computational benchmark. It does not establish prospective wet-lab hit
-rates, clinical validity, causal mechanisms, or coverage over all protein families. ProteinGym's
+This is now an externally validated retrospective computational study, not a prospective wet-lab
+experiment. It does not establish prospective hit rates, clinical validity, causal mechanisms, or
+coverage over all protein families. ProteinGym's
 official structures are predicted, the curated API snapshot does not map every protein, and the
 official v1.3 score archive does not contain every model available or unpublished in 2026. A
 top-tier empirical follow-up would preregister a new assay panel, freeze model and calibration
@@ -154,6 +181,8 @@ from both model development and this benchmark.
 Raw ProteinGym archives, structures, and per-variant predictions remain outside Git. Committed
 aggregate artifacts include complete eligibility, join, family-edge, coordinate, repeat, and
 bootstrap ledgers. A compressed public-data snapshot freezes every UniProt and InterPro response
-used for curated mapping. The run manifest records public input hashes, exact source revision,
-library and tool versions, protocol thresholds, and hashes for every committed output. CI re-runs
-unit and leakage-invariant tests and verifies committed artifact bytes against that manifest.
+used for curated mapping. The external validation additionally publishes all 45 locked-assay
+decisions, input hashes, a checkpoint hash, model execution records, and 10,000 nested-bootstrap
+replicates. Run manifests record public input hashes, exact source revisions, library and tool
+versions, protocol thresholds, and hashes for every committed output. CI re-runs unit and
+leakage-invariant tests and verifies committed artifact bytes against those manifests.
