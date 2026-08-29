@@ -1,0 +1,181 @@
+{
+  "artifacts": {
+    "docs/proteingym-extended.svg": {
+      "bytes": 12173,
+      "sha256": "4d0f8fd00b1d3a28be4b7ff1d1130976ab374561cee8dacf1743018314f193f1"
+    },
+    "results/proteingym/eligibility.csv": {
+      "bytes": 33676,
+      "sha256": "28e92d1bdb8665ea2b7b01dae989c14e45059681b96e31e01a2ecf55ab5925e8"
+    },
+    "results/proteingym/extended/crossover-examples.csv": {
+      "bytes": 364164,
+      "sha256": "a384ef8c640f44a3324c55d4f8ffcf7037166b40a0d09f872c94412cf8ec4862"
+    },
+    "results/proteingym/extended/crossover-heldout-predictions.csv": {
+      "bytes": 187840,
+      "sha256": "fea5d522db471521ceaad11e5883fee34c48b71fdeaddf32c3b8fb65a7472dbe"
+    },
+    "results/proteingym/extended/crossover-logistic-coefficients.csv": {
+      "bytes": 1274,
+      "sha256": "086e0d307b39b4b98a7ffe9ddc7e4aa6bafcf7598f73a45e29a6bddd1ca0f1d5"
+    },
+    "results/proteingym/extended/crossover-summary.csv": {
+      "bytes": 526,
+      "sha256": "9c11e5625232d7478c1516e996026ecf728de4cb14052228062628bb92adec26"
+    },
+    "results/proteingym/extended/embedding-probe-risk-coverage.csv": {
+      "bytes": 8083002,
+      "sha256": "2bb452c114d7d45c5ed4aa224e90e0e27960e21cd45ff40f3620df199fcb4c89"
+    },
+    "results/proteingym/extended/embedding-probe-risk-summary.csv": {
+      "bytes": 4407,
+      "sha256": "640e3dfb1440093847f104b00d8f1d195bc7f520e58d524c3d9fa5d23921a0ef"
+    },
+    "results/proteingym/extended/embedding-probe-runs.csv": {
+      "bytes": 4965070,
+      "sha256": "f1ca9bea0d1435498da0c748dd9e09d858955996e7630fda31f2682e02fcc750"
+    },
+    "results/proteingym/extended/embedding-probe-summary.csv": {
+      "bytes": 2655,
+      "sha256": "37e10bd2443cd0a702b5fb58144d5ad7a94fd3fe88611417a6e4491df3376a6d"
+    },
+    "results/proteingym/extended/heldout-protein-assays.csv": {
+      "bytes": 270499,
+      "sha256": "3c07a96b52cd1acf681586173a03afbe6fbe4f3a946195562fd1fa26f760afcd"
+    },
+    "results/proteingym/extended/heldout-protein-risk-coverage.csv": {
+      "bytes": 459200,
+      "sha256": "f3157143dba6237ef70e88636a180b596dfe98402684a980095375ab4425e99d"
+    },
+    "results/proteingym/extended/heldout-protein-risk-summary.csv": {
+      "bytes": 1138,
+      "sha256": "a70a7f313821a8e8a782cea790c3c137c123d10b8b3ac16c86280f92c824df45"
+    },
+    "results/proteingym/extended/heldout-protein-summary.csv": {
+      "bytes": 792,
+      "sha256": "1b4a65e2283744265a598e23882f42b973db88890e88900a01e4cf4c1a071917"
+    },
+    "results/proteingym/extended/official-supervised-audit.csv": {
+      "bytes": 61299,
+      "sha256": "2d5d43f36b68d1c07db0054336c59fc7e4fa39dd8f390201c502a38f30e54e62"
+    },
+    "results/proteingym/extended/official-supervised-runs.csv": {
+      "bytes": 542853,
+      "sha256": "6fc72f6c1c6a6e8c5af7ab87ce866e8c88a317a79c1b89b83a69b2a9651a1139"
+    },
+    "results/proteingym/extended/official-supervised-summary.csv": {
+      "bytes": 1626,
+      "sha256": "6440e81071ceeaa6ac0f00075fc770d2e0c17ea8e52c61f59433a2751e2c9544"
+    }
+  },
+  "environment": {
+    "fair_esm": "2.0.0",
+    "numpy": "1.26.4",
+    "pandas": "3.0.5",
+    "platform": "macOS-15.3-arm64-arm-64bit",
+    "python": "3.11.0",
+    "scikit_learn": "1.9.0",
+    "scipy": "1.17.1",
+    "torch": "2.2.2",
+    "variantshift": "0.2.0"
+  },
+  "inputs": {
+    "esm2_embedding_index": {
+      "bytes": 56478,
+      "path": "results/proteingym/extended/esm2-embedding-index.csv",
+      "sha256": "93ec01a434c66b156f807938fe17dbb49112f153ef9a0fedc644d32063c94671",
+      "source": "locally cached frozen ESM-2 residue representations",
+      "version": "esm2_t6_8M_UR50D"
+    },
+    "official_supervised_predictions": {
+      "bytes": 269797108,
+      "path": "data/raw/proteingym/DMS_supervised_substitutions_scores.zip",
+      "sha256": "ec72fab2c766db9aaf91fb4e64a28c44afbf219c52ba1835bcc3149f57bff805",
+      "source": "https://marks.hms.harvard.edu/proteingym/ProteinGym_v1.3/DMS_supervised_substitutions_scores.zip",
+      "version": "v1.3"
+    },
+    "official_zero_shot_scores": {
+      "bytes": 1911045703,
+      "path": "data/raw/proteingym/zero_shot_substitutions_scores.zip",
+      "sha256": "3fd7cdb5e78f1d43cabfabfeb6578c252b63af23ba2ab44db0094dc3a42de36d",
+      "source": "https://marks.hms.harvard.edu/proteingym/ProteinGym_v1.3/zero_shot_substitutions_scores.zip",
+      "version": "v1.3"
+    },
+    "reference_index": {
+      "bytes": 208734,
+      "path": "data/raw/proteingym/DMS_substitutions.csv",
+      "sha256": "a8f498011532a74aa9fe556a50555a75e928c5837d19c06a87592ae04049b308",
+      "source": "https://raw.githubusercontent.com/OATML-Markslab/ProteinGym/main/reference_files/DMS_substitutions.csv",
+      "version": "v1.3"
+    },
+    "substitution_assays": {
+      "bytes": 43021128,
+      "path": "data/raw/proteingym/DMS_ProteinGym_substitutions.zip",
+      "sha256": "3a83766254ac9ac9984ec25cb73c6e010ea4418f5e35f143933e6b6e6473b921",
+      "source": "https://marks.hms.harvard.edu/proteingym/ProteinGym_v1.3/DMS_ProteinGym_substitutions.zip",
+      "version": "v1.3"
+    }
+  },
+  "protocol": {
+    "audited_assays": 217,
+    "bootstrap_repeats": 10000,
+    "bootstrap_unit": "UniProt_ID",
+    "calibration_fraction": 0.2,
+    "calibration_methods": [
+      "standard_split",
+      "mondrian_substitution",
+      "position_distance_scaled"
+    ],
+    "cohort": "finite single substitutions",
+    "crossover_group_folds": 5,
+    "eligibility": {
+      "min_positions": 20,
+      "min_single_variants": 500,
+      "min_unique_scores": 10
+    },
+    "eligible_assays": 195,
+    "heldout_protein_folds": 5,
+    "nominal_coverage": 0.8,
+    "repeated_splits": {
+      "additive_and_zero_shot": {
+        "repeats": 10,
+        "start_seed": 42
+      },
+      "local_embedding_probe": {
+        "repeats": 5,
+        "start_seed": 42
+      }
+    },
+    "splits": [
+      "random_variant",
+      "position_holdout",
+      "modulo_position",
+      "contiguous_position"
+    ],
+    "supervised_models": [
+      "mean",
+      "biophysical_ridge",
+      "additive_ridge",
+      "esm2_residue_ridge_probe",
+      "ProteinNPT (official out-of-fold)",
+      "Kermut (official out-of-fold)",
+      "cross_protein_ridge",
+      "cross_protein_histgb"
+    ],
+    "zero_shot_models": [
+      "ESM1v_ensemble",
+      "ESM2_8M",
+      "ESM2_35M",
+      "ESM2_150M",
+      "ESM2_650M",
+      "ESM2_3B",
+      "ESM2_15B"
+    ],
+    "zero_shot_note": "Fixed-score subset differences are not supervised generalization gaps"
+  },
+  "schema_version": 2,
+  "source": {
+    "git_commit": "ac29823"
+  }
+}
