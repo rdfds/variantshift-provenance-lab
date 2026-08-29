@@ -1,4 +1,4 @@
-.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-family-clusters proteingym-heldout-family proteingym-structure-clusters proteingym-heldout-structure-family proteingym-curated-families proteingym-heldout-curated-family proteingym-heldout-curated-family-ablation proteingym-modern-zero-shot proteingym-crossover proteingym-figure proteingym-extended-figure proteingym-research-figure clean
+.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-family-clusters proteingym-heldout-family proteingym-structure-clusters proteingym-heldout-structure-family proteingym-curated-families proteingym-heldout-curated-family proteingym-heldout-curated-family-ablation proteingym-modern-zero-shot proteingym-crossover proteingym-figure proteingym-extended-figure proteingym-research-figure mavedb-freeze-external mavedb-download-external mavedb-evaluate-external mavedb-external-figure clean
 
 DATASET := data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 PROTEINGYM_DIR := data/raw/proteingym
@@ -8,6 +8,10 @@ PROTEINGYM_SUPERVISED := $(PROTEINGYM_DIR)/DMS_supervised_substitutions_scores.z
 PROTEINGYM_STRUCTURES := $(PROTEINGYM_DIR)/ProteinGym_AF2_structures.zip
 PROTEINGYM_REFERENCE := $(PROTEINGYM_DIR)/DMS_substitutions.csv
 PROTEINGYM_EMBEDDINGS := $(PROTEINGYM_DIR)/esm2_t6_8M_embeddings
+MAVEDB_PROTOCOL := protocols/mavedb-external-v1
+MAVEDB_RAW := data/raw/mavedb-external-v1
+MAVEDB_WORK := data/processed/mavedb-external-v1
+MAVEDB_RESULTS := results/mavedb-external-v1
 
 install:
 	python -m pip install -e '.[dev]'
@@ -95,6 +99,18 @@ proteingym-research-figure:
 
 proteingym-figure:
 	variantshift proteingym-figure artifacts/proteingym/assay-summary.csv artifacts/proteingym/aggregate-summary.csv artifacts/proteingym/esm-aggregate-summary.csv --output artifacts/proteingym-analysis.svg
+
+mavedb-freeze-external:
+	variantshift mavedb-freeze-external $(PROTEINGYM_REFERENCE) --output-dir $(MAVEDB_PROTOCOL)
+
+mavedb-download-external:
+	variantshift mavedb-download-external $(MAVEDB_PROTOCOL)/protocol.json $(MAVEDB_RAW)
+
+mavedb-evaluate-external:
+	variantshift mavedb-evaluate-external $(MAVEDB_PROTOCOL) $(MAVEDB_RAW) --work-dir $(MAVEDB_WORK) --output-dir $(MAVEDB_RESULTS)
+
+mavedb-external-figure:
+	variantshift mavedb-external-figure $(MAVEDB_PROTOCOL)/protocol.json $(MAVEDB_RESULTS)/assay-audit.csv $(MAVEDB_RESULTS)/bootstrap-summary.csv $(MAVEDB_RESULTS)/protein-metrics.csv --output docs/mavedb-external-validation.svg
 
 clean:
 	rm -rf artifacts .coverage htmlcov .pytest_cache

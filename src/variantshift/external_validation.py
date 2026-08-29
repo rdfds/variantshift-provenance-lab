@@ -1036,3 +1036,85 @@ def evaluate_external_cohort(
     )
     interval_summary = pd.DataFrame(interval_rows)
     return assay_metrics, protein_metrics, point_summary, interval_summary, bootstrap_frame
+
+
+def run_external_validation(
+    protocol_dir: Path,
+    score_dir: Path,
+    work_dir: Path,
+    output_dir: Path,
+    *,
+    device: str | None = None,
+    batch_size: int = 8,
+    bootstrap_repeats: int = 10_000,
+    bootstrap_seed: int = 2_026_0829,
+    reuse_predictions: bool = False,
+) -> dict[str, Path]:
+    """Execute the frozen external analysis and persist every audit and result table."""
+    protocol_dir = Path(protocol_dir)
+    score_dir = Path(score_dir)
+    work_dir = Path(work_dir)
+    output_dir = Path(output_dir)
+    work_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    cohort, assay_audit = build_external_outcome_cohort(protocol_dir, score_dir)
+    cohort_path = work_dir / "cohort.csv.gz"
+    prediction_path = work_dir / "predictions.csv.gz"
+    model_audit_path = output_dir / "model-audit.csv"
+    cohort.to_csv(
+        cohort_path,
+        index=False,
+        compression={"method": "gzip", "mtime": 0},
+    )
+    if reuse_predictions:
+        if not prediction_path.is_file() or not model_audit_path.is_file():
+            raise FileNotFoundError(
+                "--reuse-predictions requires predictions.csv.gz and model-audit.csv"
+            )
+        predictions = pd.read_csv(prediction_path)
+    else:
+        predictions, model_audit = score_external_cohort(
+            cohort,
+            protocol_dir,
+            work_dir,
+            device=device,
+            batch_size=batch_size,
+        )
+        predictions.to_csv(
+            prediction_path,
+            index=False,
+            compression={"method": "gzip", "mtime": 0},
+        )
+        model_audit.to_csv(model_audit_path, index=False)
+
+    assay_metrics, protein_metrics, point_summary, intervals, bootstraps = (
+        evaluate_external_cohort(
+            cohort,
+            predictions,
+            bootstrap_repeats=bootstrap_repeats,
+            bootstrap_seed=bootstrap_seed,
+        )
+    )
+    outputs = {
+        "cohort": cohort_path,
+        "predictions": prediction_path,
+        "assay_audit": output_dir / "assay-audit.csv",
+        "model_audit": model_audit_path,
+        "assay_metrics": output_dir / "assay-metrics.csv",
+        "protein_metrics": output_dir / "protein-metrics.csv",
+        "point_summary": output_dir / "point-summary.csv",
+        "bootstrap_summary": output_dir / "bootstrap-summary.csv",
+        "bootstrap_replicates": output_dir / "bootstrap-replicates.csv.gz",
+    }
+    assay_audit.to_csv(outputs["assay_audit"], index=False)
+    assay_metrics.to_csv(outputs["assay_metrics"], index=False)
+    protein_metrics.to_csv(outputs["protein_metrics"], index=False)
+    point_summary.to_csv(outputs["point_summary"], index=False)
+    intervals.to_csv(outputs["bootstrap_summary"], index=False)
+    bootstraps.to_csv(
+        outputs["bootstrap_replicates"],
+        index=False,
+        compression={"method": "gzip", "mtime": 0},
+    )
+    return outputs
