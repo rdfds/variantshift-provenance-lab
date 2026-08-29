@@ -1,0 +1,17 @@
+model,calibration_method,retained_fraction,n_proteins,mean_normalized_mae
+cross_protein_histgb,mondrian_substitution,0.25,169,0.6891531071539764
+cross_protein_histgb,mondrian_substitution,0.5,169,0.7015934707523638
+cross_protein_histgb,mondrian_substitution,0.75,169,0.7067629720572206
+cross_protein_histgb,mondrian_substitution,1.0,169,0.7092073086009705
+cross_protein_histgb,standard_split,0.25,169,0.7088871754066322
+cross_protein_histgb,standard_split,0.5,169,0.7072339201701701
+cross_protein_histgb,standard_split,0.75,169,0.7084907409193771
+cross_protein_histgb,standard_split,1.0,169,0.7092073086009705
+cross_protein_ridge,mondrian_substitution,0.25,169,0.7254738341697047
+cross_protein_ridge,mondrian_substitution,0.5,169,0.7353130901679865
+cross_protein_ridge,mondrian_substitution,0.75,169,0.7379089578389114
+cross_protein_ridge,mondrian_substitution,1.0,169,0.736960073962292
+cross_protein_ridge,standard_split,0.25,169,0.7381795004900824
+cross_protein_ridge,standard_split,0.5,169,0.7358873737790119
+cross_protein_ridge,standard_split,0.75,169,0.7358765804617604
+cross_protein_ridge,standard_split,1.0,169,0.736960073962292
