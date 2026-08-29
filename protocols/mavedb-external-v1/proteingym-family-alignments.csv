@@ -1,0 +1,9 @@
+query_id,target_id,sequence_identity,alignment_length,query_coverage,target_coverage,e_value,bit_score,sequence_sha256,target_name,DMS_id,UniProt_ID,qualifies_family_overlap
+external000,proteingym101,1.0,393,1.0,1.0,1.774e-264,799,e3ca60f18e3b6e98986ad6749215ee3b7a3abc09c191675213d1f243c035c9a3,TP53,P53_HUMAN_Kotler_2018,P53_HUMAN,True
+external000,proteingym100,0.997,393,1.0,1.0,8.757e-264,797,e3ca60f18e3b6e98986ad6749215ee3b7a3abc09c191675213d1f243c035c9a3,TP53,P53_HUMAN_Giacomelli_2018_Null_Etoposide,P53_HUMAN,True
+external001,proteingym100,1.0,393,1.0,1.0,7.986000000000001e-265,800,a5cec053cd1989b7676255fc9467b6ffbc3e531b62f1e40558510b55e0ef27d6,TP53,P53_HUMAN_Giacomelli_2018_Null_Etoposide,P53_HUMAN,True
+external001,proteingym101,0.997,393,1.0,1.0,1.9449999999999998e-263,796,a5cec053cd1989b7676255fc9467b6ffbc3e531b62f1e40558510b55e0ef27d6,TP53,P53_HUMAN_Kotler_2018,P53_HUMAN,True
+external003,proteingym048,1.0,60,1.0,1.0,1.0550000000000001e-36,123,8b63e161229a988015d53cc39023e3b4664f32cf7710b6820d8ea83eddfc71fb,EnvZ DHp,ENVZ_ECOLI_Ghose_2023,ENVZ_ECOLI,True
+external006,proteingym165,0.957,140,1.0,1.0,6.928999999999999e-80,252,9a06387610edd099466d614941c42a433f444feb6a8f25375bb0b6ad8ec9c6f4,alpha-synuclein,SYUA_HUMAN_Newberry_2020,SYUA_HUMAN,True
+external009,proteingym073,1.0,1158,1.0,0.999,0.0,2329,a5ca23fa1e625d664becc095a35cbee13d76f3d13157d87cb6be9bcf1ab522d6,KCNH2,KCNH2_HUMAN_Kozek_2020,KCNH2_HUMAN,True
+external020,proteingym117,1.0,465,1.0,1.0,0.0,1014,f1c95f90cb66ef3fe563de977581980576e42b59b10fe827126dfc9ead1003d3,Parkin,PRKN_HUMAN_Clausen_2023,PRKN_HUMAN,True

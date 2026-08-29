@@ -1,0 +1,127 @@
+{
+  "audit_commit_requirement": "Commit and push this protocol with outcomes_accessed=false before any selected score endpoint is requested. Publish every later inclusion and exclusion.",
+  "estimands": {
+    "primary": "protein-balanced mean within-assay Spearman",
+    "secondary": [
+      "within-assay Spearman",
+      "predicted top-decile recall",
+      "top-decile experimental selection gain in assay SD units",
+      "masked-minus-wild-type marginal paired differences",
+      "cross-condition stability for repeated protein assays"
+    ],
+    "uncertainty": "nested bootstrap: resample proteins, assays within proteins, and mutated positions within assays",
+    "within_protein": "average assay estimates before averaging proteins"
+  },
+  "frozen_at_utc": "2026-08-29T16:15:42.714188+00:00",
+  "mmseqs_version": "18-8cc5c",
+  "models": {
+    "primary": {
+      "identifier": "esm2_t6_8M_UR50D",
+      "long_sequence_rule": "1022-residue windows with 256-residue overlap; assign each position to the containing window that maximizes distance from a boundary",
+      "scoring": "masked marginal log-odds"
+    },
+    "secondary": {
+      "identifier": "esm2_t6_8M_UR50D",
+      "scoring": "wild-type marginal log-odds using the identical window assignment"
+    }
+  },
+  "orientation_rule": {
+    "fallback": "if at least 10 synonymous and 10 termination controls exist, orient toward the synonymous-control median",
+    "first": "use MaveDB normal-versus-abnormal calibration ranges when their ordering unambiguously defines whether larger scores are more functional",
+    "otherwise": "exclude from directed primary analysis and retain in an unsigned audit"
+  },
+  "outcome_access_timestamp_utc": null,
+  "outcome_rules": {
+    "bootstrap_repeats": 10000,
+    "bootstrap_seed": 20260829,
+    "duplicate_protein_consequence_rule": "median",
+    "minimum_mutated_positions": 20,
+    "minimum_orientation_controls": 10,
+    "minimum_single_missense_variants": 500,
+    "minimum_unique_scores": 10,
+    "primary_metric": "protein-balanced mean within-assay Spearman",
+    "primary_model": "esm2_t6_8M_UR50D_masked_marginal",
+    "primary_success_rule": "nested-bootstrap 95% lower bound > 0",
+    "secondary_model": "esm2_t6_8M_UR50D_wild_type_marginal"
+  },
+  "outcomes_accessed": false,
+  "panel": {
+    "excluded_proteingym_family_assays": 20,
+    "metadata_candidates": 65,
+    "metadata_oriented_selected_assays": 8,
+    "selected_assays": 45,
+    "selected_target_names": 17,
+    "selected_target_sequences": 18,
+    "selected_urns": [
+      "urn:mavedb:00001239-a-1",
+      "urn:mavedb:00001239-a-2",
+      "urn:mavedb:00001239-a-3",
+      "urn:mavedb:00001239-a-4",
+      "urn:mavedb:00001239-a-5",
+      "urn:mavedb:00001239-a-6",
+      "urn:mavedb:00001239-a-7",
+      "urn:mavedb:00001217-a-3",
+      "urn:mavedb:00001217-a-4",
+      "urn:mavedb:00001243-a-1",
+      "urn:mavedb:00001222-a-2",
+      "urn:mavedb:00001227-a-2",
+      "urn:mavedb:00001222-b-2",
+      "urn:mavedb:00001252-a-1",
+      "urn:mavedb:00001252-a-2",
+      "urn:mavedb:00001266-a-1",
+      "urn:mavedb:00001266-b-1",
+      "urn:mavedb:00001267-0-1",
+      "urn:mavedb:00001267-a-1",
+      "urn:mavedb:00001267-b-1",
+      "urn:mavedb:00001269-a-1",
+      "urn:mavedb:00001269-b-1",
+      "urn:mavedb:00001269-c-1",
+      "urn:mavedb:00001266-0-1",
+      "urn:mavedb:00001266-c-1",
+      "urn:mavedb:00001200-0-1",
+      "urn:mavedb:00001270-a-1",
+      "urn:mavedb:00001270-a-10",
+      "urn:mavedb:00001270-a-2",
+      "urn:mavedb:00001270-a-3",
+      "urn:mavedb:00001270-a-4",
+      "urn:mavedb:00001270-a-5",
+      "urn:mavedb:00001270-a-6",
+      "urn:mavedb:00001270-a-7",
+      "urn:mavedb:00001270-a-8",
+      "urn:mavedb:00001270-a-9",
+      "urn:mavedb:00001271-a-1",
+      "urn:mavedb:00001267-a-2",
+      "urn:mavedb:00001267-b-2",
+      "urn:mavedb:00001273-a-1",
+      "urn:mavedb:00001282-a-1",
+      "urn:mavedb:00001282-a-2",
+      "urn:mavedb:00001267-0-2",
+      "urn:mavedb:00001278-a-1",
+      "urn:mavedb:00001280-a-1"
+    ]
+  },
+  "protocol": "VariantShift locked-box MaveDB external validation",
+  "selection": {
+    "bidirectional_coverage_threshold": 0.8,
+    "frozen_on_or_before": "2026-08-29",
+    "maximum_sequence_length": 2000,
+    "minimum_reported_variants": 500,
+    "minimum_sequence_length": 40,
+    "published_after": "2025-04-28",
+    "search_coverage_floor": 0.5,
+    "search_identity_floor": 0.15,
+    "sequence_identity_threshold": 0.3
+  },
+  "source": {
+    "api": "https://api.mavedb.org/api/v1",
+    "api_version": {
+      "name": "mavedb-api",
+      "version": "2026.2.7.2"
+    },
+    "proteingym_release": "v1.3",
+    "proteingym_release_date": "2025-04-28",
+    "published_registry_records": 2805,
+    "registry_canonical_sha256": "42496ff974297acf095750c26362455fe5f6fe91a0109f83764e88ee92d1c514"
+  },
+  "version": "1.0.0"
+}
