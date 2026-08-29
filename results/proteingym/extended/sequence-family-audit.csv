@@ -1,0 +1,2 @@
+method,mmseqs_version,sequence_scope,coverage_mode,search_identity_floor,search_coverage_floor,eligible_assays,proteins,assayed_sequences,identity_threshold,coverage_threshold,n_families,singleton_families,multi_protein_families,proteins_in_multi_protein_families,largest_family_size,qualifying_protein_pairs,cross_family_qualifying_alignments
+MMseqs2 exhaustive all-versus-all connected components,18-8cc5c,ProteinGym MSA_start:MSA_end assayed segment,bidirectional,0.15,0.5,195,169,170,0.3,0.8,156,146,10,23,3,16,0
