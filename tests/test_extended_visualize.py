@@ -77,8 +77,10 @@ def test_render_extended_figure(tmp_path: Path) -> None:
         crossover,
         tmp_path / "figure.svg",
         heldout_family=heldout,
+        heldout_structure_family=heldout,
     )
 
     rendered = output.read_text(encoding="utf-8")
     assert "Harder splits change model rankings" in rendered
     assert "Crossover predictor" in rendered
+    assert "seq+structure" in rendered
