@@ -95,15 +95,15 @@ the standardized gain in experimental score among selected variants, and regret 
 measured variant. These metrics test the protein-engineering use case more directly than a global
 rank correlation alone.
 
-## Held-out-protein and sequence-family transfer
+## Held-out-protein and sequence/structure-family transfer
 
 Cross-protein models receive only assay-independent mutation descriptors and fixed ProteinGym
 ESM-1v/ESM-2 scores. Targets are converted to within-assay percentile ranks so unrelated assay
 units cannot leak into the pooled objective. At most 1,000 variants per assay are chosen by a
 deterministic, label-independent ordering, and sample weights give every assay equal total weight.
 
-Two outer five-fold protocols are reported. The first groups by UniProt ID. The second groups by a
-deterministic sequence-family proxy constructed as follows:
+Three outer five-fold protocols are reported. The first groups by UniProt ID. The second groups by
+deterministic sequence families constructed as follows:
 
 1. Extract the exact ProteinGym `MSA_start:MSA_end` assayed segment for every eligible assay.
 2. Run MMseqs2 exhaustive all-versus-all search with a broad 15% identity and 50% bidirectional
@@ -114,15 +114,34 @@ deterministic sequence-family proxy constructed as follows:
 5. Verify that zero qualifying alignments cross the resulting components. Report cluster
    composition at 20%, 25%, 30%, and 40% identity and at 50% and 80% coverage.
 
-Within each outer training fold, a further 20% of groups are reserved for calibration. Consequently,
-fit, calibration, and test proteins—or complete sequence-family components—are disjoint. Evaluated
-models are a standardized ridge regression and a histogram gradient boosting regressor. The latter
-supplies a nonlinear baseline without claiming equivalence to a protein language model.
+The third protocol augments that graph with structure-level relationships:
 
-The family rule is an explicit sequence-homology proxy, not a curated Pfam or structure-based family
-definition. Remote homologs below the selected thresholds may remain separated. Fixed ESM scores
-may also encode information from related pretraining sequences; the evaluation isolates assay labels,
-not language-model pretraining corpora.
+1. Resolve the `pdb_file` and `pdb_range` fields for every eligible assay and require exactly one
+   official ProteinGym AlphaFold PDB per UniProt ID. Audit the byte length and SHA-256 of all 169
+   selected structures and of the 19,173,248-byte source archive.
+2. Run Foldseek exhaustive all-versus-all search over the 169 structures with TM-align alignment,
+   exact TM-score calculation, and no top-hit truncation. Require the complete 169² directed score
+   matrix: 28,561 rows, including 169 self alignments.
+3. Collapse each non-self pair to reciprocal evidence. A structure edge is admitted only when both
+   directed alignments have Foldseek homology probability ≥0.95, minimum query/target TM-score
+   ≥0.50, and minimum query/target coverage ≥80%.
+4. Union those edges with the predeclared MMseqs2 sequence components, then form deterministic
+   connected components across UniProt IDs. Verify that zero qualifying structure pairs cross the
+   combined components.
+5. Report sensitivity at probability thresholds 0.90, 0.95, and 0.99, TM-score thresholds 0.50 and
+   0.70, and coverage thresholds 50% and 80%. The primary graph contains 148 families, and no
+   sensitivity setting produces a component larger than seven proteins.
+
+Within each outer training fold, a further 20% of groups are reserved for calibration. Consequently,
+fit, calibration, and test proteins—or complete sequence/structure-family components—are disjoint.
+Evaluated models are a standardized ridge regression and a histogram gradient boosting regressor.
+The latter supplies a nonlinear baseline without claiming equivalence to a protein language model.
+
+The combined family rule is structure-aware but remains threshold-defined: it uses ProteinGym's
+predicted structures rather than curated Pfam clans or experimentally determined structures. Remote
+relationships missed by both rules may remain separated. Fixed ESM scores may also encode
+information from related pretraining sequences; the evaluation isolates assay labels, not
+language-model pretraining corpora.
 
 ## Supervised-versus-zero-shot crossover
 
@@ -145,8 +164,8 @@ treated as independent biological replicates.
 - Marginal coverage can conceal poor coverage for individual positions, which is why both are
   reported.
 - A model-selection classifier can be useful without identifying a causal mechanism.
-- The sequence-family split excludes directly detected homologous assay segments at the declared
-  thresholds; it does not prove the absence of all evolutionary or structural relationships.
+- The combined-family split excludes sequence and reciprocal structure relationships detected at
+  the declared thresholds; it does not prove the absence of every evolutionary relationship.
 - No result establishes clinical validity or prospective protein-design success.
 
 ## Primary sources
@@ -160,3 +179,5 @@ treated as independent biological replicates.
 - [MMseqs2 reference implementation](https://github.com/soedinglab/MMseqs2)
 - [MMseqs2 user guide](https://mmseqs.com/latest/userguide.pdf)
 - [MMseqs2 methods paper](https://www.nature.com/articles/nbt.3988)
+- [Foldseek reference implementation](https://github.com/steineggerlab/foldseek)
+- [Foldseek methods paper](https://www.nature.com/articles/s41587-023-01773-0)
