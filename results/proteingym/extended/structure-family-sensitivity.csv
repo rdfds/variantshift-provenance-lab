@@ -1,0 +1,6 @@
+minimum_tm_score,minimum_bidirectional_coverage,minimum_reciprocal_homology_probability,n_families,singleton_families,multi_protein_families,proteins_in_multi_protein_families,largest_family_size,qualifying_structure_pairs
+0.5,0.5,0.95,148,134,14,35,5,31
+0.5,0.8,0.9,142,128,14,41,7,37
+0.5,0.8,0.95,148,134,14,35,5,31
+0.5,0.8,0.99,154,143,11,26,4,13
+0.7,0.8,0.95,148,134,14,35,5,31
