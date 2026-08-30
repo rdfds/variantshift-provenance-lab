@@ -2,14 +2,17 @@
 
 ## Scope and contribution
 
-This extension separates four questions that should not be collapsed into one leaderboard:
+This extension separates six questions that should not be collapsed into one leaderboard:
 
 1. How do current supervised models perform under ProteinGym's official random, modulo, and
    contiguous five-fold protocols?
 2. How does a locally fitted ESM-2 residue-embedding probe behave under those protocols and a
    repeated randomly grouped unseen-position split?
 3. How reliable are prediction intervals and top-variant selections under each shift?
-4. Can mutation effects or model-selection rules transfer to an entirely unseen protein?
+4. How do twelve sequence-, structure-, and MSA-informed zero-shot models compare on exactly the
+   same complete variant set?
+5. Can mutation effects or model-selection rules transfer to an entirely unseen protein?
+6. Do those estimates survive sequence, structure, and independently curated Pfam family holdouts?
 
 ProteinGym already established that random folds can overestimate extrapolation to unseen residue
 positions. VariantShift does not present that observation as novel. The extension focuses on a
@@ -34,6 +37,21 @@ For every assay and split directory, the audit requires:
 Metrics are calculated per assay. Assays are averaged within UniProt ID before aggregate means and
 10,000-replicate protein-bootstrap intervals are computed. Official predictions are not reused for
 the custom random-position split, because their training folds would make that evaluation leaky.
+
+## Modern zero-shot landscape
+
+The official ProteinGym v1.3 zero-shot archive is used to compare ESM-2 650M, ESM3, ESM-C 600M,
+ProGen3 3B, xTrimoPGLM 100B, SaProt 650M, ProSST 2048, S3F-MSA, VenusREM, SiteRM, GEMME, and
+Tranception-L. Model columns and modalities are declared in source before evaluation.
+
+Every assay is independently joined to its ProteinGym measurement file by mutation identifier.
+The audit rejects duplicate scores, incomplete mutation joins, target-score disagreement, or less
+than 95% finite coverage shared by every compared model. All metrics are computed on the same
+complete-case variants within an assay. In the released cohort, all 195 assays have 100% shared
+coverage across all twelve columns. Assays are averaged within UniProt ID, and means and 95%
+intervals use 10,000 protein-bootstrap replicates. Comparisons against ESM-2 use the same resampled
+proteins, so the reported deltas are paired rather than differences between independent
+leaderboards.
 
 ## Local ESM-2 residue probe
 
@@ -102,7 +120,7 @@ ESM-1v/ESM-2 scores. Targets are converted to within-assay percentile ranks so u
 units cannot leak into the pooled objective. At most 1,000 variants per assay are chosen by a
 deterministic, label-independent ordering, and sample weights give every assay equal total weight.
 
-Three outer five-fold protocols are reported. The first groups by UniProt ID. The second groups by
+Four outer five-fold protocols are reported. The first groups by UniProt ID. The second groups by
 deterministic sequence families constructed as follows:
 
 1. Extract the exact ProteinGym `MSA_start:MSA_end` assayed segment for every eligible assay.
@@ -132,16 +150,38 @@ The third protocol augments that graph with structure-level relationships:
    0.70, and coverage thresholds 50% and 80%. The primary graph contains 148 families, and no
    sensitivity setting produces a component larger than seven proteins.
 
-Within each outer training fold, a further 20% of groups are reserved for calibration. Consequently,
-fit, calibration, and test proteins—or complete sequence/structure-family components—are disjoint.
-Evaluated models are a standardized ridge regression and a histogram gradient boosting regressor.
-The latter supplies a nonlinear baseline without claiming equivalence to a protein language model.
+The fourth protocol adds an independently maintained annotation layer:
 
-The combined family rule is structure-aware but remains threshold-defined: it uses ProteinGym's
-predicted structures rather than curated Pfam clans or experimentally determined structures. Remote
-relationships missed by both rules may remain separated. Fixed ESM scores may also encode
-information from related pretraining sequences; the evaluation isolates assay labels, not
-language-model pretraining corpora.
+1. Resolve ProteinGym entry names against the UniProtKB REST API. Canonical sequences are hashed;
+   raw sequences are used only in the local cache and are not committed.
+2. Map each declared ProteinGym assayed interval to one contiguous canonical-sequence segment.
+   Exact matching blocks propose offsets, the offset with the most exact assayed-residue matches is
+   selected, and mappings below 80% exact coverage are rejected. This avoids spuriously combining
+   matching residues scattered across a long multi-domain protein.
+3. Fetch current Pfam annotations through InterPro and retain a domain only when it overlaps at
+   least 50% of the shorter of the mapped assay segment and domain interval.
+4. Union sequence/structure components that share a qualifying exact Pfam family. The primary
+   InterPro 109.0 / Pfam 38.2 snapshot maps 183 of 195 assays across 158 of 169 proteins and yields
+   132 components. Unmapped proteins retain their existing sequence/structure component rather than
+   being discarded.
+5. Repeat clustering with Pfam clans as an explicitly broader sensitivity analysis. This produces
+   97 components and a largest component of 24 proteins; because clans can span remote folds, it is
+   a stress test rather than the primary biological-family definition.
+
+Each outer protocol is repeated five times with independently shuffled group assignments. Within
+every outer training fold, a further 20% of complete groups are reserved for calibration.
+Consequently, fit, calibration, and test proteins—or complete family components—are disjoint.
+Per-repeat protein-balanced estimates are published instead of treating split repeats as biological
+replicates. Paired protocol intervals resample whole components from the alternative family rule,
+not individual related proteins. Evaluated models are a standardized ridge regression and a
+histogram gradient boosting regressor. The latter supplies a nonlinear baseline without claiming
+equivalence to a protein language model.
+
+The family rules remain threshold-defined, and the structure layer uses predicted rather than
+experimental structures. Relationships absent from MMseqs2, reciprocal Foldseek, and the mapped
+Pfam snapshot may remain separated. Fixed zero-shot features may also encode information from
+related pretraining sequences; the evaluation isolates assay labels, not language-model pretraining
+corpora.
 
 ## Supervised-versus-zero-shot crossover
 
@@ -158,14 +198,15 @@ treated as independent biological replicates.
 ## Interpretation boundaries
 
 - Official and local model results have different training provenance and are labeled separately.
-- Protein-level bootstrap intervals describe variation across the audited benchmark, not all
-  possible proteins or wet-lab outcomes.
+- Protein- and family-level bootstrap intervals describe variation across the audited benchmark,
+  not all possible proteins or wet-lab outcomes.
 - Split seeds are not biological replication.
 - Marginal coverage can conceal poor coverage for individual positions, which is why both are
   reported.
 - A model-selection classifier can be useful without identifying a causal mechanism.
-- The combined-family split excludes sequence and reciprocal structure relationships detected at
-  the declared thresholds; it does not prove the absence of every evolutionary relationship.
+- The curated-family split excludes sequence, reciprocal structure, and mapped Pfam-family
+  relationships detected at the declared thresholds; it does not prove the absence of every
+  evolutionary relationship.
 - No result establishes clinical validity or prospective protein-design success.
 
 ## Primary sources
@@ -181,3 +222,6 @@ treated as independent biological replicates.
 - [MMseqs2 methods paper](https://www.nature.com/articles/nbt.3988)
 - [Foldseek reference implementation](https://github.com/steineggerlab/foldseek)
 - [Foldseek methods paper](https://www.nature.com/articles/s41587-023-01773-0)
+- [InterPro API documentation](https://www.ebi.ac.uk/interpro/api/static_files/swagger/)
+- [Pfam documentation](https://pfam-docs.readthedocs.io/)
+- [UniProt REST API](https://rest.uniprot.org/)
