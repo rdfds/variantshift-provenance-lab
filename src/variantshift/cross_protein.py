@@ -43,6 +43,7 @@ class CrossProteinDataset:
     features: np.ndarray
     targets: np.ndarray
     feature_names: tuple[str, ...]
+    score_feature_count: int = 0
 
 
 def _stable_assay_sample(frame: pd.DataFrame, maximum: int) -> pd.DataFrame:
@@ -151,11 +152,12 @@ def build_cross_protein_dataset(
         features=np.concatenate(feature_frames, axis=0),
         targets=np.concatenate(target_frames),
         feature_names=feature_names,
+        score_feature_count=len(score_columns),
     )
 
 
-def _model_factories(seed: int):
-    return {
+def _model_factories(seed: int, *, include_feature_ablation: bool):
+    factories = {
         "cross_protein_ridge": lambda: make_pipeline(
             StandardScaler(), Ridge(alpha=10.0, solver="lsqr")
         ),
@@ -168,6 +170,23 @@ def _model_factories(seed: int):
             random_state=seed,
         ),
     }
+    if include_feature_ablation:
+        factories.update(
+            {
+                "cross_protein_ridge_mutation_only": lambda: make_pipeline(
+                    StandardScaler(), Ridge(alpha=10.0, solver="lsqr")
+                ),
+                "cross_protein_histgb_mutation_only": lambda: HistGradientBoostingRegressor(
+                    learning_rate=0.05,
+                    max_iter=150,
+                    max_leaf_nodes=31,
+                    min_samples_leaf=40,
+                    l2_regularization=1.0,
+                    random_state=seed,
+                ),
+            }
+        )
+    return factories
 
 
 def _assay_balanced_weights(metadata: pd.DataFrame) -> np.ndarray:
@@ -184,170 +203,245 @@ def _evaluate_group_holdout(
     group_name: str,
     evaluation_type: str,
     folds: int = 5,
+    repeats: int = 1,
     seed: int = 2026,
     coverage: float = 0.8,
+    include_feature_ablation: bool = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Fit, calibrate, and test on three disjoint sets of grouped proteins."""
     unique_groups = np.unique(groups)
     if len(unique_groups) < folds + 2:
         raise ValueError(f"Held-out-{group_name} evaluation requires more groups")
-    outer = GroupKFold(n_splits=folds)
+    if repeats < 1:
+        raise ValueError("Grouped holdout repeats must be positive")
     assay_rows: list[dict[str, object]] = []
     risk_rows: list[dict[str, object]] = []
     prediction_rows: list[pd.DataFrame] = []
-    for fold, (outer_train, test_indices) in enumerate(
-        outer.split(dataset.features, dataset.targets, groups)
-    ):
-        inner_groups = groups[outer_train]
-        inner_splitter = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=seed + fold)
-        fit_relative, calibration_relative = next(
-            inner_splitter.split(outer_train, groups=inner_groups)
+    for repeat in range(repeats):
+        outer = GroupKFold(
+            n_splits=folds,
+            shuffle=repeats > 1,
+            random_state=seed + repeat if repeats > 1 else None,
         )
-        fit_indices = outer_train[fit_relative]
-        calibration_indices = outer_train[calibration_relative]
-        fit_groups = set(groups[fit_indices])
-        calibration_groups = set(groups[calibration_indices])
-        test_groups = set(groups[test_indices])
-        if (
-            fit_groups.intersection(calibration_groups)
-            or fit_groups.intersection(test_groups)
-            or calibration_groups.intersection(test_groups)
+        for fold, (outer_train, test_indices) in enumerate(
+            outer.split(dataset.features, dataset.targets, groups)
         ):
-            raise RuntimeError(f"{group_name.title()} leakage detected in transfer evaluation")
-        fit_weights = _assay_balanced_weights(metadata.iloc[fit_indices])
-        for model_name, factory in _model_factories(seed + fold).items():
-            model = factory()
-            fit_arguments = (
-                {"ridge__sample_weight": fit_weights}
-                if model_name == "cross_protein_ridge"
-                else {"sample_weight": fit_weights}
-            )
-            model.fit(
-                dataset.features[fit_indices],
-                dataset.targets[fit_indices],
-                **fit_arguments,
-            )
-            calibration_prediction = np.asarray(
-                model.predict(dataset.features[calibration_indices]), dtype=float
-            )
-            test_prediction = np.asarray(model.predict(dataset.features[test_indices]), dtype=float)
-            standard = standard_intervals(
-                dataset.targets[calibration_indices],
-                calibration_prediction,
-                test_prediction,
+            _evaluate_one_group_fold(
+                dataset,
+                metadata,
+                groups,
+                outer_train,
+                test_indices,
+                group_name=group_name,
+                evaluation_type=evaluation_type,
+                repeat=repeat,
+                fold=fold,
+                seed=seed + repeat * folds + fold,
                 coverage=coverage,
+                include_feature_ablation=include_feature_ablation,
+                assay_rows=assay_rows,
+                risk_rows=risk_rows,
+                prediction_rows=prediction_rows,
             )
-            mondrian = mondrian_intervals(
-                metadata.iloc[calibration_indices]["mutation_codes"].astype(str).tolist(),
-                dataset.targets[calibration_indices],
-                calibration_prediction,
-                metadata.iloc[test_indices]["mutation_codes"].astype(str).tolist(),
-                test_prediction,
-                coverage=coverage,
-                min_group_size=100,
-            )
-            prediction_columns = [
-                "assay_id",
-                "uniprot_id",
-                "mutation_codes",
-                "experimental_score",
-            ]
-            if group_name != "protein":
-                prediction_columns.append("family_id")
-            fold_predictions = metadata.iloc[test_indices][prediction_columns].copy()
-            fold_predictions["fold"] = fold
-            fold_predictions["model"] = model_name
-            fold_predictions["rank_target"] = dataset.targets[test_indices]
-            fold_predictions["prediction"] = test_prediction
-            prediction_rows.append(fold_predictions)
-            for interval in (standard, mondrian):
-                test_metadata = metadata.iloc[test_indices].reset_index(drop=True)
-                test_target = dataset.targets[test_indices]
-                for assay_id, local_indices in test_metadata.groupby("assay_id").indices.items():
-                    local = np.asarray(local_indices, dtype=int)
-                    local_target = test_target[local]
-                    local_prediction = test_prediction[local]
-                    codes = test_metadata.iloc[local]["mutation_codes"].astype(str).tolist()
-                    point = regression_metrics(local_target, local_prediction).to_dict()
-                    selection = top_selection_metrics(local_target, local_prediction)
-                    intervals = interval_metrics(
-                        local_target, interval.lower[local], interval.upper[local]
-                    )
-                    conditional = position_conditional_coverage(
-                        codes,
-                        local_target,
-                        interval.lower[local],
-                        interval.upper[local],
-                    )
-                    assay_result = {
-                        "fold": fold,
-                        "assay_id": assay_id,
-                        "uniprot_id": str(test_metadata.iloc[local[0]]["uniprot_id"]),
-                        "model": model_name,
-                        "calibration_method": interval.method,
-                        "evaluation_type": evaluation_type,
-                        "nominal_coverage": coverage,
-                        **point,
-                        **selection,
-                        **intervals,
-                        **conditional,
-                        "test_rows": len(local),
-                        "fit_proteins": int(metadata.iloc[fit_indices]["uniprot_id"].nunique()),
-                        "calibration_proteins": int(
-                            metadata.iloc[calibration_indices]["uniprot_id"].nunique()
-                        ),
-                        "test_proteins": int(metadata.iloc[test_indices]["uniprot_id"].nunique()),
-                    }
-                    if group_name != "protein":
-                        assay_result.update(
-                            {
-                                "family_id": str(test_metadata.iloc[local[0]]["family_id"]),
-                                "fit_families": len(fit_groups),
-                                "calibration_families": len(calibration_groups),
-                                "test_families": len(test_groups),
-                            }
-                        )
-                    assay_rows.append(assay_result)
-                    for risk in risk_coverage_curve(
-                        local_target, local_prediction, interval.uncertainty[local]
-                    ):
-                        risk_result = {
-                            "fold": fold,
-                            "assay_id": assay_id,
-                            "uniprot_id": str(test_metadata.iloc[local[0]]["uniprot_id"]),
-                            "model": model_name,
-                            "calibration_method": interval.method,
-                            **risk,
-                        }
-                        if group_name != "protein":
-                            risk_result["family_id"] = str(
-                                test_metadata.iloc[local[0]]["family_id"]
-                            )
-                        risk_rows.append(risk_result)
     assays = (
         pd.DataFrame(assay_rows)
-        .sort_values(["model", "calibration_method", "fold", "assay_id"])
+        .sort_values(["model", "calibration_method", "repeat", "fold", "assay_id"])
         .reset_index(drop=True)
     )
     risks = (
         pd.DataFrame(risk_rows)
-        .sort_values(["model", "calibration_method", "retained_fraction", "fold", "assay_id"])
+        .sort_values(
+            [
+                "model",
+                "calibration_method",
+                "retained_fraction",
+                "repeat",
+                "fold",
+                "assay_id",
+            ]
+        )
         .reset_index(drop=True)
     )
     predictions = (
         pd.concat(prediction_rows, ignore_index=True)
-        .sort_values(["model", "fold", "assay_id", "mutation_codes"])
+        .sort_values(["model", "repeat", "fold", "assay_id", "mutation_codes"])
         .reset_index(drop=True)
     )
     return assays, risks, predictions
+
+
+def _evaluate_one_group_fold(
+    dataset: CrossProteinDataset,
+    metadata: pd.DataFrame,
+    groups: np.ndarray,
+    outer_train: np.ndarray,
+    test_indices: np.ndarray,
+    *,
+    group_name: str,
+    evaluation_type: str,
+    repeat: int,
+    fold: int,
+    seed: int,
+    coverage: float,
+    include_feature_ablation: bool,
+    assay_rows: list[dict[str, object]],
+    risk_rows: list[dict[str, object]],
+    prediction_rows: list[pd.DataFrame],
+) -> None:
+    """Evaluate one fit/calibration/test partition of complete groups."""
+    inner_groups = groups[outer_train]
+    inner_splitter = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=seed)
+    fit_relative, calibration_relative = next(
+        inner_splitter.split(outer_train, groups=inner_groups)
+    )
+    fit_indices = outer_train[fit_relative]
+    calibration_indices = outer_train[calibration_relative]
+    fit_groups = set(groups[fit_indices])
+    calibration_groups = set(groups[calibration_indices])
+    test_groups = set(groups[test_indices])
+    if (
+        fit_groups.intersection(calibration_groups)
+        or fit_groups.intersection(test_groups)
+        or calibration_groups.intersection(test_groups)
+    ):
+        raise RuntimeError(f"{group_name.title()} leakage detected in transfer evaluation")
+    fit_weights = _assay_balanced_weights(metadata.iloc[fit_indices])
+    if include_feature_ablation and dataset.score_feature_count < 1:
+        raise ValueError("Feature ablation requires declared zero-shot score features")
+    for model_name, factory in _model_factories(
+        seed, include_feature_ablation=include_feature_ablation
+    ).items():
+        if model_name.endswith("_mutation_only"):
+            features = dataset.features[:, : -dataset.score_feature_count]
+            feature_set = "mutation_descriptors_only"
+        else:
+            features = dataset.features
+            feature_set = "mutation_descriptors_plus_fixed_esm_scores"
+        model = factory()
+        fit_arguments = (
+            {"ridge__sample_weight": fit_weights}
+            if model_name.startswith("cross_protein_ridge")
+            else {"sample_weight": fit_weights}
+        )
+        model.fit(
+            features[fit_indices],
+            dataset.targets[fit_indices],
+            **fit_arguments,
+        )
+        calibration_prediction = np.asarray(
+            model.predict(features[calibration_indices]), dtype=float
+        )
+        test_prediction = np.asarray(model.predict(features[test_indices]), dtype=float)
+        standard = standard_intervals(
+            dataset.targets[calibration_indices],
+            calibration_prediction,
+            test_prediction,
+            coverage=coverage,
+        )
+        mondrian = mondrian_intervals(
+            metadata.iloc[calibration_indices]["mutation_codes"].astype(str).tolist(),
+            dataset.targets[calibration_indices],
+            calibration_prediction,
+            metadata.iloc[test_indices]["mutation_codes"].astype(str).tolist(),
+            test_prediction,
+            coverage=coverage,
+            min_group_size=100,
+        )
+        prediction_columns = [
+            "assay_id",
+            "uniprot_id",
+            "mutation_codes",
+            "experimental_score",
+        ]
+        if group_name != "protein":
+            prediction_columns.append("family_id")
+        fold_predictions = metadata.iloc[test_indices][prediction_columns].copy()
+        fold_predictions["fold"] = fold
+        fold_predictions["repeat"] = repeat
+        fold_predictions["model"] = model_name
+        if include_feature_ablation:
+            fold_predictions["feature_set"] = feature_set
+        fold_predictions["rank_target"] = dataset.targets[test_indices]
+        fold_predictions["prediction"] = test_prediction
+        prediction_rows.append(fold_predictions)
+        for interval in (standard, mondrian):
+            test_metadata = metadata.iloc[test_indices].reset_index(drop=True)
+            test_target = dataset.targets[test_indices]
+            for assay_id, local_indices in test_metadata.groupby("assay_id").indices.items():
+                local = np.asarray(local_indices, dtype=int)
+                local_target = test_target[local]
+                local_prediction = test_prediction[local]
+                codes = test_metadata.iloc[local]["mutation_codes"].astype(str).tolist()
+                point = regression_metrics(local_target, local_prediction).to_dict()
+                selection = top_selection_metrics(local_target, local_prediction)
+                intervals = interval_metrics(
+                    local_target, interval.lower[local], interval.upper[local]
+                )
+                conditional = position_conditional_coverage(
+                    codes,
+                    local_target,
+                    interval.lower[local],
+                    interval.upper[local],
+                )
+                assay_result = {
+                    "fold": fold,
+                    "repeat": repeat,
+                    "assay_id": assay_id,
+                    "uniprot_id": str(test_metadata.iloc[local[0]]["uniprot_id"]),
+                    "model": model_name,
+                    "calibration_method": interval.method,
+                    "evaluation_type": evaluation_type,
+                    "nominal_coverage": coverage,
+                    **point,
+                    **selection,
+                    **intervals,
+                    **conditional,
+                    "test_rows": len(local),
+                    "fit_proteins": int(metadata.iloc[fit_indices]["uniprot_id"].nunique()),
+                    "calibration_proteins": int(
+                        metadata.iloc[calibration_indices]["uniprot_id"].nunique()
+                    ),
+                    "test_proteins": int(metadata.iloc[test_indices]["uniprot_id"].nunique()),
+                }
+                if include_feature_ablation:
+                    assay_result["feature_set"] = feature_set
+                if group_name != "protein":
+                    assay_result.update(
+                        {
+                            "family_id": str(test_metadata.iloc[local[0]]["family_id"]),
+                            "fit_families": len(fit_groups),
+                            "calibration_families": len(calibration_groups),
+                            "test_families": len(test_groups),
+                        }
+                    )
+                assay_rows.append(assay_result)
+                for risk in risk_coverage_curve(
+                    local_target, local_prediction, interval.uncertainty[local]
+                ):
+                    risk_result = {
+                        "fold": fold,
+                        "repeat": repeat,
+                        "assay_id": assay_id,
+                        "uniprot_id": str(test_metadata.iloc[local[0]]["uniprot_id"]),
+                        "model": model_name,
+                        "calibration_method": interval.method,
+                        **risk,
+                    }
+                    if include_feature_ablation:
+                        risk_result["feature_set"] = feature_set
+                    if group_name != "protein":
+                        risk_result["family_id"] = str(test_metadata.iloc[local[0]]["family_id"])
+                    risk_rows.append(risk_result)
 
 
 def evaluate_held_out_proteins(
     dataset: CrossProteinDataset,
     *,
     folds: int = 5,
+    repeats: int = 1,
     seed: int = 2026,
     coverage: float = 0.8,
+    include_feature_ablation: bool = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Fit on some proteins, calibrate on new proteins, and test on disjoint proteins."""
     metadata = dataset.metadata.reset_index(drop=True)
@@ -359,8 +453,10 @@ def evaluate_held_out_proteins(
         group_name="protein",
         evaluation_type="held_out_protein",
         folds=folds,
+        repeats=repeats,
         seed=seed,
         coverage=coverage,
+        include_feature_ablation=include_feature_ablation,
     )
 
 
@@ -369,10 +465,12 @@ def evaluate_held_out_families(
     family_assignments: pd.DataFrame,
     *,
     folds: int = 5,
+    repeats: int = 1,
     seed: int = 2026,
     coverage: float = 0.8,
     group_name: str = "sequence_family",
     evaluation_type: str = "held_out_sequence_family",
+    include_feature_ablation: bool = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Evaluate with complete precomputed family clusters absent from training."""
     required_columns = ["uniprot_id", "family_id"]
@@ -396,8 +494,10 @@ def evaluate_held_out_families(
         group_name=group_name,
         evaluation_type=evaluation_type,
         folds=folds,
+        repeats=repeats,
         seed=seed,
         coverage=coverage,
+        include_feature_ablation=include_feature_ablation,
     )
 
 
@@ -420,6 +520,32 @@ def summarize_held_out_proteins(assays: pd.DataFrame) -> pd.DataFrame:
             **{f"mean_{value}": (value, "mean") for value in values},
         )
         .sort_values(["model", "calibration_method"])
+        .reset_index(drop=True)
+    )
+
+
+def summarize_grouped_repeat_estimates(assays: pd.DataFrame) -> pd.DataFrame:
+    """Expose protein-balanced estimates for every randomized grouped split repeat."""
+    if "repeat" not in assays:
+        raise ValueError("Grouped holdout assays do not contain repeat identifiers")
+    values = [
+        "spearman",
+        "top_recall",
+        "selection_gain_sd",
+        "observed_coverage",
+        "position_coverage_mean",
+        "mean_interval_width",
+    ]
+    protein_level = assays.groupby(
+        ["model", "calibration_method", "repeat", "uniprot_id"], as_index=False
+    )[values].mean()
+    return (
+        protein_level.groupby(["model", "calibration_method", "repeat"], as_index=False)
+        .agg(
+            n_proteins=("uniprot_id", "nunique"),
+            **{f"mean_{value}": (value, "mean") for value in values},
+        )
+        .sort_values(["model", "calibration_method", "repeat"])
         .reset_index(drop=True)
     )
 
@@ -449,10 +575,12 @@ def compare_holdout_protocols(
     baseline_label: str = "heldout_protein",
     alternative_label: str = "heldout_family",
 ) -> pd.DataFrame:
-    """Paired protein-bootstrap comparison of two grouped holdout protocols."""
+    """Paired grouped bootstrap comparison of two holdout protocols."""
     if bootstrap_repeats < 100:
         raise ValueError("At least 100 bootstrap repetitions are required")
     keys = ["model", "calibration_method", "assay_id", "uniprot_id"]
+    if "repeat" in protein_assays.columns and "repeat" in family_assays.columns:
+        keys.append("repeat")
     metrics = [
         "spearman",
         "top_recall",
@@ -474,8 +602,13 @@ def compare_holdout_protocols(
             raise ValueError(f"{label.title()} holdout results contain duplicate assays")
     baseline_suffix = f"_{baseline_label}"
     alternative_suffix = f"_{alternative_label}"
+    alternative_columns = keys + metrics
+    bootstrap_group = None
+    if "family_id" in family_assays.columns:
+        alternative_columns.append("family_id")
+        bootstrap_group = "family_id"
     paired = protein_assays[keys + metrics].merge(
-        family_assays[keys + metrics],
+        family_assays[alternative_columns],
         on=keys,
         how="inner",
         validate="one_to_one",
@@ -486,17 +619,33 @@ def compare_holdout_protocols(
     rng = np.random.default_rng(seed)
     rows = []
     for (model, calibration), group in paired.groupby(["model", "calibration_method"], sort=True):
-        protein_level = group.groupby("uniprot_id", as_index=False)[
-            [f"{metric}{baseline_suffix}" for metric in metrics]
-            + [f"{metric}{alternative_suffix}" for metric in metrics]
-        ].mean()
+        aggregate = {
+            **{f"{metric}{baseline_suffix}": "mean" for metric in metrics},
+            **{f"{metric}{alternative_suffix}": "mean" for metric in metrics},
+        }
+        if bootstrap_group is not None:
+            aggregate[bootstrap_group] = "first"
+            if group.groupby("uniprot_id")[bootstrap_group].nunique().max() != 1:
+                raise ValueError("Each protein must have one alternative holdout family")
+        protein_level = group.groupby("uniprot_id", as_index=False).agg(aggregate)
         n_proteins = len(protein_level)
-        sample_indices = rng.integers(0, n_proteins, size=(bootstrap_repeats, n_proteins))
+        if bootstrap_group is None:
+            group_codes = np.arange(n_proteins)
+            bootstrap_unit = "UniProt_ID"
+        else:
+            group_codes, _ = pd.factorize(protein_level[bootstrap_group], sort=True)
+            bootstrap_unit = f"{alternative_label}:{bootstrap_group}"
+        n_groups = int(np.max(group_codes)) + 1
+        sampled_groups = rng.integers(0, n_groups, size=(bootstrap_repeats, n_groups))
+        group_counts = np.bincount(group_codes).astype(float)
         for metric in metrics:
             protein_values = protein_level[f"{metric}{baseline_suffix}"].to_numpy(dtype=float)
             family_values = protein_level[f"{metric}{alternative_suffix}"].to_numpy(dtype=float)
-            protein_bootstrap = protein_values[sample_indices].mean(axis=1)
-            family_bootstrap = family_values[sample_indices].mean(axis=1)
+            protein_sums = np.bincount(group_codes, weights=protein_values)
+            family_sums = np.bincount(group_codes, weights=family_values)
+            bootstrap_counts = group_counts[sampled_groups].sum(axis=1)
+            protein_bootstrap = protein_sums[sampled_groups].sum(axis=1) / bootstrap_counts
+            family_bootstrap = family_sums[sampled_groups].sum(axis=1) / bootstrap_counts
             delta_bootstrap = family_bootstrap - protein_bootstrap
             rows.append(
                 {
@@ -504,6 +653,7 @@ def compare_holdout_protocols(
                     "calibration_method": calibration,
                     "metric": metric,
                     "n_proteins": n_proteins,
+                    "n_bootstrap_groups": n_groups,
                     f"{baseline_label}_mean": float(protein_values.mean()),
                     f"{baseline_label}_ci_low": float(np.quantile(protein_bootstrap, 0.025)),
                     f"{baseline_label}_ci_high": float(np.quantile(protein_bootstrap, 0.975)),
@@ -515,7 +665,7 @@ def compare_holdout_protocols(
                     ),
                     "delta_ci_low": float(np.quantile(delta_bootstrap, 0.025)),
                     "delta_ci_high": float(np.quantile(delta_bootstrap, 0.975)),
-                    "bootstrap_unit": "UniProt_ID",
+                    "bootstrap_unit": bootstrap_unit,
                     "bootstrap_repeats": bootstrap_repeats,
                 }
             )
