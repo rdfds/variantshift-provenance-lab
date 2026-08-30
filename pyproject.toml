@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "variantshift"
-version = "0.3.0"
+version = "0.4.0"
 description = "Leakage-aware evaluation for protein variant-effect models"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,7 +13,7 @@ authors = [{ name = "Rohan Variankaval" }]
 dependencies = [
   "numpy>=1.26",
   "pandas>=2.1",
-  "scikit-learn>=1.4",
+  "scikit-learn>=1.6",
   "scipy>=1.11",
 ]
 
