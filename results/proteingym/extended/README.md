@@ -2,8 +2,9 @@
 
 These files extend the 195-assay, 169-protein ProteinGym v1.3 cohort with modern supervised
 baselines, four structured split protocols, interval diagnostics, top-variant selection metrics,
-held-out-protein and sequence-family transfer, and protein-grouped model-selection evaluation. The complete protocol
-and its limits are in [`docs/EXTENDED_METHODS.md`](../../../docs/EXTENDED_METHODS.md).
+held-out-protein, sequence-family, and sequence/structure-family transfer, and protein-grouped
+model-selection evaluation. The complete protocol and its limits are in
+[`docs/EXTENDED_METHODS.md`](../../../docs/EXTENDED_METHODS.md).
 
 ## Findings
 
@@ -29,6 +30,14 @@ and its limits are in [`docs/EXTENDED_METHODS.md`](../../../docs/EXTENDED_METHOD
   and 0.512 for ridge, with standard coverage of 0.803 and 0.800. The close-homolog safeguard does
   not materially change the performance estimate: paired Spearman changes are −0.0019 (95% interval
   −0.0068 to 0.0029) and +0.0002 (−0.0022 to 0.0028), using 10,000 UniProt bootstrap replicates.
+- Foldseek searches all 169 official ProteinGym AlphaFold structures exhaustively and retains a
+  structure edge only when both directions reach ≥0.95 homology probability, ≥0.50 TM-score, and
+  ≥80% coverage. Union with the sequence graph yields 148 combined families; 14 multi-protein
+  families cover 35 proteins and the largest contains five. Zero qualifying structure pairs cross
+  components. Combined-family holdout reaches 0.533 Spearman for nonlinear regression and 0.511 for
+  ridge. Versus sequence-family holdout, paired changes are −0.0021 (95% interval −0.0077 to 0.0029)
+  and −0.0015 (−0.0042 to 0.0012). The detectable remote structure matches do not materially change
+  the transfer estimate.
 - A logistic classifier predicts local-supervised versus ESM-2-650M wins with protein-grouped
   out-of-fold ROC-AUC 0.829 and 0.770 accuracy across 975 split-specific decisions. The majority
   baseline is 0.592. These repeated splits are not independent biological replicates.
@@ -58,12 +67,23 @@ and its limits are in [`docs/EXTENDED_METHODS.md`](../../../docs/EXTENDED_METHOD
 | `heldout-family-summary.csv` | Protein-weighted family-transfer and interval summary |
 | `heldout-family-risk-summary.csv` | Protein-weighted selective-risk summary under family holdout |
 | `heldout-family-comparison.csv` | Paired protein-bootstrap comparison against ordinary protein holdout |
+| `structure-input-audit.csv` | Per-UniProt official PDB filename, range, byte length, and SHA-256 |
+| `structure-family-alignments.csv` | Complete reciprocal Foldseek pair ledger with primary-edge and cluster audit fields |
+| `structure-family-sensitivity.csv` | Combined graph composition across probability, TM-score, and coverage thresholds |
+| `structure-family-audit.csv` | Archive hash, Foldseek version, exact search protocol, thresholds, and leakage result |
+| `sequence-structure-family-assignments.csv` | Deterministic combined-family mapping and component membership |
+| `heldout-structure-family-assays.csv` | Assay-level results with complete combined families held out |
+| `heldout-structure-family-risk-coverage.csv` | Selective-risk results under combined-family holdout |
+| `heldout-structure-family-summary.csv` | Protein-weighted combined-family transfer and interval summary |
+| `heldout-structure-family-risk-summary.csv` | Protein-weighted selective-risk summary under combined-family holdout |
+| `heldout-structure-family-vs-protein.csv` | Paired bootstrap comparison against ordinary protein holdout |
+| `heldout-structure-family-vs-sequence-family.csv` | Paired bootstrap comparison against sequence-only family holdout |
 | `crossover-examples.csv` | Training-only assay properties and paired supervised/zero-shot outcomes |
 | `crossover-heldout-predictions.csv` | UniProt-grouped out-of-fold classifier probabilities |
 | `crossover-summary.csv` | Classifier discrimination, calibration, and baseline comparisons |
 | `crossover-logistic-coefficients.csv` | Standardized logistic coefficients for interpretation |
 | `run-manifest.json` | Public-input, embedding-index, source-revision, environment, and artifact hashes |
 
-The per-variant held-out-protein and held-out-family prediction tables and frozen ESM-2 embedding matrices are generated
-locally and excluded from version control. None of the aggregate claims above requires committing
-source measurements or embeddings.
+The per-variant held-out-protein, held-out-family, and held-out-structure-family prediction tables
+and frozen ESM-2 embedding matrices are generated locally and excluded from version control. None
+of the aggregate claims above requires committing source measurements, structures, or embeddings.
