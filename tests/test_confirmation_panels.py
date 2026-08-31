@@ -1,9 +1,14 @@
 import json
+from io import BytesIO
 from pathlib import Path
 
 import pandas as pd
 
-from variantshift.confirmation_panels import freeze_mavedb_complement_targets
+from variantshift.confirmation_panels import (
+    DomainomeTargetSource,
+    freeze_domainome_targets,
+    freeze_mavedb_complement_targets,
+)
 
 
 def _row(urn: str, sequence: str = "ACDEFGHIKLMNPQRSTVWY") -> dict[str, object]:
@@ -91,3 +96,27 @@ def test_mavedb_complement_excludes_prior_meta_and_ambiguous_without_scores(
     protocol = json.loads(outputs["protocol"].read_text())
     assert protocol["outcomes_accessed"] is False
     assert protocol["outcome_endpoint_requests"] == 0
+
+
+def test_domainome_freeze_decodes_only_allowlisted_target_fields(tmp_path: Path) -> None:
+    source_bytes = (
+        b"dom_ID\tPFAM_ID\twt_seq\tposition\twt_aa\tCDD_description\tresidual\n"
+        b"P1_PF00001_1\tPF00001\tACDE\t1\tA\tDO_NOT_DECODE_\xff\t999\n"
+        b"P1_PF00001_1\tPF00001\tACDE\t2\tC\tDO_NOT_DECODE_\xfe\t-999\n"
+        b"P2_PF00002_1\tPF00002\tFGHI\t1\tF\tDO_NOT_DECODE_\xfd\t0\n"
+    )
+    outputs = freeze_domainome_targets(
+        tmp_path,
+        source=DomainomeTargetSource(expected_md5="fixture"),
+        stream=BytesIO(source_bytes),
+    )
+    targets = pd.read_csv(outputs["targets"])
+    receipt = json.loads(outputs["receipt"].read_text())
+    assert targets["target_id"].tolist() == ["P1_PF00001_1", "P2_PF00002_1"]
+    assert targets["pfam_id"].tolist() == ["PF00001", "PF00002"]
+    assert set(targets.columns).isdisjoint({"position", "residual", "fitness"})
+    assert receipt["decoded_columns"] == ["dom_ID", "PFAM_ID", "wt_seq"]
+    assert receipt["outcomes_accessed"] is False
+    assert receipt["source_rows"] == 3
+    assert receipt["target_count"] == 2
+    assert "999" not in outputs["receipt"].read_text()

@@ -12,6 +12,8 @@ def test_freeze_panel_never_requires_outcomes(tmp_path) -> None:
         targets, index=False
     )
     config = tmp_path / "panel.json"
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text('{"outcomes_accessed": false}\n')
     config.write_text(
         json.dumps(
             {
@@ -21,6 +23,7 @@ def test_freeze_panel_never_requires_outcomes(tmp_path) -> None:
                 "source_version": "1",
                 "adapter": "target_table",
                 "target_input": "targets.csv",
+                "source_artifacts": ["receipt.json"],
             }
         )
     )
@@ -29,3 +32,7 @@ def test_freeze_panel_never_requires_outcomes(tmp_path) -> None:
     assert read_outcome_lock(outputs["outcome_lock"])["state"] == "targets_frozen"
     protocol = json.loads(outputs["protocol"].read_text())
     assert protocol["outcome_status"] == "not_accessed"
+    assert str(receipt.resolve()) in protocol["source_artifact_sha256"]
+    assert str(receipt.resolve()) in read_outcome_lock(outputs["outcome_lock"])[
+        "target_artifacts"
+    ]

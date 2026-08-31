@@ -11,13 +11,13 @@ Status is based on executable evidence in this repository, not the intended stud
 | Task-level transport pipeline | Complete | Nested family selection, hierarchical conformal calibration, frozen comparators/ablations, 10,000 nested bootstrap |
 | Development scientific gate | Passed descriptively, not confirmatory | Outcome-free regret–coverage AUC 0.06452 versus 0.07273; adaptive-development bootstrap interval for improvement 0.00214 to 0.01494 |
 | Untouched MaveDB target freeze | Complete | 23 score sets, 8 sequences, zero score requests |
-| Human Domainome target freeze | Blocked | No public retained-domain target-only manifest identified |
+| Human Domainome target freeze | Complete | 426 unique domains extracted from a checksum-pinned Zenodo supplement; only `dom_ID`, `PFAM_ID`, and `wt_seq` were decoded, while all trailing fields were hashed but discarded |
 | VenusMutHub target freeze | Complete | 126 assays, 91 unique sequences, zero mutation-file requests |
-| Exact/sequence-family confirmation audit | Complete | 99 targets, 96 confirmation families, 97 exact-unseen, 96 family-unseen |
+| Exact/sequence-family confirmation audit | Partial | Complete for the 99 MaveDB/Venus targets; the newly frozen 426-domain panel still requires the same overlap audit |
 | Structure/Pfam confirmation audit | Pending | Missing annotations are explicitly `undocumented`, not clean |
 | Eight executable model configurations | Failed | Metadata audit only; zero configurations have executable parity evidence |
 | Four model/input families | Pending | Configuration exists, execution evidence does not |
-| 300 shared confirmation targets | Pending | MaveDB plus VenusMutHub provide 99; Domainome remains blocked |
+| 300 shared confirmation targets | Target universe complete; model intersection pending | Domainome supplies 426 frozen targets, but they count as shared only after at least eight eligible models achieve at least 95% coverage on the same 300 targets |
 | OSF preregistration | Intentionally pending | Command refuses to build until the 8-model/4-family/300-target execution gate passes |
 | Confirmation outcome reveal | Locked | Prohibited before public registration |
 | Confirmation acceptance report | Implemented, not run | Hash-verified evaluation, hierarchical intervals, Holm correction, panel directions, ablations, six gates |

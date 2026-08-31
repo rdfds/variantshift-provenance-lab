@@ -51,6 +51,8 @@ def test_preregistration_is_built_only_from_frozen_artifacts(tmp_path, monkeypat
     assert payload["eligible_models"] == eligible_models
     assert payload["eligible_model_family_count"] == 4
     assert payload["shared_confirmation_targets"] == 300
+    assert payload["primary_endpoint"] == "task-level selection-regret coverage AUC"
+    assert "failure risk-coverage AUC" in payload["secondary_endpoints"]
     assert "failed" in payload["excluded_models"]
     assert outputs["checksums"].read_text().count("\n") == 6
 

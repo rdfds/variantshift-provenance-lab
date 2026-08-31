@@ -6,11 +6,14 @@ path to a MaveDB score endpoint, so cohort construction cannot reveal outcomes.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
+import urllib.request
 from dataclasses import asdict, dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
+from typing import BinaryIO
 
 import pandas as pd
 
@@ -28,6 +31,21 @@ from .provenance import sha256_file
 from .schemas import TARGET_SCHEMA, validate_targets, write_table
 
 _PROTEINGYM_MAVEDB = re.compile(r"urn_mavedb_(?P<accession>[0-9]+-[A-Za-z0-9-]+)_scores")
+_DOMAINOME_HEADER_PREFIX = (b"dom_ID", b"PFAM_ID", b"wt_seq")
+_CANONICAL_PROTEIN = re.compile(r"[ACDEFGHIKLMNPQRSTVWY]+")
+
+
+@dataclass(frozen=True)
+class DomainomeTargetSource:
+    """Pinned target source whose trailing columns are treated as sealed outcomes."""
+
+    url: str = (
+        "https://zenodo.org/api/records/14356805/files/"
+        "Supplementary_Table_3_esm1v_residuals.txt/content"
+    )
+    zenodo_record: str = "14356805"
+    doi: str = "10.5281/zenodo.14356805"
+    expected_md5: str = "4401c96dd6f3083a50f13796eaa4a837"
 
 
 @dataclass(frozen=True)
@@ -38,6 +56,115 @@ class MaveDBComplementCriteria:
     maximum_sequence_length: int = 2_500
     post_reveal_minimum_single_substitutions: int = 100
     post_reveal_minimum_assayed_positions: int = 10
+
+
+def _extract_domainome_target_rows(stream: BinaryIO) -> tuple[pd.DataFrame, dict[str, object]]:
+    """Extract only the first three byte-delimited fields from the mixed source table.
+
+    The complete response is hashed, but bytes after the third tab on every data row are never
+    decoded or retained. This permits target acquisition without exposing the residual column.
+    """
+    sha256 = hashlib.sha256()
+    md5 = hashlib.md5()
+    targets: dict[str, tuple[str, str]] = {}
+    source_row_count = 0
+    bytes_read = 0
+    for line_number, line in enumerate(stream, start=1):
+        sha256.update(line)
+        md5.update(line)
+        bytes_read += len(line)
+        fields = line.rstrip(b"\r\n").split(b"\t", 3)
+        if len(fields) != 4:
+            raise ValueError(f"Domainome source row {line_number} has fewer than four fields")
+        if line_number == 1:
+            if tuple(fields[:3]) != _DOMAINOME_HEADER_PREFIX:
+                raise ValueError("Domainome source target-column header does not match the pin")
+            continue
+        source_row_count += 1
+        try:
+            domain_id, pfam_id, sequence = (
+                field.decode("ascii", errors="strict") for field in fields[:3]
+            )
+        except UnicodeDecodeError as exception:
+            raise ValueError(
+                f"Domainome target field is not ASCII on row {line_number}"
+            ) from exception
+        if not domain_id or not pfam_id or not _CANONICAL_PROTEIN.fullmatch(sequence):
+            raise ValueError(f"Invalid Domainome target fields on row {line_number}")
+        previous = targets.setdefault(domain_id, (pfam_id, sequence))
+        if previous != (pfam_id, sequence):
+            raise ValueError(f"Conflicting target metadata for Domainome domain {domain_id}")
+    if source_row_count == 0:
+        raise ValueError("Domainome source contains no data rows")
+    rows = []
+    for domain_id, (pfam_id, sequence) in sorted(targets.items()):
+        rows.append(
+            {
+                "panel_id": "human-domainome-v1",
+                "target_id": domain_id,
+                "protein_id": domain_id.split("_", 1)[0],
+                "sequence": sequence,
+                "sequence_sha256": hashlib.sha256(sequence.encode("ascii")).hexdigest(),
+                "sequence_length": len(sequence),
+                "pfam_id": pfam_id,
+            }
+        )
+    frame = validate_targets(pd.DataFrame(rows))
+    receipt = {
+        "source_bytes": bytes_read,
+        "source_rows": source_row_count,
+        "target_count": len(frame),
+        "source_sha256": sha256.hexdigest(),
+        "source_md5": md5.hexdigest(),
+        "decoded_columns": [field.decode("ascii") for field in _DOMAINOME_HEADER_PREFIX],
+        "discarded_field_policy": (
+            "Bytes after the third tab of every data row were hashed but never decoded or stored."
+        ),
+        "outcomes_accessed": False,
+    }
+    return frame, receipt
+
+
+def freeze_domainome_targets(
+    output_dir: Path,
+    *,
+    source: DomainomeTargetSource | None = None,
+    stream: BinaryIO | None = None,
+) -> dict[str, Path]:
+    """Freeze Human Domainome target sequences without decoding the mixed table's outcomes."""
+    source = source or DomainomeTargetSource()
+    supplied_stream = stream is not None
+    response = stream or urllib.request.urlopen(source.url, timeout=120)
+    try:
+        targets, receipt = _extract_domainome_target_rows(response)
+    finally:
+        if not supplied_stream:
+            response.close()
+    if not supplied_stream and receipt["source_md5"] != source.expected_md5:
+        raise ValueError(
+            "Domainome source checksum differs from the pinned Zenodo artifact; refusing freeze"
+        )
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    outputs = {
+        "targets": output_dir / "targets.csv",
+        "receipt": output_dir / "target-extraction-receipt.json",
+    }
+    write_table(targets, outputs["targets"])
+    receipt.update(
+        {
+            "schema_version": 1,
+            "source_url": source.url,
+            "zenodo_record": source.zenodo_record,
+            "source_doi": source.doi,
+            "expected_source_md5": source.expected_md5,
+            "target_sha256": sha256_file(outputs["targets"]),
+        }
+    )
+    outputs["receipt"].write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return outputs
 
 
 def _proteingym_mavedb_urns(reference: pd.DataFrame) -> set[str]:
