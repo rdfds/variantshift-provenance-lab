@@ -4,7 +4,7 @@
   "source": "MaveDB public target metadata",
   "source_version": "API snapshot frozen before outcome access",
   "adapter": "target_table",
-  "target_input": "../../data/confirmation-targets/mavedb-complement-v1/targets.csv",
+  "target_input": "../../protocols/mavedb-complement-v1/targets.csv",
   "exposure_policy": "model-specific clean, possible, known, or undocumented",
   "inclusion": {
     "target_type": "protein",
