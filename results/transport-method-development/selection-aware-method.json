@@ -1,17 +1,6 @@
 {
-  "auditor_policy": {
-    "baseline_model": "s3f_msa",
-    "decision_mean": 0.6772187835405945,
-    "decision_shrinkage": 1.0,
-    "decision_std": 0.12950502800521893,
-    "log_msa_neff_mean": 8.33640631695461,
-    "log_msa_neff_std": 2.192192885982245,
-    "log_protein_length_mean": 5.397713566585965,
-    "log_protein_length_std": 1.1123073291937091,
-    "override_margin": 0.05
-  },
   "best_average_model": "s3f_msa",
-  "best_label_free_comparator": "msa_depth",
+  "best_label_free_comparator": "crossover_classifier",
   "config": {
     "assay_column": "assay_id",
     "bootstrap_repeats": 10000,
@@ -54,10 +43,10 @@
     "mavedb-complement-v1"
   ],
   "conformal_mode": "selection-aware, locally scaled hierarchical conformal calibration; equal family mass and equal within-family task mass",
-  "conformal_quantile": 2.3023437438870364,
-  "decision_rule": "override the best-average model only when nested-CV shrunken expected gain exceeds the frozen margin",
-  "decision_shrinkage": 1.0,
-  "error_scale_floor": 0.0077582603445486955,
+  "conformal_quantile": 1.8378896991363098,
+  "decision_rule": "maximize nested-CV shrinkage of predicted gain toward model prior",
+  "decision_shrinkage": 0.75,
+  "error_scale_floor": 0.007474213576733519,
   "formal_scope": "one-sided marginal coverage for a new task from a new family under two-level hierarchical exchangeability",
   "frozen_feature_ablations": [
     "ensemble_only",
@@ -66,12 +55,6 @@
     "without_msa"
   ],
   "name": "VariantShift Selective Transport Auditor",
-  "override_margin_candidates": [
-    0.05,
-    0.075,
-    0.1,
-    0.15
-  ],
   "parameters": {
     "l2_regularization": 1.0,
     "learning_rate": 0.05,
@@ -81,16 +64,6 @@
   },
   "primary_endpoint": "task-level selection-regret coverage AUC",
   "primary_failure": "selection_gain_sd <= 0",
-  "priority_inputs": [
-    "msa_neff",
-    "protein_length",
-    "decision_score"
-  ],
-  "priority_weights": {
-    "decision_score": 0.25,
-    "log_msa_neff": 1.0,
-    "log_protein_length": 0.5
-  },
   "schema_version": 2,
   "secondary_endpoints": [
     "failure risk-coverage AUC",
@@ -99,9 +72,11 @@
     "selected-policy lower-bound coverage"
   ],
   "shrinkage_candidates": [
+    0.0,
+    0.25,
     0.5,
     0.75,
     1.0
   ],
-  "training_frame_sha256": "dc5bc16903a6c0444e18221f6bc5ecd08bff4f8a013268a5488c4b05415ba777"
+  "training_frame_sha256": "e869dafdc1ecda91ca2323d417ae2aeaff560e8bc0d73f4681d59c2775514d89"
 }

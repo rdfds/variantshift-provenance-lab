@@ -1,2 +1,2 @@
 comparator,primary_endpoint,regret_coverage_auc_improvement,regret_ci_low,regret_ci_high,regret_probability_improvement_above_zero,risk_coverage_auc_improvement,risk_ci_low,risk_ci_high,bootstrap_repeats,bootstrap_unit
-msa_depth,regret_coverage_auc,0.008211045436604489,0.0021417253666772586,0.014944478368622255,0.9942,0.0,-0.0005917159763313608,0.0005465231489821643,10000,"family, then protein, then assay"
+crossover_classifier,regret_coverage_auc,-0.00040307174217101005,-0.011773265144001968,0.010246840721807524,0.4148,0.0005681818181818179,0.0,0.002185792349726776,10000,"family, then protein, then assay"

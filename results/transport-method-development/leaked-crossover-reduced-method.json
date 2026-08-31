@@ -1,17 +1,19 @@
 {
   "auditor_policy": {
     "baseline_model": "s3f_msa",
+    "confidence_weight": 0.25,
+    "crossover_mean": 0.592153904639757,
+    "crossover_std": 0.32200317789168004,
     "decision_mean": 0.6772187835405945,
     "decision_shrinkage": 1.0,
     "decision_std": 0.12950502800521893,
-    "log_msa_neff_mean": 8.33640631695461,
-    "log_msa_neff_std": 2.192192885982245,
-    "log_protein_length_mean": 5.397713566585965,
-    "log_protein_length_std": 1.1123073291937091,
     "override_margin": 0.05
   },
   "best_average_model": "s3f_msa",
-  "best_label_free_comparator": "msa_depth",
+  "best_label_free_comparator": "crossover_classifier",
+  "confidence_weight_candidates": [
+    0.25
+  ],
   "config": {
     "assay_column": "assay_id",
     "bootstrap_repeats": 10000,
@@ -81,16 +83,6 @@
   },
   "primary_endpoint": "task-level selection-regret coverage AUC",
   "primary_failure": "selection_gain_sd <= 0",
-  "priority_inputs": [
-    "msa_neff",
-    "protein_length",
-    "decision_score"
-  ],
-  "priority_weights": {
-    "decision_score": 0.25,
-    "log_msa_neff": 1.0,
-    "log_protein_length": 0.5
-  },
   "schema_version": 2,
   "secondary_endpoints": [
     "failure risk-coverage AUC",
@@ -103,5 +95,5 @@
     0.75,
     1.0
   ],
-  "training_frame_sha256": "dc5bc16903a6c0444e18221f6bc5ecd08bff4f8a013268a5488c4b05415ba777"
+  "training_frame_sha256": "e869dafdc1ecda91ca2323d417ae2aeaff560e8bc0d73f4681d59c2775514d89"
 }
