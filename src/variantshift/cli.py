@@ -553,6 +553,21 @@ def build_parser() -> argparse.ArgumentParser:
     transport_fit.add_argument("--output-dir", type=Path, required=True)
     transport_fit.add_argument("--confirmation-features", type=Path)
 
+    transport_features = subparsers.add_parser(
+        "transport-features-proteingym",
+        help="Build outcome-free ProteinGym task descriptors for transport fitting",
+    )
+    transport_features.add_argument("runs", type=Path)
+    transport_features.add_argument("eligibility", type=Path)
+    transport_features.add_argument("reference", type=Path)
+    transport_features.add_argument("families", type=Path)
+    transport_features.add_argument("sequence_alignments", type=Path)
+    transport_features.add_argument("structure_alignments", type=Path)
+    transport_features.add_argument("domain_overlaps", type=Path)
+    transport_features.add_argument("score_archive", type=Path)
+    transport_features.add_argument("--output", type=Path, required=True)
+    transport_features.add_argument("--crossover-predictions", type=Path)
+
     transport_evaluate = subparsers.add_parser(
         "transport-evaluate",
         help="Evaluate already-frozen transport predictions after authorized outcome reveal",
@@ -674,6 +689,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             confirmation_features_path=arguments.confirmation_features,
         )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "transport-features-proteingym":
+        from .transport_features import build_proteingym_transport_features
+
+        summary = build_proteingym_transport_features(
+            arguments.runs,
+            arguments.eligibility,
+            arguments.reference,
+            arguments.families,
+            arguments.sequence_alignments,
+            arguments.structure_alignments,
+            arguments.domain_overlaps,
+            arguments.score_archive,
+            arguments.output,
+            crossover_predictions_path=arguments.crossover_predictions,
+        )
+        print(json.dumps(summary, indent=2, sort_keys=True))
         return 0
 
     if arguments.command == "transport-evaluate":

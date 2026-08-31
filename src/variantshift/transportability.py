@@ -47,6 +47,7 @@ class TransportConfig:
     coverage: float = 0.90
     outer_folds: int = 5
     calibration_fraction: float = 0.20
+    bootstrap_repeats: int = 10_000
     seed: int = 20260830
 
     @classmethod
@@ -63,6 +64,7 @@ class TransportConfig:
             coverage=float(payload.get("coverage", 0.90)),
             outer_folds=int(payload.get("outer_folds", 5)),
             calibration_fraction=float(payload.get("calibration_fraction", 0.20)),
+            bootstrap_repeats=int(payload.get("bootstrap_repeats", 10_000)),
             seed=int(payload.get("seed", 20260830)),
         )
 
@@ -88,6 +90,8 @@ class TransportConfig:
             raise ValueError("Calibration fraction must lie in (0, 0.5)")
         if self.outer_folds < 3:
             raise ValueError("At least three outer group folds are required")
+        if self.bootstrap_repeats < 1:
+            raise ValueError("Bootstrap repeats must be positive")
 
 
 def load_transport_config(path: Path) -> TransportConfig:
@@ -405,6 +409,12 @@ def _choose_task_rows(
         index = working.groupby(config.task_column)["predicted_selection_gain_sd"].idxmax()
         selected = working.loc[index].copy()
         selected["confidence"] = selected["predicted_selection_gain_sd"]
+    elif policy == "elastic_net":
+        index = working.groupby(config.task_column)[
+            "elastic_predicted_selection_gain_sd"
+        ].idxmax()
+        selected = working.loc[index].copy()
+        selected["confidence"] = selected["elastic_predicted_selection_gain_sd"]
     elif policy == "oracle":
         index = working.groupby(config.task_column)[config.target_column].idxmax()
         selected = working.loc[index].copy()
@@ -414,7 +424,13 @@ def _choose_task_rows(
         index = working.groupby(config.task_column)["_random_choice"].idxmax()
         selected = working.loc[index].copy()
         selected["confidence"] = rng.random(len(selected))
-    elif policy in {"always_best", "msa_depth", "score_dispersion", "ensemble_agreement"}:
+    elif policy in {
+        "always_best",
+        "msa_depth",
+        "score_dispersion",
+        "ensemble_agreement",
+        "crossover_classifier",
+    }:
         if not best_average_model:
             raise ValueError(f"{policy} policy requires the development best model")
         candidates = working.loc[
@@ -428,11 +444,15 @@ def _choose_task_rows(
             "msa_depth": "msa_neff",
             "score_dispersion": "score_dispersion",
             "ensemble_agreement": "ensemble_agreement",
+            "crossover_classifier": "crossover_probability_supervised_wins",
         }[policy]
-        selected["confidence"] = (
+        confidence = (
             np.zeros(len(selected))
             if confidence_column is None
             else selected[confidence_column].to_numpy(dtype=float)
+        )
+        selected["confidence"] = (
+            1.0 - confidence if policy == "crossover_classifier" else confidence
         )
     else:
         raise ValueError(f"Unsupported selective policy: {policy}")
@@ -482,7 +502,7 @@ def summarize_policy_curves(curves: pd.DataFrame) -> pd.DataFrame:
             {
                 "policy": policy,
                 "risk_coverage_auc": float(
-                    np.trapezoid(group["failure_rate"], group["coverage"])
+                    np.trapz(group["failure_rate"], group["coverage"])
                 ),
                 "failure_rate_at_50pct": float(at_half["failure_rate"]),
                 "mean_selection_gain_at_50pct": float(at_half["mean_selection_gain_sd"]),
@@ -490,6 +510,119 @@ def summarize_policy_curves(curves: pd.DataFrame) -> pd.DataFrame:
             }
         )
     return pd.DataFrame(rows)
+
+
+def _risk_auc(selected: pd.DataFrame, target_column: str) -> float:
+    ordered = selected.sort_values("confidence", ascending=False, kind="stable")
+    risks = []
+    coverages = np.linspace(0.1, 1.0, 10)
+    for coverage in coverages:
+        count = max(1, int(np.ceil(len(ordered) * coverage)))
+        risks.append(float(np.mean(ordered.iloc[:count][target_column] <= 0)))
+    return float(np.trapz(risks, coverages))
+
+
+def _task_hierarchy(
+    tasks: pd.DataFrame, config: TransportConfig
+) -> tuple[tuple[tuple[np.ndarray, ...], ...], ...]:
+    hierarchy = []
+    for _family, family_frame in tasks.groupby(config.group_column, sort=True):
+        proteins = []
+        for _protein, protein_frame in family_frame.groupby(
+            config.protein_column, sort=True
+        ):
+            assays = tuple(
+                assay_frame[config.task_column].astype(str).to_numpy()
+                for _assay, assay_frame in protein_frame.groupby(
+                    config.assay_column, sort=True
+                )
+            )
+            proteins.append(assays)
+        hierarchy.append(tuple(proteins))
+    return tuple(hierarchy)
+
+
+def _nested_task_sample(
+    hierarchy: tuple[tuple[tuple[np.ndarray, ...], ...], ...],
+    rng: np.random.Generator,
+) -> list[str]:
+    sampled: list[str] = []
+    for family_index in rng.integers(0, len(hierarchy), size=len(hierarchy)):
+        proteins = hierarchy[int(family_index)]
+        for protein_index in rng.integers(0, len(proteins), size=len(proteins)):
+            assays = proteins[int(protein_index)]
+            for assay_index in rng.integers(0, len(assays), size=len(assays)):
+                tasks = assays[int(assay_index)]
+                sampled.extend(
+                    tasks[rng.integers(0, len(tasks), size=len(tasks))].tolist()
+                )
+    return sampled
+
+
+def bootstrap_policy_difference(
+    frame: pd.DataFrame,
+    config: TransportConfig,
+    *,
+    comparator: str,
+    best_average_model: str,
+    repeats: int | None = None,
+) -> tuple[pd.DataFrame, dict[str, object]]:
+    """Nested family/protein/assay bootstrap of comparator minus VariantShift AURC."""
+    repeats = repeats or config.bootstrap_repeats
+    variantshift = _choose_task_rows(
+        frame,
+        config,
+        policy="variantshift",
+        seed=config.seed,
+        best_average_model=best_average_model,
+    ).set_index(config.task_column, drop=False)
+    comparison = _choose_task_rows(
+        frame,
+        config,
+        policy=comparator,
+        seed=config.seed,
+        best_average_model=best_average_model,
+    ).set_index(config.task_column, drop=False)
+    shared = variantshift.index.intersection(comparison.index)
+    if len(shared) != len(variantshift) or len(shared) != len(comparison):
+        raise ValueError("Selective policies must cover exactly the same tasks")
+    task_metadata = variantshift.loc[
+        shared,
+        [
+            config.task_column,
+            config.group_column,
+            config.protein_column,
+            config.assay_column,
+        ],
+    ]
+    hierarchy = _task_hierarchy(task_metadata, config)
+    rng = np.random.default_rng(config.seed + 73)
+    estimates = np.empty(repeats, dtype=float)
+    for repeat in range(repeats):
+        sampled = _nested_task_sample(hierarchy, rng)
+        variantshift_auc = _risk_auc(variantshift.loc[sampled], config.target_column)
+        comparator_auc = _risk_auc(comparison.loc[sampled], config.target_column)
+        estimates[repeat] = comparator_auc - variantshift_auc
+    replicates = pd.DataFrame(
+        {
+            "repeat": np.arange(repeats),
+            "comparator": comparator,
+            "risk_coverage_auc_improvement": estimates,
+        }
+    )
+    point = _risk_auc(comparison, config.target_column) - _risk_auc(
+        variantshift, config.target_column
+    )
+    summary = {
+        "comparator": comparator,
+        "risk_coverage_auc_improvement": point,
+        "ci_low": float(np.quantile(estimates, 0.025)),
+        "ci_high": float(np.quantile(estimates, 0.975)),
+        "probability_improvement_above_zero": float(np.mean(estimates > 0)),
+        "bootstrap_repeats": repeats,
+        "bootstrap_unit": "family, then protein, then assay",
+    }
+    return replicates, summary
 
 
 def hierarchical_bootstrap_mean(
@@ -552,8 +685,24 @@ def fit_transportability(
     elastic, elastic_audit = cross_fitted_transport_predictions(
         frame, config, estimator="elastic_net"
     )
+    crossfit["elastic_predicted_selection_gain_sd"] = elastic[
+        "predicted_selection_gain_sd"
+    ].to_numpy(dtype=float)
     bundle = fit_frozen_transport_model(frame, config)
     best_model = str(bundle["best_average_model"])
+    policies = [
+        "variantshift",
+        "uncalibrated",
+        "elastic_net",
+        "always_best",
+        "random",
+        "msa_depth",
+        "score_dispersion",
+        "ensemble_agreement",
+        "oracle",
+    ]
+    if "crossover_probability_supervised_wins" in crossfit:
+        policies.append("crossover_classifier")
     curves = pd.concat(
         [
             selective_policy_curve(
@@ -562,9 +711,31 @@ def fit_transportability(
                 policy=policy,
                 best_average_model=best_model,
             )
-            for policy in ("variantshift", "uncalibrated", "always_best", "random", "oracle")
+            for policy in policies
         ],
         ignore_index=True,
+    )
+    summary = summarize_policy_curves(curves)
+    comparator_candidates = summary.loc[
+        summary["policy"].isin(
+            [
+                "uncalibrated",
+                "elastic_net",
+                "msa_depth",
+                "score_dispersion",
+                "ensemble_agreement",
+                "crossover_classifier",
+            ]
+        )
+    ]
+    best_comparator = str(
+        comparator_candidates.sort_values("risk_coverage_auc").iloc[0]["policy"]
+    )
+    bootstrap, bootstrap_summary = bootstrap_policy_difference(
+        crossfit,
+        config,
+        comparator=best_comparator,
+        best_average_model=best_model,
     )
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -575,6 +746,8 @@ def fit_transportability(
         "elastic_fold_audit": output_dir / "elastic-net-fold-audit.csv",
         "curves": output_dir / "risk-coverage.csv",
         "summary": output_dir / "transport-summary.csv",
+        "bootstrap": output_dir / "transport-bootstrap.csv.gz",
+        "bootstrap_summary": output_dir / "transport-bootstrap-summary.csv",
         "bundle": output_dir / "transport-model.joblib",
         "method": output_dir / "transport-method.json",
     }
@@ -583,7 +756,9 @@ def fit_transportability(
     write_table(fold_audit, outputs["fold_audit"])
     write_table(elastic_audit, outputs["elastic_fold_audit"])
     write_table(curves, outputs["curves"])
-    write_table(summarize_policy_curves(curves), outputs["summary"])
+    write_table(summary, outputs["summary"])
+    bootstrap.to_csv(outputs["bootstrap"], index=False, compression="gzip")
+    write_table(pd.DataFrame([bootstrap_summary]), outputs["bootstrap_summary"])
     joblib.dump(bundle, outputs["bundle"])
     method = {
         "schema_version": 1,
@@ -592,6 +767,7 @@ def fit_transportability(
         "parameters": bundle["parameters"],
         "conformal_quantile": bundle["conformal_quantile"],
         "best_average_model": best_model,
+        "best_label_free_comparator": best_comparator,
         "training_frame_sha256": bundle["training_frame_sha256"],
         "formal_scope": "one-sided group conformal under exchangeable protein-family tasks",
         "primary_failure": "selection_gain_sd <= 0",

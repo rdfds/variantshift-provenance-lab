@@ -1,0 +1,6 @@
+fold,estimator,fit_rows,calibration_rows,test_rows,fit_groups,calibration_groups,test_groups,conformal_quantile,parameters
+0,elastic_net,1452,420,468,86,22,24,0.572972626524706,{}
+1,elastic_net,1356,516,468,84,21,27,0.5336339997978915,{}
+2,elastic_net,1500,372,468,84,21,27,0.6349121388909473,{}
+3,elastic_net,1368,504,468,84,21,27,0.507607656004247,{}
+4,elastic_net,1488,384,468,84,21,27,0.7651821227449465,{}

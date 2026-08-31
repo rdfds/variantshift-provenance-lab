@@ -1,0 +1,6 @@
+fold,estimator,fit_rows,calibration_rows,test_rows,fit_groups,calibration_groups,test_groups,conformal_quantile,parameters
+0,histgb,1452,420,468,86,22,24,0.540348278988437,"{""l2_regularization"": 1.0, ""learning_rate"": 0.03, ""max_iter"": 500, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 20}"
+1,histgb,1356,516,468,84,21,27,0.6154820772691124,"{""l2_regularization"": 1.0, ""learning_rate"": 0.03, ""max_iter"": 500, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 20}"
+2,histgb,1500,372,468,84,21,27,0.8058203599812938,"{""l2_regularization"": 1.0, ""learning_rate"": 0.05, ""max_iter"": 250, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 10}"
+3,histgb,1368,504,468,84,21,27,0.5363193008890651,"{""l2_regularization"": 1.0, ""learning_rate"": 0.03, ""max_iter"": 500, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 20}"
+4,histgb,1488,384,468,84,21,27,0.7479857997050933,"{""l2_regularization"": 1.0, ""learning_rate"": 0.05, ""max_iter"": 250, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 10}"
