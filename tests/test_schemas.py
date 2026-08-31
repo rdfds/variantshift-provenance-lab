@@ -3,9 +3,11 @@ import pytest
 
 from variantshift.schemas import (
     all_single_substitutions,
+    read_table,
     sequence_sha256,
     stable_frame_sha256,
     validate_targets,
+    write_table,
 )
 
 
@@ -38,3 +40,10 @@ def test_target_digest_and_table_digest_are_enforced() -> None:
     assert stable_frame_sha256(targets) == stable_frame_sha256(
         targets.loc[::-1, list(reversed(targets.columns))]
     )
+
+
+def test_gzip_csv_round_trip(tmp_path) -> None:
+    frame = pd.DataFrame({"target_id": ["A", "B"], "value": [1, 2]})
+    path = tmp_path / "table.csv.gz"
+    write_table(frame, path)
+    pd.testing.assert_frame_equal(read_table(path), frame)

@@ -1,0 +1,16 @@
+{
+  "created_at": "2026-08-31T02:15:40.986650+00:00",
+  "method_artifacts": {},
+  "prediction_artifacts": {},
+  "protocol_id": "variantshift-venusmuthub-confirmation-v1",
+  "registration": null,
+  "reveal": null,
+  "schema_version": 1,
+  "state": "targets_frozen",
+  "target_artifacts": {
+    "protocols/venusmuthub-v1/frozen/protocol.json": "f1bc26be458f5ce02672916123a4cd817e9f6465af911fb29dfaeb4bdca6c618",
+    "protocols/venusmuthub-v1/frozen/schemas.json": "8033606801cddac61c4bb0cfa47e3fb5a7508a08ad20702a19a1c03056f69f3d",
+    "protocols/venusmuthub-v1/frozen/targets.csv": "6384809e028e9ad221244870852a43b6d6d9a61e88b1c54d715c4aa707d2e733",
+    "protocols/venusmuthub-v1/frozen/variants.csv.gz": "32190f8ad2ff25e4b2faeecebfdc2af718a93726cdf2bb2da924ed51f3c5873d"
+  }
+}
