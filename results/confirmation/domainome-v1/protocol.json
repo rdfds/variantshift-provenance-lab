@@ -1,0 +1,28 @@
+{
+  "exclusion": {
+    "ambiguous_effect_direction": true,
+    "exact_experiment_overlap_with_development": true,
+    "unresolvable_reference_sequence": true
+  },
+  "exposure_policy": "model-specific clean, possible, known, or undocumented",
+  "inclusion": {
+    "minimum_assayed_positions": 10,
+    "minimum_unique_variants": 100,
+    "outcomes_accessed_before_freeze": false,
+    "variant_type": "single amino-acid substitution"
+  },
+  "outcome_status": "not_accessed",
+  "panel_id": "human-domainome-v1",
+  "protocol_id": "variantshift-domainome-confirmation-v1",
+  "schema_version": 1,
+  "source": "Site-saturation mutagenesis of 500 human protein domains",
+  "source_artifact_sha256": {
+    "/Users/rvariankaval/Documents/Codex/2026-08-22/h/work/variantshift-provenance-lab/data/confirmation-targets/domainome-v1/target-extraction-receipt.json": "da0e388f36f6b2bf9be8a96e0f4be7745a97125ba24b22770bdf6cc762f73984"
+  },
+  "source_git_commit": "d081dae50e01288e49907edee2065f246903255c",
+  "source_version": "Human Domainome 1.0",
+  "target_count": 426,
+  "target_sha256": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e",
+  "variant_count": 469262,
+  "variant_sha256": "eb4891a705b60ed19ebfd2485a1bf3f07c786413455caea198c911e56f83232f"
+}

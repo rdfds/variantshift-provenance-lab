@@ -1,0 +1,20 @@
+{
+  "decoded_columns": [
+    "dom_ID",
+    "PFAM_ID",
+    "wt_seq"
+  ],
+  "discarded_field_policy": "Bytes after the third tab of every data row were hashed but never decoded or stored.",
+  "expected_source_md5": "4401c96dd6f3083a50f13796eaa4a837",
+  "outcomes_accessed": false,
+  "schema_version": 1,
+  "source_bytes": 3157054,
+  "source_doi": "10.5281/zenodo.14356805",
+  "source_md5": "4401c96dd6f3083a50f13796eaa4a837",
+  "source_rows": 24082,
+  "source_sha256": "b6bb656e69d5ede6b896b27763f22029647855796f0d3d3cc70675485e5ae425",
+  "source_url": "https://zenodo.org/api/records/14356805/files/Supplementary_Table_3_esm1v_residuals.txt/content",
+  "target_count": 426,
+  "target_sha256": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e",
+  "zenodo_record": "14356805"
+}
