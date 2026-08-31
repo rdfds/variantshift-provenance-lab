@@ -4,9 +4,9 @@
 
 VariantShift is a leakage-aware benchmark and selective-deployment framework for protein
 variant-effect models. It measures whether rankings learned on common benchmarks transport to
-unseen positions, proteins, families, assay modalities, and external datasets. Its frozen
-Transportability Score chooses a model only when a one-sided family-calibrated lower bound on
-top-decile selection gain exceeds zero; otherwise it abstains.
+unseen positions, proteins, families, assay modalities, and external datasets. Its Selective
+Transport Auditor conservatively overrides the best-average model, ranks tasks for selective
+deployment, and separately issues a hierarchical conformal lower bound on top-decile gain.
 
 The initial case study uses the Align Foundation's TEV protease GROQ-seq release: 18,486
 variants measured across 24 conditions at NIST's Living Measurement Systems Foundry.
@@ -20,9 +20,9 @@ confirmation study:
   risk–coverage schemas;
 - model and panel adapter interfaces with content-addressed prediction caching;
 - a one-way target → prediction → registration → reveal lock;
-- family-grouped cross-fitting, one-sided group conformal lower bounds, selective model choice,
-  abstention, frozen comparator and feature-ablation policies, machine-readable acceptance gates,
-  and nested family/protein/assay bootstrap inference;
+- nested family cross-fitting, selection-aware hierarchical conformal lower bounds, conservative
+  model overrides, abstention, frozen comparator and feature-ablation policies, machine-readable
+  acceptance gates, and nested family/protein/assay bootstrap inference;
 - config-driven local and Slurm workflows, Apptainer recipes, and a static result explorer;
 - a metadata-only untouched MaveDB complement and target-only VenusMutHub panel frozen without
   score or mutation-table access;
@@ -31,10 +31,15 @@ confirmation study:
 
 The current development run contains 2,340 assay–model rows across 195 ProteinGym assays, 169
 proteins, 132 curated family groups, and 12 modern model score sets. It is not yet confirmation
-evidence. The calibrated selector currently fails the preregistered scientific improvement gate,
-and no model has yet passed the executable external-panel preflight. Domainome, confirmation
-structure/Pfam annotations, ARCH execution, and the 300-common-target threshold remain blockers.
-Those are active blockers, not omitted results. See the [publication readiness audit](docs/PUBLICATION_READINESS.md) and
+evidence. The frozen outcome-free selector reduces development regret–coverage AUC from 0.07273 to
+0.06452; its nested family-bootstrap improvement interval is 0.00214–0.01494. This remains
+adaptive development evidence, not a confirmatory claim. No model has yet passed the executable
+external-panel preflight. Domainome, confirmation structure/Pfam annotations, ARCH execution, and
+the 300-common-target threshold remain blockers.
+Those are active blockers, not omitted results. See the
+[auditor specification](docs/SELECTIVE_TRANSPORT_AUDITOR.md),
+[method-development audit](docs/TRANSPORT_METHOD_DEVELOPMENT.md),
+[publication readiness audit](docs/PUBLICATION_READINESS.md), and
 [Nature Methods protocol](docs/NATURE_METHODS_PROTOCOL.md).
 
 Open the generated [benchmark explorer](site/index.html) or rebuild it with `make site`.

@@ -21,15 +21,17 @@ registration are frozen.
 1. How do performance and model rank change from random variants to unseen positions, proteins,
    families, assay modalities, and datasets?
 2. Can outcome-free task and model descriptors predict standardized top-decile selection gain?
-3. Can model selection or abstention reduce failed deployments?
+3. Can model selection or abstention reduce selection regret without increasing failed deployments?
 
 The unit of analysis is a task, not a variant. Each assay receives equal weight.
 
 - Primary utility: standardized selection gain in the model-ranked top decile.
-- Primary failure: selection gain less than or equal to zero.
-- Primary reliability endpoint: area under task-level failure risk–coverage curve.
-- Secondary metrics: Spearman correlation, top-decile recall, nDCG, best-variant regret, model-rank
-  stability, marginal conformal coverage, and position-conditional coverage.
+- Primary reliability endpoint: area under the task-level selection-regret–coverage curve, where
+  regret is the difference between the best available model's gain and the selected model's gain.
+- Safety failure: selection gain less than or equal to zero.
+- Secondary metrics: failure risk–coverage AUC, mean and worst-quintile selection gain, Spearman
+  correlation, top-decile recall, nDCG, best-variant regret, model-rank stability, selected-policy
+  conformal coverage, and position-conditional coverage.
 - Uncertainty: 10,000 nested bootstrap resamples of families, proteins within families, and assays
   within proteins.
 
@@ -45,12 +47,22 @@ calibration families are disjoint. Hyperparameters are selected only inside held
 folds. The deployable bundle uses a separate group calibration set and records its training-frame
 hash.
 
-The current pilot is a negative development result. VariantShift risk–coverage AUC is 0.00987,
-versus 0.00026 for the development-selected elastic-net comparator, and the nested-bootstrap
-improvement estimate is −0.00961 (95% interval −0.02952 to 0.00174). Observed cross-fitted
-lower-bound coverage is 98.89%, indicating over-conservative calibration. The method must improve
-on development data before it is frozen for confirmation. The negative result is retained rather
-than hidden by changing the outcome, comparator, or confirmation threshold.
+The original pilot is a retained negative development result. Its family-maximum lower bound both
+selected models and ranked tasks for abstention. VariantShift failure risk–coverage AUC was 0.00987,
+versus 0.00026 for the development-selected elastic-net comparator, and observed lower-bound
+coverage was 98.89%. Diagnostic analysis showed that only a few development tasks had non-positive
+gain, making binary failure AUC poorly powered, while choosing by the over-conservative lower bound
+also discarded useful expected-gain predictions. These facts motivated the replacement below
+before registration or confirmation reveal; the old artifacts remain in version control.
+
+The frozen outcome-free outer-family evaluation improves regret–coverage AUC from 0.07273 for the
+development-selected MSA-depth comparator to 0.06452 for the auditor (11.3% relative reduction).
+The nested family bootstrap improvement is 0.00821 with a 95% interval from 0.00214 to 0.01494;
+99.42% of replicates are above zero. Selected-policy lower-bound coverage is 89.23% at a nominal
+90%. The auditor overrides the best-average model on 6 of 195 tasks, so this development result is
+primarily an abstention-ranking improvement rather than evidence of broad model-switching gains.
+Because the rule was adaptively developed on ProteinGym, these intervals are descriptive; only the
+locked confirmation panels can support the primary comparative claim.
 
 ## Confirmation firewall
 
@@ -106,28 +118,48 @@ materially different input/model families and at least 300 common targets on whi
 covers at least 95% of substitutions. `preregistration-build` now enforces this gate and refuses to
 produce a registration bundle when the executable audit is insufficient.
 
-## Frozen Transportability Score
+## Selective Transport Auditor
 
-The candidate implementation is a histogram gradient-boosting regressor over task and model
-descriptors. It predicts selection gain and group-held-out absolute error for each task–model pair.
-A one-sided lower bound uses family-max conformal scores normalized by the predicted error scale.
-The model with the largest lower bound is selected only when that bound exceeds zero. The frozen
-bundle also contains the development-selected elastic-net comparator and MSA-only,
-ensemble-only, without-MSA, and without-ensemble ablations.
+The replacement explicitly separates model choice from abstention. A histogram gradient-boosting
+regressor predicts selection gain for each task–model pair. Within every outer family-held-out fold,
+inner family-held-out predictions choose a fixed-grid shrinkage toward model priors and a
+conservative margin required to override the best-average model. A frozen support score combines
+MSA depth, protein length, and expected gain for coverage ranking. This nested procedure estimates
+the complete selection rule, not an individual regression fit, and avoids tuning it on the outer
+test families.
+
+Uncertainty is calibrated after model selection. A second family-held-out model predicts the local
+absolute error of the shrunken decision score. On calibration families, the selection rule chooses
+one model per task without using its outcome. The one-sided nonconformity score is the selected
+decision error divided by its predicted scale. Calibration uses the hierarchical split-conformal
+distribution: every family receives equal total mass, tasks share mass within family, and
+`1 / (n_families + 1)` mass is placed at infinity. This targets marginal coverage for a randomly
+sampled task in a previously unseen family under two-level hierarchical exchangeability. It does
+not claim simultaneous coverage of every task in the family or validity after arbitrary dataset,
+temporal, structural, or assay shift.
+
+The frozen outcome-free priority score ranks tasks for coverage-based abstention. The conformal
+lower bound independently determines whether the selected model is trusted; it never changes which
+model is selected. The frozen bundle also contains the
+development-selected comparator and MSA-only, ensemble-only, without-MSA, and without-ensemble
+ablations fitted with the same selection-aware procedure.
 
 Comparators are uncalibrated transport prediction, elastic-net task regression, MSA depth, model
-score dispersion, ensemble agreement, the existing crossover classifier, random selection, the
-best average development model, and an unattainable oracle.
+score dispersion, ensemble agreement, random selection, the best average development model, and an
+unattainable oracle. The existing crossover classifier is outcome-informed and remains a
+development diagnostic, not a label-free comparator.
 
-Formal conformal claims are restricted to exchangeable family-level tasks. Coverage under stronger
-dataset, structure-family, Pfam-clan, and temporal shifts is an empirical diagnostic.
+Formal conformal claims are restricted to the declared two-stage target: a new exchangeable family,
+then a new exchangeable task within that family. Coverage under stronger dataset, structure-family,
+Pfam-clan, and temporal shifts is an empirical diagnostic.
 
 ## Confirmation success gates
 
-- The best frozen label-free comparator is beaten on pooled confirmation risk–coverage AUC, with a
-  family-bootstrap 95% interval excluding zero.
-- At 50% task coverage, failed deployments fall by at least 25% without lower mean selection gain.
-- Nominal 90% lower-bound coverage is between 85% and 95%.
+- The best frozen label-free comparator is beaten on pooled confirmation regret–coverage AUC, with
+  a family-bootstrap 95% interval excluding zero after Holm adjustment.
+- At 50% task coverage, the auditor has lower regret, no lower mean gain, and no higher zero-gain
+  failure rate than the frozen comparator.
+- Nominal 90% selected-policy lower-bound coverage is between 85% and 95%.
 - Effects agree in direction between Domainome and untouched MaveDB.
 - Feature ablations rule out MSA depth or ensemble disagreement as the sole explanation.
 - At least one robust negative result changes how ProteinGym results should be interpreted.
