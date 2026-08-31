@@ -98,10 +98,48 @@ TASK_METRIC_SCHEMA = FrameSchema(
     ),
     ("protocol_id", "panel_id", "dataset_id", "assay_id", "target_id", "model_id"),
 )
+TRANSPORT_FEATURE_SCHEMA = FrameSchema(
+    "transport-features-v1",
+    1,
+    (
+        "protocol_id",
+        "panel_id",
+        "dataset_id",
+        "assay_id",
+        "task_id",
+        "target_id",
+        "protein_id",
+        "family_id",
+        "model_id",
+    ),
+    ("protocol_id", "panel_id", "dataset_id", "assay_id", "target_id", "model_id"),
+)
+RISK_COVERAGE_SCHEMA = FrameSchema(
+    "risk-coverage-v1",
+    1,
+    (
+        "policy",
+        "coverage",
+        "retained_tasks",
+        "failure_rate",
+        "mean_selection_gain_sd",
+        "median_selection_gain_sd",
+        "confidence_threshold",
+    ),
+    ("policy", "coverage"),
+)
 
 SCHEMAS = {
     schema.name: schema
-    for schema in (TARGET_SCHEMA, VARIANT_SCHEMA, PREDICTION_SCHEMA, OUTCOME_SCHEMA, TASK_METRIC_SCHEMA)
+    for schema in (
+        TARGET_SCHEMA,
+        VARIANT_SCHEMA,
+        PREDICTION_SCHEMA,
+        OUTCOME_SCHEMA,
+        TASK_METRIC_SCHEMA,
+        TRANSPORT_FEATURE_SCHEMA,
+        RISK_COVERAGE_SCHEMA,
+    )
 }
 
 

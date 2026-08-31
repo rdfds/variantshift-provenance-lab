@@ -596,6 +596,32 @@ def build_parser() -> argparse.ArgumentParser:
     transport_evaluate.add_argument("--output-dir", type=Path, required=True)
     transport_evaluate.add_argument("--outcome-lock", type=Path)
     transport_evaluate.add_argument(
+        "--negative-conclusion",
+        type=Path,
+        help=(
+            "JSON record with statement, interpretation_change, and evidence_artifacts; "
+            "required to pass the final publication gate"
+        ),
+    )
+
+    overlap_audit = subparsers.add_parser(
+        "confirmation-overlap-audit",
+        help="Audit outcome-free confirmation novelty and model exposure strata",
+    )
+    overlap_audit.add_argument("proteingym_reference", type=Path)
+    overlap_audit.add_argument("proteingym_eligibility", type=Path)
+    overlap_audit.add_argument(
+        "--confirmation-target", type=Path, action="append", required=True
+    )
+    overlap_audit.add_argument("--model-config", type=Path, required=True)
+    overlap_audit.add_argument("--output-dir", type=Path, required=True)
+    overlap_audit.add_argument("--confirmation-pfam", type=Path)
+    overlap_audit.add_argument("--development-pfam", type=Path)
+    overlap_audit.add_argument("--confirmation-structure-families", type=Path)
+    overlap_audit.add_argument("--development-structure-families", type=Path)
+    overlap_audit.add_argument("--mmseqs-binary", default="mmseqs")
+    overlap_audit.add_argument("--threads", type=int, default=8)
+    transport_evaluate.add_argument(
         "--development",
         action="store_true",
         help="Evaluate development data without a confirmation lock",
@@ -755,18 +781,43 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     if arguments.command == "transport-evaluate":
-        from .outcome_lock import assert_outcomes_accessible
+        from .outcome_lock import assert_evaluation_artifacts_locked
         from .transportability import evaluate_frozen_transportability
 
         if arguments.development == bool(arguments.outcome_lock):
             raise ValueError("Choose exactly one of --development or --outcome-lock")
         if arguments.outcome_lock:
-            assert_outcomes_accessible(arguments.outcome_lock)
+            assert_evaluation_artifacts_locked(
+                arguments.outcome_lock,
+                prediction_artifact=arguments.predictions,
+                method_artifact=arguments.bundle,
+                outcome_artifact=arguments.outcomes,
+            )
         outputs = evaluate_frozen_transportability(
             arguments.bundle,
             arguments.predictions,
             arguments.outcomes,
             arguments.output_dir,
+            negative_conclusion_path=arguments.negative_conclusion,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "confirmation-overlap-audit":
+        from .overlap_audit import audit_confirmation_overlap
+
+        outputs = audit_confirmation_overlap(
+            arguments.proteingym_reference,
+            arguments.proteingym_eligibility,
+            arguments.confirmation_target,
+            arguments.model_config,
+            arguments.output_dir,
+            confirmation_pfam_path=arguments.confirmation_pfam,
+            development_pfam_path=arguments.development_pfam,
+            confirmation_structure_path=arguments.confirmation_structure_families,
+            development_structure_path=arguments.development_structure_families,
+            mmseqs_binary=arguments.mmseqs_binary,
+            threads=arguments.threads,
         )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0

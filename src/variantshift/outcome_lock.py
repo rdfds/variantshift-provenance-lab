@@ -129,6 +129,44 @@ def assert_outcomes_accessible(path: Path) -> dict[str, object]:
     return payload
 
 
+def assert_evaluation_artifacts_locked(
+    path: Path,
+    *,
+    prediction_artifact: Path,
+    method_artifact: Path,
+    outcome_artifact: Path,
+) -> dict[str, object]:
+    """Require reveal and verify the exact artifacts against the immutable lock."""
+    payload = read_outcome_lock(path)
+    if payload["state"] != "revealed":
+        raise PermissionError(
+            "Confirmation evaluation requires a recorded one-time outcome reveal"
+        )
+    requested = {
+        "prediction_artifacts": Path(prediction_artifact),
+        "method_artifacts": Path(method_artifact),
+        "outcome_artifacts": Path(outcome_artifact),
+    }
+    records = {
+        "prediction_artifacts": payload.get("prediction_artifacts", {}),
+        "method_artifacts": payload.get("method_artifacts", {}),
+        "outcome_artifacts": dict(payload.get("reveal", {})).get("artifacts", {}),
+    }
+    for section, artifact in requested.items():
+        if not artifact.is_file():
+            raise ValueError(f"Evaluation artifact is unavailable: {artifact}")
+        digest = sha256_file(artifact)
+        locked_hashes = set(dict(records[section]).values())
+        if digest not in locked_hashes:
+            raise ValueError(f"{artifact} is not the frozen {section} artifact")
+    for section, artifacts in records.items():
+        for name, expected in dict(artifacts).items():
+            artifact = Path(name)
+            if not artifact.is_file() or sha256_file(artifact) != expected:
+                raise ValueError(f"Locked {section} artifact changed or disappeared: {artifact}")
+    return payload
+
+
 def record_outcome_reveal(path: Path, *, outcome_artifacts: list[Path]) -> Path:
     payload = assert_outcomes_accessible(path)
     if payload["state"] == "revealed":
