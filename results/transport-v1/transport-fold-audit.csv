@@ -1,6 +1,6 @@
-fold,estimator,fit_rows,calibration_rows,test_rows,fit_groups,calibration_groups,test_groups,conformal_quantile,parameters
-0,histgb,1452,420,468,86,22,24,0.540348278988437,"{""l2_regularization"": 1.0, ""learning_rate"": 0.03, ""max_iter"": 500, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 20}"
-1,histgb,1356,516,468,84,21,27,0.6154820772691124,"{""l2_regularization"": 1.0, ""learning_rate"": 0.03, ""max_iter"": 500, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 20}"
-2,histgb,1500,372,468,84,21,27,0.8058203599812938,"{""l2_regularization"": 1.0, ""learning_rate"": 0.05, ""max_iter"": 250, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 10}"
-3,histgb,1368,504,468,84,21,27,0.5363193008890651,"{""l2_regularization"": 1.0, ""learning_rate"": 0.03, ""max_iter"": 500, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 20}"
-4,histgb,1488,384,468,84,21,27,0.7479857997050933,"{""l2_regularization"": 1.0, ""learning_rate"": 0.05, ""max_iter"": 250, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 10}"
+fold,estimator,fit_rows,calibration_rows,test_rows,fit_groups,calibration_groups,test_groups,conformal_quantile,median_predicted_error_scale,error_scale_floor,parameters
+0,histgb,1452,420,468,86,22,24,4.691995353338758,0.19410743243543713,0.007313690539605565,"{""l2_regularization"": 1.0, ""learning_rate"": 0.03, ""max_iter"": 500, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 20}"
+1,histgb,1356,516,468,84,21,27,6.725305891942558,0.17650090143562214,0.0071946990227735935,"{""l2_regularization"": 1.0, ""learning_rate"": 0.03, ""max_iter"": 500, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 20}"
+2,histgb,1500,372,468,84,21,27,4.318671375592142,0.15038505697322607,0.006836443250489316,"{""l2_regularization"": 1.0, ""learning_rate"": 0.05, ""max_iter"": 250, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 10}"
+3,histgb,1368,504,468,84,21,27,2.9020449379391264,0.1758764882401922,0.00785245960365611,"{""l2_regularization"": 1.0, ""learning_rate"": 0.03, ""max_iter"": 500, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 20}"
+4,histgb,1488,384,468,84,21,27,3.4818693798326126,0.18524074340362373,0.008072821426286526,"{""l2_regularization"": 1.0, ""learning_rate"": 0.05, ""max_iter"": 250, ""max_leaf_nodes"": 15, ""min_samples_leaf"": 10}"

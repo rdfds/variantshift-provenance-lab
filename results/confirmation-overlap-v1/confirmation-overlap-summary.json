@@ -1,0 +1,29 @@
+{
+  "confirmation_families": 96,
+  "confirmation_targets": 99,
+  "exact_sequence_unseen": 97,
+  "exposure_categories": {
+    "clean": 99,
+    "known": 99,
+    "possible": 119,
+    "undocumented": 970
+  },
+  "foldseek_status": {
+    "undocumented": 99
+  },
+  "input_sha256": {
+    "eligibility": "28e92d1bdb8665ea2b7b01dae989c14e45059681b96e31e01a2ecf55ab5925e8",
+    "model_config": "d404d9390ec1ed9298d20a9fcd6400a5ab4fcbe73a9d42ebb15e59b930d59709",
+    "protocols/mavedb-complement-v1/frozen/targets.csv": "f5548322f8483ecbad8bf05b583f84e3404ea681e0a935f8824e3347ef067c21",
+    "protocols/venusmuthub-v1/frozen/targets.csv": "6384809e028e9ad221244870852a43b6d6d9a61e88b1c54d715c4aa707d2e733",
+    "reference": "a8f498011532a74aa9fe556a50555a75e928c5837d19c06a87592ae04049b308"
+  },
+  "mmseqs_family_unseen": 96,
+  "mmseqs_version": "18-8cc5c",
+  "outcomes_accessed": false,
+  "pfam_status": {
+    "undocumented": 99
+  },
+  "schema_version": 1,
+  "sequence_family_rule": "identity >= 0.30 and bidirectional coverage >= 0.80"
+}

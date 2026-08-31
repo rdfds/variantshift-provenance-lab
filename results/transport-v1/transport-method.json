@@ -38,8 +38,20 @@
     "target_column": "selection_gain_sd",
     "task_column": "task_id"
   },
-  "conformal_quantile": 0.6577075605521401,
+  "confirmation_primary_panels": [
+    "human-domainome-v1",
+    "mavedb-complement-v1"
+  ],
+  "conformal_mode": "family-max normalized by group-held-out learned error scale",
+  "conformal_quantile": 6.161636719960601,
+  "error_scale_floor": 0.007555323810328022,
   "formal_scope": "one-sided group conformal under exchangeable protein-family tasks",
+  "frozen_feature_ablations": [
+    "ensemble_only",
+    "msa_only",
+    "without_ensemble",
+    "without_msa"
+  ],
   "name": "VariantShift Transportability Score",
   "parameters": {
     "l2_regularization": 1.0,
