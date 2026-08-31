@@ -508,6 +508,104 @@ def build_parser() -> argparse.ArgumentParser:
     external_figure.add_argument(
         "--output", type=Path, default=Path("docs/mavedb-external-validation.svg")
     )
+
+    panel_freeze = subparsers.add_parser(
+        "panel-freeze",
+        help="Freeze target-only confirmation inputs and enumerate the complete 19L landscape",
+    )
+    panel_freeze.add_argument("config", type=Path)
+    panel_freeze.add_argument("output_dir", type=Path)
+
+    model_preflight = subparsers.add_parser(
+        "models-preflight",
+        help="Audit model licenses, execution, coverage, parity, and repeatability",
+    )
+    model_preflight.add_argument("model_config", type=Path)
+    model_preflight.add_argument("--targets", type=Path)
+    model_preflight.add_argument("--variants", type=Path)
+    model_preflight.add_argument("--output", type=Path, default=Path("artifacts/model-audit.csv"))
+    model_preflight.add_argument(
+        "--cache-dir", type=Path, default=Path("artifacts/model-preflight-cache")
+    )
+    model_preflight.add_argument("--parity-dir", type=Path)
+    model_preflight.add_argument("--execute", action="store_true")
+
+    predict_panel = subparsers.add_parser(
+        "predict-panel",
+        help="Run outcome-blind model scoring with content-addressed target caches",
+    )
+    predict_panel.add_argument("model_config", type=Path)
+    predict_panel.add_argument("targets", type=Path)
+    predict_panel.add_argument("variants", type=Path)
+    predict_panel.add_argument("--protocol-id", required=True)
+    predict_panel.add_argument("--model", action="append")
+    predict_panel.add_argument("--output-dir", type=Path, required=True)
+    predict_panel.add_argument(
+        "--cache-dir", type=Path, default=Path("artifacts/model-prediction-cache")
+    )
+
+    transport_fit = subparsers.add_parser(
+        "transport-fit",
+        help="Fit and freeze the group-calibrated VariantShift Transportability Score",
+    )
+    transport_fit.add_argument("features", type=Path)
+    transport_fit.add_argument("config", type=Path)
+    transport_fit.add_argument("--output-dir", type=Path, required=True)
+    transport_fit.add_argument("--confirmation-features", type=Path)
+
+    transport_evaluate = subparsers.add_parser(
+        "transport-evaluate",
+        help="Evaluate already-frozen transport predictions after authorized outcome reveal",
+    )
+    transport_evaluate.add_argument("bundle", type=Path)
+    transport_evaluate.add_argument("predictions", type=Path)
+    transport_evaluate.add_argument("outcomes", type=Path)
+    transport_evaluate.add_argument("--output-dir", type=Path, required=True)
+    transport_evaluate.add_argument("--outcome-lock", type=Path)
+    transport_evaluate.add_argument(
+        "--development",
+        action="store_true",
+        help="Evaluate development data without a confirmation lock",
+    )
+
+    confirmation_freeze = subparsers.add_parser(
+        "confirmation-freeze",
+        help="Hash prediction and method artifacts before public preregistration",
+    )
+    confirmation_freeze.add_argument("outcome_lock", type=Path)
+    confirmation_freeze.add_argument("--prediction", type=Path, action="append", required=True)
+    confirmation_freeze.add_argument("--method", type=Path, action="append", required=True)
+
+    confirmation_register = subparsers.add_parser(
+        "confirmation-register",
+        help="Record the public OSF or Zenodo registration URI",
+    )
+    confirmation_register.add_argument("outcome_lock", type=Path)
+    confirmation_register.add_argument("registration_uri")
+
+    confirmation_reveal = subparsers.add_parser(
+        "confirmation-reveal",
+        help="Record hashes for confirmation outcomes after registration",
+    )
+    confirmation_reveal.add_argument("outcome_lock", type=Path)
+    confirmation_reveal.add_argument("--outcome", type=Path, action="append", required=True)
+
+    preregistration = subparsers.add_parser(
+        "preregistration-build",
+        help="Build the public outcome-blind registration bundle",
+    )
+    preregistration.add_argument("protocol", type=Path)
+    preregistration.add_argument("outcome_lock", type=Path)
+    preregistration.add_argument("model_audit", type=Path)
+    preregistration.add_argument("method", type=Path)
+    preregistration.add_argument("--output-dir", type=Path, required=True)
+
+    site_build = subparsers.add_parser(
+        "site-build",
+        help="Build the static benchmark and reliability-results explorer",
+    )
+    site_build.add_argument("config", type=Path)
+    site_build.add_argument("output_dir", type=Path)
     return parser
 
 
@@ -523,6 +621,125 @@ def _load_filtered(arguments: argparse.Namespace):
 
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = build_parser().parse_args(argv)
+
+    if arguments.command == "panel-freeze":
+        from .panels import freeze_panel
+
+        outputs = freeze_panel(arguments.config, arguments.output_dir)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "models-preflight":
+        import pandas as pd
+
+        from .model_adapters import load_model_specifications, preflight_models
+
+        if arguments.execute and (arguments.targets is None or arguments.variants is None):
+            raise ValueError("--execute requires both --targets and --variants")
+        audit = preflight_models(
+            load_model_specifications(arguments.model_config),
+            targets=pd.read_csv(arguments.targets) if arguments.targets else None,
+            variants=pd.read_csv(arguments.variants) if arguments.variants else None,
+            cache_dir=arguments.cache_dir,
+            parity_dir=arguments.parity_dir,
+            execute=arguments.execute,
+        )
+        arguments.output.parent.mkdir(parents=True, exist_ok=True)
+        audit.to_csv(arguments.output, index=False)
+        print(arguments.output)
+        return 0
+
+    if arguments.command == "predict-panel":
+        from .model_adapters import write_panel_predictions
+
+        outputs = write_panel_predictions(
+            arguments.model_config,
+            arguments.targets,
+            arguments.variants,
+            arguments.output_dir,
+            protocol_id=arguments.protocol_id,
+            cache_dir=arguments.cache_dir,
+            model_ids=set(arguments.model) if arguments.model else None,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "transport-fit":
+        from .transportability import fit_transportability
+
+        outputs = fit_transportability(
+            arguments.features,
+            arguments.config,
+            arguments.output_dir,
+            confirmation_features_path=arguments.confirmation_features,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "transport-evaluate":
+        from .outcome_lock import assert_outcomes_accessible
+        from .transportability import evaluate_frozen_transportability
+
+        if arguments.development == bool(arguments.outcome_lock):
+            raise ValueError("Choose exactly one of --development or --outcome-lock")
+        if arguments.outcome_lock:
+            assert_outcomes_accessible(arguments.outcome_lock)
+        outputs = evaluate_frozen_transportability(
+            arguments.bundle,
+            arguments.predictions,
+            arguments.outcomes,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "confirmation-freeze":
+        from .outcome_lock import freeze_predictions
+
+        print(
+            freeze_predictions(
+                arguments.outcome_lock,
+                prediction_artifacts=arguments.prediction,
+                method_artifacts=arguments.method,
+            )
+        )
+        return 0
+
+    if arguments.command == "confirmation-register":
+        from .outcome_lock import register_confirmation
+
+        print(
+            register_confirmation(
+                arguments.outcome_lock, registration_uri=arguments.registration_uri
+            )
+        )
+        return 0
+
+    if arguments.command == "confirmation-reveal":
+        from .outcome_lock import record_outcome_reveal
+
+        print(record_outcome_reveal(arguments.outcome_lock, outcome_artifacts=arguments.outcome))
+        return 0
+
+    if arguments.command == "preregistration-build":
+        from .preregistration import build_preregistration_bundle
+
+        outputs = build_preregistration_bundle(
+            arguments.protocol,
+            arguments.outcome_lock,
+            arguments.model_audit,
+            arguments.method,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "site-build":
+        from .benchmark_site import build_benchmark_site
+
+        outputs = build_benchmark_site(arguments.config, arguments.output_dir)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
 
     if arguments.command == "mavedb-freeze-external":
         from .external_validation import freeze_external_panel

@@ -128,6 +128,7 @@ def top_selection_metrics(
     return {
         "top_fraction": fraction,
         "top_recall": overlap / count,
+        "ndcg": normalized_discounted_cumulative_gain(observed, predicted),
         "selected_target_mean": selected_mean,
         "selection_gain_sd": (selected_mean - baseline_mean) / target_scale
         if target_scale > 1e-12
@@ -139,6 +140,28 @@ def top_selection_metrics(
         if target_scale > 1e-12
         else 0.0,
     }
+
+
+def normalized_discounted_cumulative_gain(
+    observed: np.ndarray,
+    predicted: np.ndarray,
+) -> float:
+    """Compute NDCG from outcome ranks so arbitrary assay scales and signs are safe."""
+    observed = np.asarray(observed, dtype=float)
+    predicted = np.asarray(predicted, dtype=float)
+    if observed.shape != predicted.shape or observed.ndim != 1:
+        raise ValueError("Observed and predicted values must be aligned vectors")
+    if not len(observed):
+        raise ValueError("NDCG requires at least one observation")
+    order = np.argsort(observed, kind="stable")
+    relevance = np.empty(len(observed), dtype=float)
+    relevance[order] = np.arange(1, len(observed) + 1, dtype=float) / len(observed)
+    predicted_order = np.argsort(-predicted, kind="stable")
+    ideal_order = np.argsort(-relevance, kind="stable")
+    discounts = np.log2(np.arange(2, len(observed) + 2, dtype=float))
+    discounted_gain = float(np.sum((np.exp2(relevance[predicted_order]) - 1) / discounts))
+    ideal_gain = float(np.sum((np.exp2(relevance[ideal_order]) - 1) / discounts))
+    return discounted_gain / ideal_gain if ideal_gain > 0 else 0.0
 
 
 def risk_coverage_curve(

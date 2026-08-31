@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "numeric_features": [
+    "protein_length",
+    "assayed_fraction",
+    "mutated_positions",
+    "msa_depth",
+    "msa_neff",
+    "alignment_coverage",
+    "sequence_identity_to_development",
+    "structure_similarity_to_development",
+    "mean_plddt",
+    "disorder_fraction",
+    "domain_coverage",
+    "score_dispersion",
+    "score_tail_separation",
+    "missing_fraction",
+    "ensemble_disagreement",
+    "ensemble_agreement"
+  ],
+  "categorical_features": [
+    "taxon",
+    "assay_modality",
+    "model_family",
+    "model_modalities",
+    "exposure_status",
+    "pfam_novel",
+    "sequence_family_novel",
+    "structure_family_novel"
+  ],
+  "group_column": "family_id",
+  "task_column": "task_id",
+  "target_column": "selection_gain_sd",
+  "model_column": "model_id",
+  "protein_column": "protein_id",
+  "assay_column": "assay_id",
+  "coverage": 0.9,
+  "outer_folds": 5,
+  "calibration_fraction": 0.2,
+  "seed": 20260830
+}

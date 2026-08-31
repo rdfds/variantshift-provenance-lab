@@ -1,0 +1,20 @@
+{
+  "protocol_id": "variantshift-domainome-confirmation-v1",
+  "panel_id": "human-domainome-v1",
+  "source": "Site-saturation mutagenesis of 500 human protein domains",
+  "source_version": "Human Domainome 1.0",
+  "adapter": "fasta",
+  "target_input": "../../data/confirmation-targets/domainome-v1/wild_type.fasta",
+  "exposure_policy": "model-specific clean, possible, known, or undocumented",
+  "inclusion": {
+    "variant_type": "single amino-acid substitution",
+    "minimum_unique_variants": 100,
+    "minimum_assayed_positions": 10,
+    "outcomes_accessed_before_freeze": false
+  },
+  "exclusion": {
+    "exact_experiment_overlap_with_development": true,
+    "unresolvable_reference_sequence": true,
+    "ambiguous_effect_direction": true
+  }
+}

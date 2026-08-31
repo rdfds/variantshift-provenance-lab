@@ -41,6 +41,10 @@ class ModelSpecification:
     strategy: str | None = None
     command: tuple[str, ...] = ()
     parity_required: bool = False
+    training_cutoff: str = "undocumented"
+    exposure_status: str = "undocumented"
+    container_image: str | None = None
+    container_digest: str | None = None
     notes: str = ""
 
     @classmethod
@@ -63,6 +67,14 @@ class ModelSpecification:
             strategy=(str(payload["strategy"]) if payload.get("strategy") else None),
             command=tuple(map(str, payload.get("command", []))),
             parity_required=bool(payload.get("parity_required", False)),
+            training_cutoff=str(payload.get("training_cutoff", "undocumented")),
+            exposure_status=str(payload.get("exposure_status", "undocumented")),
+            container_image=(
+                str(payload["container_image"]) if payload.get("container_image") else None
+            ),
+            container_digest=(
+                str(payload["container_digest"]) if payload.get("container_digest") else None
+            ),
             notes=str(payload.get("notes", "")),
         )
 
@@ -117,6 +129,32 @@ class FairESMAdapter(ModelAdapter):
             token_index,
         ).rename(columns={"mutation_codes": "variant_id", "prediction": "score"})
         return scores
+
+
+class FairESMEnsembleAdapter(ModelAdapter):
+    """Average marginal scores from an explicitly ordered fair-esm ensemble."""
+
+    def score_target(self, target: pd.Series, variants: pd.DataFrame) -> pd.DataFrame:
+        checkpoints = [
+            item.strip()
+            for item in str(self.specification.checkpoint or "").split(";")
+            if item.strip()
+        ]
+        if len(checkpoints) < 2:
+            raise ValueError("fair-esm ensemble requires at least two checkpoint loaders")
+        members = []
+        for checkpoint in checkpoints:
+            member_specification = ModelSpecification(
+                **{
+                    **asdict(self.specification),
+                    "adapter": "fair_esm",
+                    "checkpoint": checkpoint,
+                }
+            )
+            scores = FairESMAdapter(member_specification).score_target(target, variants)
+            members.append(scores.set_index("variant_id")["score"].rename(checkpoint))
+        combined = pd.concat(members, axis=1, join="inner")
+        return combined.mean(axis=1).rename("score").reset_index()
 
 
 class CommandModelAdapter(ModelAdapter):
@@ -181,6 +219,8 @@ def adapter_from_specification(
 ) -> ModelAdapter:
     if specification.adapter == "fair_esm":
         return FairESMAdapter(specification)
+    if specification.adapter == "fair_esm_ensemble":
+        return FairESMEnsembleAdapter(specification)
     if specification.adapter == "command":
         return CommandModelAdapter(specification)
     if specification.adapter == "precomputed":
@@ -304,10 +344,15 @@ def preflight_models(
             "source_url": specification.source_url,
             "license_name": specification.license_name,
             "license_status": specification.license_status,
+            "training_cutoff": specification.training_cutoff,
+            "exposure_status": specification.exposure_status,
+            "container_image": specification.container_image,
+            "container_digest": specification.container_digest,
             "metadata_complete": bool(
                 specification.source_url
                 and specification.license_name
-                and specification.license_status in {"permitted", "restricted", "prohibited"}
+                and specification.license_status
+                in {"permitted", "restricted", "prohibited", "undocumented"}
             ),
             "execution_status": "not_run",
             "coverage": np.nan,
