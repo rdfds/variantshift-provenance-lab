@@ -52,6 +52,27 @@
       "path": "../protocols/mavedb-complement-v1/score-set-audit.csv"
     },
     {
+      "id": "venusmuthub_targets",
+      "title": "VenusMutHub target audit",
+      "description": "Outcome-blind target resolution and overlap exclusions; no mutation table was accessed.",
+      "kind": "table",
+      "path": "../protocols/venusmuthub-v1/assay-audit.csv"
+    },
+    {
+      "id": "confirmation_overlap",
+      "title": "Confirmation novelty",
+      "description": "Exact-sequence and MMseqs2-family novelty for every frozen confirmation target. Missing structure and Pfam annotations remain undocumented.",
+      "kind": "table",
+      "path": "../results/confirmation-overlap-v1/confirmation-overlap-audit.csv"
+    },
+    {
+      "id": "model_exposure",
+      "title": "Model exposure audit",
+      "description": "Per-model, per-target exposure categories; undocumented training data are never treated as clean.",
+      "kind": "table",
+      "path": "../results/confirmation-overlap-v1/model-target-exposure.csv"
+    },
+    {
       "id": "mavedb_development",
       "title": "MaveDB development",
       "description": "Previously revealed MaveDB v1 development results; excluded from confirmation.",

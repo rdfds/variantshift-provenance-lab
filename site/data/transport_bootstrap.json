@@ -1,1 +1,1 @@
-[{"comparator":"elastic_net","risk_coverage_auc_improvement":-0.0038142435,"ci_low":-0.0149126984,"ci_high":0.0,"probability_improvement_above_zero":0.0,"bootstrap_repeats":10000,"bootstrap_unit":"family, then protein, then assay"}]
+[{"comparator":"elastic_net","risk_coverage_auc_improvement":-0.0096117228,"ci_low":-0.0295151831,"ci_high":0.0017382523,"probability_improvement_above_zero":0.1506,"bootstrap_repeats":10000,"bootstrap_unit":"family, then protein, then assay"}]
