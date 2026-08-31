@@ -2,12 +2,36 @@
 
 **When does a protein mutation predictor actually generalize?**
 
-VariantShift is a leakage-aware benchmark for protein variant-effect models. It compares
-ordinary random splits with biologically harder tests: unseen residue positions, increased
-mutational depth, and transfer between experimental conditions.
+VariantShift is a leakage-aware benchmark and selective-deployment framework for protein
+variant-effect models. It measures whether rankings learned on common benchmarks transport to
+unseen positions, proteins, families, assay modalities, and external datasets. Its frozen
+Transportability Score chooses a model only when a one-sided family-calibrated lower bound on
+top-decile selection gain exceeds zero; otherwise it abstains.
 
 The initial case study uses the Align Foundation's TEV protease GROQ-seq release: 18,486
 variants measured across 24 conditions at NIST's Living Measurement Systems Foundry.
+
+## Version 1.0 study status
+
+The repository now implements the analysis contracts for a no-lab, outcome-blind retrospective
+confirmation study:
+
+- versioned target, variant, prediction, outcome, and task-metric schemas;
+- model and panel adapter interfaces with content-addressed prediction caching;
+- a one-way target → prediction → registration → reveal lock;
+- family-grouped cross-fitting, one-sided group conformal lower bounds, selective model choice,
+  abstention, comparator policies, and nested family/protein/assay bootstrap inference;
+- config-driven local and Slurm workflows, Apptainer recipes, and a static result explorer;
+- a metadata-only untouched MaveDB complement frozen without score-endpoint access.
+
+The current development run contains 2,340 assay–model rows across 195 ProteinGym assays, 169
+proteins, 132 curated family groups, and 12 modern model score sets. It is not yet confirmation
+evidence. The calibrated selector currently fails the preregistered scientific improvement gate,
+and no model has yet passed the executable external-panel preflight. Those are active blockers,
+not omitted results. See the [publication readiness audit](docs/PUBLICATION_READINESS.md) and
+[Nature Methods protocol](docs/NATURE_METHODS_PROTOCOL.md).
+
+Open the generated [benchmark explorer](site/index.html) or rebuild it with `make site`.
 
 ## Research questions
 
@@ -228,6 +252,18 @@ make proteingym-research-figure
 Every command is deterministic at the default seed. Raw data and per-variant predictions stay
 outside version control.
 
+Run the version 1 development workflow with:
+
+```bash
+pip install -e '.[dev,workflow]'
+snakemake --snakefile workflow/Snakefile --profile workflow/profiles/local
+```
+
+On ARCH, copy `workflow/config.example.yaml`, set the actual cluster partition and resources, and
+use `workflow/profiles/slurm`. Confirmation prediction is deliberately not part of the default
+workflow; it must be invoked only after the named configurations pass executable license, parity,
+coverage, determinism, and provenance gates.
+
 The exact public UniProt/InterPro responses used by the curated-family audit are frozen in the
 results directory. To reconstruct the cache without consulting the live APIs:
 
@@ -311,6 +347,14 @@ src/variantshift/
   curated_families.py    # UniProt/InterPro/Pfam assayed-region family validation
   modern_zero_shot.py    # exactly paired current zero-shot model landscape
   crossover.py           # protein-grouped supervised-versus-zero-shot decision model
+  schemas.py             # stable public table contracts
+  panels.py              # outcome-blind targets and complete 19L enumeration
+  model_adapters.py      # execution, content cache, parity, and provenance
+  outcome_lock.py        # one-way confirmation state machine
+  transport_features.py # outcome-free task descriptors
+  transportability.py   # grouped transport model and selective risk
+  preregistration.py    # immutable registration bundle generator
+  benchmark_site.py     # static downloadable result explorer
   calibration.py         # standard, group-aware, and distance-scaled intervals
   provenance.py    # data/source/artifact integrity manifests
   visualize.py     # dependency-free shift-analysis SVG
@@ -318,6 +362,10 @@ src/variantshift/
   report.py        # standalone HTML result report
 tests/             # unit and invariant tests
 results/           # aggregate, reproducible benchmark outputs
+protocols/         # cohort rules, metadata snapshots, and outcome locks
+workflow/          # local and ARCH/Slurm Snakemake execution
+containers/        # Apptainer-compatible build definitions
+site/              # generated benchmark explorer
 ```
 
 ## Result integrity
