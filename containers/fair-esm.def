@@ -1,0 +1,23 @@
+Bootstrap: docker
+From: pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
+
+%labels
+    org.opencontainers.image.title VariantShift fair-esm scorer
+    org.opencontainers.image.version 1.0.0
+    org.opencontainers.image.source https://github.com/rdfds/VariantShift
+
+%files
+    . /opt/variantshift
+
+%post
+    python -m pip install --no-cache-dir fair-esm==2.0.0 /opt/variantshift
+
+%environment
+    export PYTHONHASHSEED=0
+    export LC_ALL=C.UTF-8
+
+%runscript
+    exec variantshift "$@"
+
+%test
+    python -c "import esm; print(esm.__version__)"

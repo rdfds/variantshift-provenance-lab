@@ -1,0 +1,13 @@
+executor: slurm
+jobs: 50
+printshellcmds: true
+rerun-incomplete: true
+keep-going: false
+latency-wait: 120
+default-resources:
+  - mem_mb=16000
+  - runtime=240
+  - gpu=0
+set-resources:
+  confirmation_predictions:
+    slurm_partition: gpu

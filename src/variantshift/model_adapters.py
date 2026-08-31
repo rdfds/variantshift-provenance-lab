@@ -352,7 +352,7 @@ def preflight_models(
                 specification.source_url
                 and specification.license_name
                 and specification.license_status
-                in {"permitted", "restricted", "prohibited", "undocumented"}
+                in {"permitted", "restricted", "prohibited"}
             ),
             "execution_status": "not_run",
             "coverage": np.nan,

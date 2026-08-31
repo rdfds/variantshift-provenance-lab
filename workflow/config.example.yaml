@@ -1,0 +1,29 @@
+model_config: configs/model-panel-v1.json
+transport_config: configs/transport-v1.json
+site_config: configs/site-v1.json
+
+proteingym:
+  runs: results/proteingym/extended/modern-zero-shot-runs.csv
+  eligibility: results/proteingym/eligibility.csv
+  reference: data/raw/proteingym/DMS_substitutions.csv
+  scores: data/raw/proteingym/zero_shot_substitutions_scores.zip
+  families: results/proteingym/extended/curated-family-assignments.csv
+  sequence_alignments: results/proteingym/extended/sequence-family-alignments.csv
+  structure_alignments: results/proteingym/extended/structure-family-alignments.csv
+  domain_overlaps: results/proteingym/extended/curated-pfam-domain-overlaps.csv
+  crossover_predictions: results/proteingym/extended/crossover-heldout-predictions.csv
+
+confirmation:
+  panel: mavedb-complement-v1
+  protocol_id: variantshift-mavedb-complement-confirmation-v1
+  targets: protocols/mavedb-complement-v1/frozen/targets.csv
+  variants: protocols/mavedb-complement-v1/frozen/variants.csv
+  lock: protocols/mavedb-complement-v1/frozen/outcome-lock.json
+  executable_models:
+    - esm2_650m
+
+resources:
+  preflight_mem_mb: 32000
+  prediction_mem_mb: 128000
+  prediction_gpu: 1
+  prediction_minutes: 1440
