@@ -1122,13 +1122,16 @@ def fit_transportability(
         "elastic_net",
         "always_best",
         "random",
-        "msa_depth",
-        "score_dispersion",
-        "ensemble_agreement",
         "oracle",
     ]
-    if "crossover_probability_supervised_wins" in crossfit:
-        policies.append("crossover_classifier")
+    for optional_policy, column in (
+        ("msa_depth", "msa_neff"),
+        ("score_dispersion", "score_dispersion"),
+        ("ensemble_agreement", "ensemble_agreement"),
+        ("crossover_classifier", "crossover_probability_supervised_wins"),
+    ):
+        if column in crossfit:
+            policies.append(optional_policy)
     curves = pd.concat(
         [
             selective_policy_curve(
