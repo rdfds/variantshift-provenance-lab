@@ -9,6 +9,7 @@ from variantshift.transportability import (
     fit_frozen_transport_model,
     group_conformal_quantile,
     hierarchical_bootstrap_mean,
+    hierarchical_conformal_quantile,
     predict_with_frozen_transport_model,
     selective_policy_curve,
     summarize_policy_curves,
@@ -65,6 +66,28 @@ def test_group_conformal_uses_worst_residual_per_family() -> None:
     assert group_conformal_quantile(residuals, groups, coverage=0.5) == 2.0
 
 
+def test_hierarchical_conformal_gives_families_equal_total_mass() -> None:
+    residuals = np.asarray([0.1, 10.0, 0.2, 0.3])
+    groups = np.asarray(["A", "A", "B", "B"])
+    assert hierarchical_conformal_quantile(residuals, groups, coverage=0.5) == 0.3
+
+
+def test_conformal_bound_does_not_change_the_frozen_model_choice() -> None:
+    frame = pd.DataFrame(
+        {
+            "task_id": ["T", "T"],
+            "model_id": ["chosen", "other"],
+            "selection_gain_sd": [1.0, -1.0],
+            "decision_selection_gain_sd": [0.8, 0.7],
+            "lower_selection_gain_sd": [-10.0, 10.0],
+            "auditor_selected": [True, False],
+            "auditor_confidence": [0.5, np.nan],
+        }
+    )
+    curve = selective_policy_curve(frame, _config(), policy="variantshift")
+    assert curve.loc[curve["coverage"].eq(1.0), "mean_selection_gain_sd"].item() == 1.0
+
+
 def test_selective_curve_and_hierarchical_bootstrap_are_task_level() -> None:
     frame = _transport_frame()
     predictions, _ = cross_fitted_transport_predictions(frame, _config())
@@ -107,6 +130,25 @@ def test_frozen_bundle_emits_elastic_and_feature_ablation_predictions() -> None:
     }.issubset(predicted.columns)
 
 
+def test_frozen_bundle_rejects_development_outcome_diagnostics() -> None:
+    frame = _transport_frame()
+    bundle = fit_frozen_transport_model(frame, _config())
+    confirmation = frame.drop(columns="selection_gain_sd")
+    confirmation["development_crossover_probability_supervised_wins"] = 0.5
+    with pytest.raises(ValueError, match="outcome-derived"):
+        predict_with_frozen_transport_model(bundle, confirmation)
+
+
+def test_priority_treats_missing_msa_as_neutral() -> None:
+    frame = _transport_frame()
+    bundle = fit_frozen_transport_model(frame, _config())
+    confirmation = frame.drop(columns="selection_gain_sd")
+    confirmation.loc[confirmation.index[:2], "msa_neff"] = np.nan
+    predicted = predict_with_frozen_transport_model(bundle, confirmation)
+    selected = predicted.loc[predicted["auditor_selected"]]
+    assert selected["auditor_confidence"].notna().all()
+
+
 def test_confirmation_gates_are_machine_readable_and_require_both_panels() -> None:
     config = _config()
     frame = _transport_frame()
@@ -139,7 +181,8 @@ def test_confirmation_gates_are_machine_readable_and_require_both_panels() -> No
                 "ablation:ensemble_only",
             ],
             "risk_coverage_auc_improvement": [0.1, 0.1, 0.1],
-            "ci_low": [0.01, 0.01, 0.01],
+            "regret_coverage_auc_improvement": [0.1, 0.1, 0.1],
+            "regret_ci_low": [0.01, 0.01, 0.01],
             "holm_adjusted_p_value": [0.03, 0.04, 0.04],
         }
     )
@@ -147,6 +190,7 @@ def test_confirmation_gates_are_machine_readable_and_require_both_panels() -> No
         {
             "panel_id": ["human-domainome-v1", "mavedb-complement-v1"],
             "risk_coverage_auc_improvement": [0.02, 0.01],
+            "regret_coverage_auc_improvement": [0.02, 0.01],
         }
     )
     result = confirmation_acceptance_gates(
@@ -163,11 +207,11 @@ def test_confirmation_gates_are_machine_readable_and_require_both_panels() -> No
             "evidence_artifacts": ["confirmation-panel-summary.csv"],
         },
     )
-    assert result["schema_version"] == 1
+    assert result["schema_version"] == 2
     assert not result["missing_primary_panels"]
     assert {row["gate"] for row in result["gates"]} == {
-        "primary_risk_coverage",
-        "failure_reduction_at_50pct",
+        "primary_regret_coverage",
+        "selective_utility_at_50pct",
         "nominal_90pct_coverage",
         "primary_panel_direction_consistency",
         "feature_ablation",

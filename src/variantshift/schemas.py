@@ -114,7 +114,7 @@ TRANSPORT_FEATURE_SCHEMA = FrameSchema(
     ),
     ("protocol_id", "panel_id", "dataset_id", "assay_id", "target_id", "model_id"),
 )
-RISK_COVERAGE_SCHEMA = FrameSchema(
+RISK_COVERAGE_SCHEMA_V1 = FrameSchema(
     "risk-coverage-v1",
     1,
     (
@@ -124,6 +124,23 @@ RISK_COVERAGE_SCHEMA = FrameSchema(
         "failure_rate",
         "mean_selection_gain_sd",
         "median_selection_gain_sd",
+        "confidence_threshold",
+    ),
+    ("policy", "coverage"),
+)
+RISK_COVERAGE_SCHEMA = FrameSchema(
+    "risk-coverage-v2",
+    2,
+    (
+        "policy",
+        "coverage",
+        "retained_tasks",
+        "failure_rate",
+        "mean_selection_gain_sd",
+        "median_selection_gain_sd",
+        "mean_selection_regret_sd",
+        "median_selection_regret_sd",
+        "worst_quintile_mean_gain_sd",
         "confidence_threshold",
     ),
     ("policy", "coverage"),
@@ -138,6 +155,7 @@ SCHEMAS = {
         OUTCOME_SCHEMA,
         TASK_METRIC_SCHEMA,
         TRANSPORT_FEATURE_SCHEMA,
+        RISK_COVERAGE_SCHEMA_V1,
         RISK_COVERAGE_SCHEMA,
     )
 }

@@ -248,9 +248,13 @@ def build_proteingym_transport_features(
             raise ValueError(f"Crossover predictions are missing columns: {missing}")
         crossover = crossover.loc[crossover["model"].astype(str).eq("histgb")]
         confidence = crossover.groupby("assay_id")["predicted_probability"].mean()
-        base["crossover_probability_supervised_wins"] = base["assay_id"].map(confidence)
+        # This predictor uses within-assay training outcomes. Retain it only as an explicitly
+        # quarantined development diagnostic; it is forbidden in the deployable transport model.
+        base["development_crossover_probability_supervised_wins"] = base[
+            "assay_id"
+        ].map(confidence)
     else:
-        base["crossover_probability_supervised_wins"] = np.nan
+        base["development_crossover_probability_supervised_wins"] = np.nan
 
     columns = [
         "protocol_id",
@@ -283,7 +287,7 @@ def build_proteingym_transport_features(
         "model_modalities",
         "exposure_status",
         "structure_available",
-        "crossover_probability_supervised_wins",
+        "development_crossover_probability_supervised_wins",
     ]
     output = (
         base.loc[:, columns]

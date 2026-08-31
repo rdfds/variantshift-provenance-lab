@@ -10,7 +10,8 @@
 | `outcomes-v1` | protocol, panel, dataset, assay, target, variant | Revealed experimental effects |
 | `task-metrics-v1` | protocol, panel, dataset, assay, target, model | Equal-weight task evaluation |
 | `transport-features-v1` | protocol, panel, dataset, assay, target, model | Outcome-free task–model descriptors |
-| `risk-coverage-v1` | policy, coverage | Selective-deployment risk and utility |
+| `risk-coverage-v1` | policy, coverage | Legacy failure-risk and utility curves |
+| `risk-coverage-v2` | policy, coverage | Selection regret, failure risk, tail utility, and confidence |
 
 Every prediction row carries protocol, panel, target, variant, model, model version, score, and
 status. Every task metric carries dataset, assay, target, protein, family, and model identifiers.
