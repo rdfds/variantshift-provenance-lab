@@ -941,6 +941,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     confirmation_register.add_argument("outcome_lock", type=Path)
     confirmation_register.add_argument("registration_uri")
+    confirmation_register.add_argument(
+        "--artifact",
+        type=Path,
+        action="append",
+        default=[],
+        help="Registration receipt or immutable archive to bind by SHA-256",
+    )
 
     confirmation_reveal = subparsers.add_parser(
         "confirmation-reveal",
@@ -948,6 +955,19 @@ def build_parser() -> argparse.ArgumentParser:
     )
     confirmation_reveal.add_argument("outcome_lock", type=Path)
     confirmation_reveal.add_argument("--outcome", type=Path, action="append", required=True)
+
+    confirmation_retrieve = subparsers.add_parser(
+        "confirmation-outcomes-retrieve",
+        help="Retrieve only the registered Domainome and untouched Venus outcomes",
+    )
+    confirmation_retrieve.add_argument("outcome_lock", type=Path)
+    confirmation_retrieve.add_argument("task_registry", type=Path)
+    confirmation_retrieve.add_argument("domainome_targets", type=Path)
+    confirmation_retrieve.add_argument("domainome_variants", type=Path)
+    confirmation_retrieve.add_argument("venus_targets", type=Path)
+    confirmation_retrieve.add_argument("venus_assay_audit", type=Path)
+    confirmation_retrieve.add_argument("venus_protocol", type=Path)
+    confirmation_retrieve.add_argument("--output-dir", type=Path, required=True)
 
     preregistration = subparsers.add_parser(
         "preregistration-build",
@@ -1517,7 +1537,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         print(
             register_confirmation(
-                arguments.outcome_lock, registration_uri=arguments.registration_uri
+                arguments.outcome_lock,
+                registration_uri=arguments.registration_uri,
+                registration_artifacts=arguments.artifact,
             )
         )
         return 0
@@ -1526,6 +1548,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         from .outcome_lock import record_outcome_reveal
 
         print(record_outcome_reveal(arguments.outcome_lock, outcome_artifacts=arguments.outcome))
+        return 0
+
+    if arguments.command == "confirmation-outcomes-retrieve":
+        from .confirmation_reveal import retrieve_registered_confirmation_outcomes
+
+        outputs = retrieve_registered_confirmation_outcomes(
+            arguments.outcome_lock,
+            arguments.task_registry,
+            arguments.domainome_targets,
+            arguments.domainome_variants,
+            arguments.venus_targets,
+            arguments.venus_assay_audit,
+            arguments.venus_protocol,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
     if arguments.command == "preregistration-build":

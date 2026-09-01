@@ -19,10 +19,12 @@ def test_confirmation_lock_is_one_way_and_requires_public_registration(tmp_path)
     target = tmp_path / "targets.csv"
     prediction = tmp_path / "predictions.csv"
     method = tmp_path / "method.json"
+    receipt = tmp_path / "registration-receipt.json"
     outcome = tmp_path / "outcomes.csv"
     target.write_text("target_id,sequence\nT1,AC\n")
     prediction.write_text("target_id,variant_id,score\nT1,A1C,0.1\n")
     method.write_text(json.dumps({"method": "frozen"}))
+    receipt.write_text(json.dumps({"registration": "approved"}))
     outcome.write_text("target_id,variant_id,effect\nT1,A1C,1.0\n")
     lock = tmp_path / "outcome-lock.json"
     create_outcome_lock(lock, protocol_id="confirm-v1", target_artifacts=[target])
@@ -35,7 +37,13 @@ def test_confirmation_lock_is_one_way_and_requires_public_registration(tmp_path)
     )
     with pytest.raises(ValueError, match="public HTTP"):
         register_confirmation(lock, registration_uri="private-record")
-    register_confirmation(lock, registration_uri="https://osf.io/example")
+    register_confirmation(
+        lock,
+        registration_uri="https://osf.io/example",
+        registration_artifacts=[receipt],
+    )
+    registered = read_outcome_lock(lock)
+    assert registered["registration"]["artifacts"][str(receipt)]
     assert_outcomes_accessible(lock)
     record_outcome_reveal(lock, outcome_artifacts=[outcome])
     assert read_outcome_lock(lock)["state"] == "revealed"
