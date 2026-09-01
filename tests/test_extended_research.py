@@ -3,6 +3,7 @@ import pandas as pd
 
 from variantshift.cross_protein import (
     CrossProteinDataset,
+    compare_feature_ablation,
     compare_holdout_protocols,
     evaluate_held_out_families,
     evaluate_held_out_proteins,
@@ -126,6 +127,9 @@ def test_held_out_protein_evaluation_never_mixes_protein_groups():
         "cross_protein_ridge_mutation_only",
         "cross_protein_histgb_mutation_only",
     }
+    ablation_comparison = compare_feature_ablation(ablation_assays, bootstrap_repeats=100)
+    assert ablation_comparison["n_families"].eq(6).all()
+    assert ablation_comparison["delta_ci_low"].notna().all()
 
 
 def test_crossover_validation_holds_out_complete_proteins():
