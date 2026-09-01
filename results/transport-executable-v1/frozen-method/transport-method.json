@@ -1,0 +1,107 @@
+{
+  "auditor_policy": {
+    "baseline_model": "vespag",
+    "decision_mean": 0.6345153971602469,
+    "decision_shrinkage": 1.0,
+    "decision_std": 0.1129346000827441,
+    "log_msa_neff_mean": 8.33640631695461,
+    "log_msa_neff_std": 2.192192885982245,
+    "log_protein_length_mean": 5.397713566585965,
+    "log_protein_length_std": 1.1123073291937091,
+    "override_margin": 0.05
+  },
+  "best_average_model": "vespag",
+  "best_label_free_comparator": "uncalibrated",
+  "config": {
+    "assay_column": "assay_id",
+    "bootstrap_repeats": 10000,
+    "calibration_fraction": 0.2,
+    "categorical_features": [
+      "taxon",
+      "assay_modality",
+      "model_family",
+      "model_modalities",
+      "exposure_status",
+      "structure_available"
+    ],
+    "coverage": 0.9,
+    "group_column": "family_id",
+    "model_column": "model_id",
+    "numeric_features": [
+      "protein_length",
+      "assayed_fraction",
+      "mutated_positions",
+      "msa_depth",
+      "msa_neff",
+      "alignment_coverage",
+      "sequence_identity_to_development",
+      "structure_similarity_to_development",
+      "domain_coverage",
+      "score_dispersion",
+      "score_tail_separation",
+      "missing_fraction",
+      "ensemble_disagreement",
+      "ensemble_agreement"
+    ],
+    "outer_folds": 5,
+    "protein_column": "protein_id",
+    "seed": 20260830,
+    "target_column": "selection_gain_sd",
+    "task_column": "task_id"
+  },
+  "confirmation_primary_panels": [
+    "human-domainome-v1",
+    "mavedb-complement-v1"
+  ],
+  "conformal_mode": "selection-aware, locally scaled hierarchical conformal calibration; equal family mass and equal within-family task mass",
+  "conformal_quantile": 2.4916659207655765,
+  "decision_rule": "override the best-average model only when nested-CV shrunken expected gain exceeds the frozen margin",
+  "decision_shrinkage": 1.0,
+  "error_scale_floor": 0.007137972081180568,
+  "formal_scope": "one-sided marginal coverage for a new task from a new family under two-level hierarchical exchangeability",
+  "frozen_feature_ablations": [
+    "ensemble_only",
+    "msa_only",
+    "without_ensemble",
+    "without_msa"
+  ],
+  "name": "VariantShift Selective Transport Auditor",
+  "override_margin_candidates": [
+    0.05,
+    0.075,
+    0.1,
+    0.15
+  ],
+  "parameters": {
+    "l2_regularization": 1.0,
+    "learning_rate": 0.05,
+    "max_iter": 250,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 10
+  },
+  "primary_endpoint": "task-level selection-regret coverage AUC",
+  "primary_failure": "selection_gain_sd <= 0",
+  "priority_inputs": [
+    "msa_neff",
+    "protein_length",
+    "decision_score"
+  ],
+  "priority_weights": {
+    "decision_score": 0.25,
+    "log_msa_neff": 1.0,
+    "log_protein_length": 0.5
+  },
+  "schema_version": 2,
+  "secondary_endpoints": [
+    "failure risk-coverage AUC",
+    "mean selection gain",
+    "worst-quintile selection gain",
+    "selected-policy lower-bound coverage"
+  ],
+  "shrinkage_candidates": [
+    0.5,
+    0.75,
+    1.0
+  ],
+  "training_frame_sha256": "151e2e50ffe876a33be172db08391d6c67bec5afbf6500fb6da6778c12b92d6e"
+}
