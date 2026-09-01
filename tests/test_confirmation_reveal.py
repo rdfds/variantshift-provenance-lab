@@ -72,7 +72,7 @@ def test_retrieve_registered_confirmation_outcomes_is_panel_limited_and_hashed(t
     venus_protocol = tmp_path / "venus-protocol.json"
     venus_protocol.write_text(
         json.dumps({"protocol_id": "variantshift-venusmuthub-confirmation-v1",
-                    "source_git_commit": "frozen-revision"})
+                    "source": {"revision": "frozen-revision"}})
     )
     prediction, method = tmp_path / "prediction", tmp_path / "method"
     prediction.write_text("prediction")

@@ -71,7 +71,7 @@ variantshift confirmation-outcomes-retrieve \
   results/confirmation/domainome-v1/variants.csv \
   protocols/venusmuthub-v1/frozen/targets.csv \
   protocols/venusmuthub-v1/assay-audit.csv \
-  protocols/venusmuthub-v1/frozen/protocol.json \
+  protocols/venusmuthub-v1/target-freeze-protocol.json \
   --output-dir results/confirmation-reveal-v2
 
 variantshift confirmation-reveal \
