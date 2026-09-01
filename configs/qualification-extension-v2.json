@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "protocol_id": "variantshift-model-qualification-extension-v2",
+  "confirmation_protocol_id": "variantshift-domainome-confirmation-v1",
+  "confirmation_lock_required_state": "targets_frozen",
+  "model_config": "configs/model-panel-extension-v2.json",
+  "container_lock": "containers/qualification-extension-lock-v2.json",
+  "independent_runs": ["qualification-extension-a", "qualification-extension-b"],
+  "parity_run_id": "parity-extension-v2",
+  "thresholds": {
+    "minimum_substitution_coverage": 0.95,
+    "minimum_parity_spearman": 0.99,
+    "minimum_repeat_spearman": 0.999,
+    "minimum_parity_variants_per_target": 500,
+    "minimum_parity_targets": 8,
+    "minimum_configurations": 2,
+    "minimum_families": 2,
+    "minimum_shared_confirmation_targets": 300
+  },
+  "models": [
+    {"model_id": "prosst_2048", "official_column": "ProSST-2048", "container": "extension"},
+    {"model_id": "vespag", "official_column": "VespaG", "container": "extension"}
+  ],
+  "parity_panel": {
+    "panel_id": "proteingym-parity-extension-v2",
+    "targets": [
+      "DN7A_SACS2_Tsuboyama_2023_1JIC",
+      "VRPI_BPT7_Tsuboyama_2023_2WNM",
+      "SOX30_HUMAN_Tsuboyama_2023_7JJK",
+      "SCIN_STAAR_Tsuboyama_2023_2QFF",
+      "A0A1I9GEU1_NEIME_Kennouche_2019",
+      "MLAC_ECOLI_MacRae_2023",
+      "TPMT_HUMAN_Matreyek_2018",
+      "MET_HUMAN_Estevam_2023"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "purpose": "Exact runtime required to deserialize and execute results/transport-v1/transport-model.joblib",
+  "python": "3.13.0",
+  "platform": "macOS arm64 development freeze; publication container must reproduce these package versions",
+  "packages": {
+    "joblib": "1.5.3",
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "scikit-learn": "1.8.0",
+    "scipy": "1.17.1"
+  },
+  "validation": {
+    "bundle": "results/transport-v1/transport-model.joblib",
+    "training_frame": "results/transport-v1/development-task-features.csv",
+    "require_training_frame_sha256_match": true,
+    "require_deterministic_repeat_predictions": true
+  }
+}

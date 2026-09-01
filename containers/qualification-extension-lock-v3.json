@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "base_image": "pytorch/pytorch@sha256:923f687790bec78081c357e71dcd5dcef80b0cc00f6c34484902a5e83362c854",
+  "base_image_tag_observed": "pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime",
+  "images": {
+    "extension": {
+      "apt_packages": ["ca-certificates", "git"],
+      "pip_packages": [
+        "beartype==0.20.2",
+        "huggingface-hub==0.24.7",
+        "jaxtyping==0.2.37",
+        "numpy==1.26.4",
+        "pandas==2.2.3",
+        "scikit-learn==1.6.1",
+        "scipy==1.14.1",
+        "transformers==4.38.2"
+      ],
+      "repositories": {
+        "protein-sequence-models": "af695772c4a1c056d930c95ec7e6428aa042f5cd",
+        "VespaG": "3d4758252dbd423249e694d6f7d195c707f72a92"
+      },
+      "upstream_static_sha256": {
+        "VespaG/model_weights/v2/esm2.pt": "cf30b714bed4466930fc66fcf0f1594a4ba5192e3885e60a743c808dd9f66dd2"
+      },
+      "external_checkpoints": {
+        "carp_640M.pt": {
+          "source": "https://zenodo.org/api/records/6564798/files/carp_640M.pt/content",
+          "source_md5": "2601f6b9971fe5ea1733067eb87a3398",
+          "size_bytes": 2572014451
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "freeze_id": "variantshift-confirmation-prediction-freeze-v2",
+  "minimum_domainome_shared_targets": 300,
+  "panels": {
+    "human-domainome-v1": {
+      "model_ids": [
+        "carp_640m",
+        "esm1v_ensemble",
+        "esm2_8m",
+        "esm2_35m",
+        "esm2_150m",
+        "esm2_650m",
+        "esm_if1",
+        "saprot_35m",
+        "tranception_l_no_retrieval",
+        "vespag"
+      ],
+      "targets": "results/confirmation/domainome-v1/targets.csv",
+      "variants": "results/confirmation/domainome-v1/variants.csv",
+      "executions": {
+        "carp_640m": "artifacts/qualification-extension-v3/domainome/qualification-extension-v3-a/carp_640m",
+        "esm1v_ensemble": "artifacts/qualification-v1/domainome/qualification-a/esm1v_ensemble",
+        "esm2_8m": "artifacts/qualification-v1/domainome/qualification-a/esm2_8m",
+        "esm2_35m": "artifacts/qualification-v1/domainome/qualification-a/esm2_35m",
+        "esm2_150m": "artifacts/qualification-v1/domainome/qualification-a/esm2_150m",
+        "esm2_650m": "artifacts/qualification-v1/domainome/qualification-a/esm2_650m",
+        "esm_if1": "artifacts/qualification-v1/domainome/qualification-a/esm_if1",
+        "saprot_35m": "artifacts/qualification-v1/domainome/qualification-a/saprot_35m",
+        "tranception_l_no_retrieval": "artifacts/qualification-v1/domainome/qualification-a/tranception_l_no_retrieval",
+        "vespag": "artifacts/qualification-extension-v3/domainome/qualification-extension-v3-a/vespag"
+      }
+    },
+    "mavedb-complement-v1": {
+      "model_ids": [
+        "carp_640m",
+        "esm2_8m",
+        "esm2_35m",
+        "esm2_150m",
+        "esm2_650m",
+        "vespag"
+      ],
+      "targets": "protocols/mavedb-complement-v1/frozen/targets.csv",
+      "variants": "protocols/mavedb-complement-v1/frozen/variants.csv",
+      "executions": {
+        "carp_640m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/carp_640m",
+        "esm2_8m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/esm2_8m",
+        "esm2_35m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/esm2_35m",
+        "esm2_150m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/esm2_150m",
+        "esm2_650m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/esm2_650m",
+        "vespag": "artifacts/confirmation/final-predictions/mavedb-complement-v1/vespag"
+      }
+    },
+    "venusmuthub-v1": {
+      "model_ids": [
+        "carp_640m",
+        "esm2_8m",
+        "esm2_35m",
+        "esm2_150m",
+        "esm2_650m",
+        "vespag"
+      ],
+      "targets": "protocols/venusmuthub-v1/frozen/targets.csv",
+      "variants": "protocols/venusmuthub-v1/frozen/variants.csv.gz",
+      "executions": {
+        "carp_640m": "artifacts/confirmation/final-predictions/venusmuthub-v1/carp_640m",
+        "esm2_8m": "artifacts/confirmation/final-predictions/venusmuthub-v1/esm2_8m",
+        "esm2_35m": "artifacts/confirmation/final-predictions/venusmuthub-v1/esm2_35m",
+        "esm2_150m": "artifacts/confirmation/final-predictions/venusmuthub-v1/esm2_150m",
+        "esm2_650m": "artifacts/confirmation/final-predictions/venusmuthub-v1/esm2_650m",
+        "vespag": "artifacts/confirmation/final-predictions/venusmuthub-v1/vespag"
+      }
+    }
+  }
+}

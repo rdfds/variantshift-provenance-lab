@@ -1,0 +1,106 @@
+{
+  "schema_version": 2,
+  "protocol_id": "variantshift-confirmation-freeze-v2",
+  "panel_id": "domainome-mavedb-venus-untouched-v2",
+  "title": "VariantShift Conservative Auditor v2 outcome-blind confirmation",
+  "claim": "An outcome-free confidence score can identify tasks on which deploying the best fixed development model, VespaG, is safer than indiscriminate deployment; the policy may deploy VespaG or abstain and may not select another model.",
+  "development_disclosure": "The method was adaptively redesigned using ProteinGym plus the explicitly revealed MaveDB/Venus development pilot. Its family-held-out development gate passed, but leave-one-panel-out transport failed. Confirmation may therefore support either a positive reliability result or a decisive negative transport result; no post-reveal refitting is permitted.",
+  "primary_endpoints": {
+    "utility": "within-task standardized selection gain among the top-scored decile",
+    "failure": "standardized selection gain less than or equal to zero",
+    "reliability": "area under the task-level selection-regret coverage curve"
+  },
+  "primary_comparator": "Always deploy VespaG, with analytical expected performance under random task abstention at each coverage.",
+  "secondary_endpoints": [
+    "failure risk-coverage AUC",
+    "mean selection gain at 50 percent task coverage",
+    "Spearman correlation",
+    "top-decile recall",
+    "nDCG",
+    "best-variant regret",
+    "model-rank stability"
+  ],
+  "task_weighting": "Each assay receives equal weight; no assay is weighted by its number of measured variants.",
+  "bootstrap": {
+    "repeats": 10000,
+    "seed": 20260901,
+    "hierarchy": [
+      "Pfam clan or frozen MMseqs2 fallback family",
+      "protein",
+      "assay"
+    ],
+    "confidence_interval": "two-sided family-clustered percentile 95 percent interval",
+    "primary_contrast": "Always-VespaG regret-coverage AUC minus Conservative Auditor v2 regret-coverage AUC"
+  },
+  "selector": {
+    "artifact": "results/conservative-auditor-v2/conservative-auditor-v2.joblib",
+    "method": "Panel-balanced Extra Trees regressors for VespaG utility and six-model selection regret; confidence is the harmonic mean of predicted utility percentile and one minus predicted regret percentile.",
+    "model_inputs": [
+      "carp_640m",
+      "esm2_8m",
+      "esm2_35m",
+      "esm2_150m",
+      "esm2_650m",
+      "vespag"
+    ],
+    "decision": "At each declared task-coverage level, deploy VespaG on tasks with the highest frozen outcome-free confidence and abstain on the rest. Pooled and within-panel rankings are frozen before outcomes; model overrides are prohibited.",
+    "primary_reported_coverage": 0.5,
+    "coverage_grid": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+  },
+  "benchmark_panel": {
+    "domainome_models": 10,
+    "domainome_model_families": 6,
+    "minimum_shared_domainome_targets": 300,
+    "external_auditor_models": 6
+  },
+  "inclusion": {
+    "domainome": "All frozen Domainome targets with at least 95 percent shared substitution coverage for the declared analysis panel.",
+    "mavedb_complement": "Only tasks in the immutable untouched_holdout partition with frozen metadata direction.",
+    "venusmuthub": "Only tasks in the immutable untouched_holdout partition with deterministic activity direction and at least ten aligned substitutions."
+  },
+  "exclusion": {
+    "development_pilot": "Every task assigned to development_pilot is excluded from confirmation.",
+    "direction": "Ambiguous signed selectivity and unsupported assay directions are excluded without consulting effects.",
+    "coverage": "Model-task pairs below 95 percent frozen substitution coverage are excluded from the complete-intersection primary benchmark and retained in the missingness audit.",
+    "parser": "Coordinate or reference mismatches are excluded only by frozen parser rules; no performance-based exclusion is allowed."
+  },
+  "confirmatory_tests": {
+    "primary_order": [
+      "pooled regret-coverage contrast versus always VespaG",
+      "pooled failure-risk noninferiority",
+      "mean utility noninferiority at 50 percent coverage",
+      "panel-specific directional consistency"
+    ],
+    "multiplicity": "The pooled primary contrast is tested first; gated secondary and panel-specific contrasts use Holm adjustment.",
+    "missingness": "Report complete-model intersections and model-available sensitivity analyses without imputing variant predictions.",
+    "exposure_strata": [
+      "clean",
+      "possible",
+      "known",
+      "undocumented"
+    ],
+    "novelty_strata": [
+      "exact-sequence unseen",
+      "MMseqs2 sequence-family unseen",
+      "Pfam-clan unseen",
+      "Foldseek structure-family unseen"
+    ]
+  },
+  "acceptance_gates": {
+    "regret_auc_improvement_95pct_ci_low_strictly_above_zero": true,
+    "failure_risk_auc_improvement_95pct_ci_low_at_least_zero": true,
+    "mean_selection_gain_change_at_50pct_coverage_at_least_zero": true,
+    "directionally_consistent_in_domainome_and_untouched_venus": true,
+    "no_post_reveal_refit": true
+  },
+  "negative_result_rule": "If any primary gate fails, VariantShift v2 is not claimed to improve deployment reliability. The result is reported as evidence that development benchmarks do not support transportable outcome-free auditing.",
+  "figures": [
+    "development-to-confirmation model-rank transport",
+    "pooled and panel-specific regret-coverage curves",
+    "failure rate and selection gain at 50 percent task coverage",
+    "sequence, clan, structure, exposure, and assay subgroup forest plots",
+    "ten-model Domainome benchmark heatmap and rank stability",
+    "model-by-task availability and exclusion matrix"
+  ],
+  "outcome_access_policy": "No remaining effect or measurement file may be mounted, decoded, downloaded, or hashed until the complete v2 bundle is frozen and publicly timestamped on OSF or Zenodo."
+}

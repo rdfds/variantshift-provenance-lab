@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "freeze_id": "variantshift-confirmation-freeze-v1",
+  "claim": "VariantShift measures task-level transport failure and uses only outcome-free task and model properties to select a model or abstain before confirmation measurements are revealed.",
+  "primary_endpoints": {
+    "utility": "within-task standardized selection gain among the top-scored decile",
+    "failure": "standardized selection gain less than or equal to zero",
+    "reliability": "area under the task-level risk-coverage curve"
+  },
+  "secondary_endpoints": [
+    "Spearman correlation",
+    "top-decile recall",
+    "nDCG",
+    "best-variant regret",
+    "rank stability",
+    "marginal conformal coverage",
+    "position-conditional conformal coverage"
+  ],
+  "task_weighting": "Each assay receives equal weight; no assay is weighted by its number of measured variants.",
+  "bootstrap": {
+    "repeats": 10000,
+    "seed": 20260830,
+    "hierarchy": ["Pfam clan or MMseqs2 fallback family", "protein", "assay"],
+    "confidence_interval": "two-sided family-clustered percentile 95% interval",
+    "primary_contrast": "VariantShift risk-coverage AUC minus the strongest frozen label-free comparator"
+  },
+  "comparators": [
+    "always deploy the best average ProteinGym model",
+    "random abstention",
+    "MSA depth alone",
+    "score dispersion alone",
+    "ensemble disagreement alone",
+    "supervised-versus-zero-shot crossover classifier",
+    "elastic-net task-performance regression",
+    "uncalibrated VariantShift Transportability Score",
+    "oracle model selection"
+  ],
+  "selector": {
+    "artifact": "results/transport-v1/transport-model.joblib",
+    "method": "cross-fitted histogram gradient boosting with group-calibrated one-sided conformal lower bounds",
+    "grouping": "Pfam clan with MMseqs2 family fallback",
+    "decision": "select the model with the largest lower bound only when that bound exceeds zero; otherwise abstain",
+    "nominal_coverage": 0.9
+  },
+  "panel_rules": {
+    "domainome": "All frozen targets; higher abundance score is favorable.",
+    "mavedb_complement": "Only target-acquisition rows selected before outcome download; use the frozen registry metadata orientation.",
+    "venusmuthub": "Only activity assays with a deterministic direction; higher is favorable except Km, where lower is favorable. Signed selectivity assays are excluded as directionally ambiguous."
+  },
+  "model_coverage": {
+    "minimum_target_substitution_coverage": 0.95,
+    "shared_intersection_reported_per_panel": true,
+    "model_specific_ineligibility": "Retain in the failure audit and exclude from that model's usable target set; never impute variant scores."
+  },
+  "confirmatory_tests": {
+    "multiplicity": "Primary pooled risk-coverage contrast is tested first; panel-specific contrasts are gated and reported with Holm adjustment.",
+    "missingness": "Report complete-model intersection and model-available sensitivity analyses.",
+    "exposure_strata": ["clean", "possible", "known", "undocumented"],
+    "novelty_strata": [
+      "exact-sequence unseen",
+      "MMseqs2 sequence-family unseen",
+      "Pfam-clan unseen",
+      "Foldseek structure-family unseen"
+    ]
+  },
+  "acceptance_gates": {
+    "risk_coverage_auc_interval_excludes_zero": true,
+    "failure_reduction_at_50_percent_coverage": 0.25,
+    "mean_selection_gain_not_reduced_at_50_percent_coverage": true,
+    "nominal_90_percent_coverage_lower": 0.85,
+    "nominal_90_percent_coverage_upper": 0.95,
+    "directionally_consistent_in_domainome_and_mavedb": true,
+    "ablation_not_only_msa_or_disagreement": true
+  },
+  "figures": [
+    "benchmark-to-confirmation model-rank transport",
+    "pooled and panel-specific risk-coverage curves",
+    "failure rate and selection gain at 50% task coverage",
+    "marginal and position-conditional conformal coverage",
+    "sequence, clan, structure, and exposure subgroup forest plot",
+    "selector feature and comparator ablations",
+    "model-by-task availability and exclusion matrix"
+  ],
+  "outcome_access_policy": "No confirmation effect or measurement file may be mounted, decoded, or hashed before this complete bundle is frozen and publicly registered."
+}

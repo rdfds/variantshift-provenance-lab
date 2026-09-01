@@ -1,4 +1,4 @@
-.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-family-clusters proteingym-heldout-family proteingym-structure-clusters proteingym-heldout-structure-family proteingym-curated-families proteingym-heldout-curated-family proteingym-heldout-curated-family-ablation proteingym-modern-zero-shot proteingym-crossover proteingym-figure proteingym-extended-figure proteingym-research-figure mavedb-freeze-external mavedb-download-external mavedb-evaluate-external mavedb-external-figure model-preflight transport-features transport-fit confirmation-overlap budget-check site workflow-local workflow-slurm clean
+.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-family-clusters proteingym-heldout-family proteingym-structure-clusters proteingym-heldout-structure-family proteingym-curated-families proteingym-heldout-curated-family proteingym-heldout-curated-family-ablation proteingym-modern-zero-shot proteingym-crossover proteingym-figure proteingym-extended-figure proteingym-research-figure mavedb-freeze-external mavedb-download-external mavedb-evaluate-external mavedb-external-figure model-preflight model-execution-audit transport-features transport-fit confirmation-overlap budget-check site workflow-local workflow-slurm clean
 
 DATASET := data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 PROTEINGYM_DIR := data/raw/proteingym
@@ -114,6 +114,9 @@ mavedb-external-figure:
 
 model-preflight:
 	variantshift models-preflight configs/model-panel-v1.json --output results/model-panel-v1/metadata-audit.csv
+
+model-execution-audit:
+	variantshift models-execution-audit configs/executable-panel-v1.json results/confirmation/domainome-v1/targets.csv results/confirmation/domainome-v1/variants.csv --output-dir results/model-panel-v1/execution
 
 transport-features:
 	variantshift transport-features-proteingym results/proteingym/extended/modern-zero-shot-runs.csv results/proteingym/eligibility.csv $(PROTEINGYM_REFERENCE) results/proteingym/extended/curated-family-assignments.csv results/proteingym/extended/sequence-family-alignments.csv results/proteingym/extended/structure-family-alignments.csv results/proteingym/extended/curated-pfam-domain-overlaps.csv $(PROTEINGYM_SCORES) --crossover-predictions results/proteingym/extended/crossover-heldout-predictions.csv --output results/transport-v1/development-task-features.csv

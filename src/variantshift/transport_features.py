@@ -18,7 +18,16 @@ from .proteingym import _archive_members
 from .schemas import TASK_METRIC_SCHEMA, stable_frame_sha256, write_table
 
 MODEL_FAMILIES = {
+    "esm1v_ensemble": "masked-protein-language-model",
+    "esm2_8m": "masked-protein-language-model",
+    "esm2_35m": "masked-protein-language-model",
+    "esm2_150m": "masked-protein-language-model",
     "esm2_650m": "masked-protein-language-model",
+    "esm_if1": "inverse-folding-model",
+    "saprot_35m": "structure-aware-protein-language-model",
+    "tranception_l_no_retrieval": "autoregressive-protein-language-model",
+    "carp_640m": "convolutional-protein-language-model",
+    "vespag": "distilled-evolutionary-variant-effect-model",
     "esmc_600m": "masked-protein-language-model",
     "esm3_open": "multimodal-generative-model",
     "progen3_3b": "autoregressive-protein-language-model",
@@ -30,6 +39,19 @@ MODEL_FAMILIES = {
     "siterm": "structure-msa-model",
     "gemme": "evolutionary-sequence-model",
     "tranception_l": "retrieval-augmented-protein-language-model",
+}
+
+EXECUTABLE_ZERO_SHOT_MODELS = {
+    "esm1v_ensemble": ("ESM1v_ensemble", "sequence"),
+    "esm2_8m": ("ESM2_8M", "sequence"),
+    "esm2_35m": ("ESM2_35M", "sequence"),
+    "esm2_150m": ("ESM2_150M", "sequence"),
+    "esm2_650m": ("ESM2_650M", "sequence"),
+    "esm_if1": ("ESM-IF1", "sequence+structure"),
+    "saprot_35m": ("SaProt_35M_AF2", "sequence+structure"),
+    "tranception_l_no_retrieval": ("Tranception_L_no_retrieval", "sequence"),
+    "carp_640m": ("CARP_640M", "sequence"),
+    "vespag": ("VespaG", "sequence"),
 }
 
 
@@ -191,11 +213,17 @@ def build_proteingym_transport_features(
         raise ValueError("Every development task requires length, position, and family metadata")
 
     present_models = set(base["model"].astype(str))
+    available_definitions = {**MODERN_ZERO_SHOT_MODELS, **EXECUTABLE_ZERO_SHOT_MODELS}
     configured_columns = {
         model_id: score_column
-        for model_id, (score_column, _modality) in MODERN_ZERO_SHOT_MODELS.items()
+        for model_id, (score_column, _modality) in available_definitions.items()
         if model_id in present_models
     }
+    missing_definitions = sorted(present_models.difference(configured_columns))
+    if missing_definitions:
+        raise ValueError(
+            f"Development score-column definitions are missing: {missing_definitions}"
+        )
     score_rows = []
     reference_index = reference.set_index("DMS_id")
     with ZipFile(score_archive_path) as archive:

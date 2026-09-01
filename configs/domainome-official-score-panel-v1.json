@@ -1,0 +1,117 @@
+{
+    "schema_version": 1,
+    "evidence_type": "official_precomputed_scores",
+    "source": "Domainome 1.0 Extended Data Table 5",
+    "source_doi": "10.5281/zenodo.14356805",
+    "license": "CC-BY-4.0",
+    "models": [
+        {
+            "model_id": "domainome_esm1v_domain",
+            "source_column": "ESM1v_domain",
+            "family": "masked-protein-language-model",
+            "modalities": ["domain_sequence"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_rasp",
+            "source_column": "RaSP",
+            "family": "learned-structure-stability-model",
+            "modalities": ["sequence", "structure"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_ddmut",
+            "source_column": "ddmut",
+            "family": "learned-structure-stability-model",
+            "modalities": ["sequence", "structure"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_foldx",
+            "source_column": "FoldX",
+            "family": "physics-based-energy-model",
+            "modalities": ["structure"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_popeve",
+            "source_column": "popEVE",
+            "family": "evolutionary-generative-model",
+            "modalities": ["sequence", "msa"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_eve",
+            "source_column": "EVE",
+            "family": "evolutionary-generative-model",
+            "modalities": ["sequence", "msa"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_tranception",
+            "source_column": "Tranception",
+            "family": "autoregressive-protein-language-model",
+            "modalities": ["sequence"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_eve_domain",
+            "source_column": "EVE_domain",
+            "family": "evolutionary-generative-model",
+            "modalities": ["domain_sequence", "msa"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_rsasa",
+            "source_column": "rsasa",
+            "family": "structure-derived-baseline",
+            "modalities": ["structure"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_thermompnn",
+            "source_column": "thermoMPNN",
+            "family": "inverse-folding-model",
+            "modalities": ["sequence", "structure"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_alphamissense",
+            "source_column": "AlphaMissense",
+            "family": "sequence-structure-pathogenicity-model",
+            "modalities": ["sequence", "structure", "msa"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        },
+        {
+            "model_id": "domainome_esm1v_full_length",
+            "source_column": "ESM1v_full-length",
+            "family": "masked-protein-language-model",
+            "modalities": ["full_length_sequence"],
+            "source_url": "https://doi.org/10.5281/zenodo.14356805",
+            "license_name": "CC-BY-4.0",
+            "license_status": "permitted"
+        }
+    ]
+}

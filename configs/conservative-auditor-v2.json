@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "method_id": "variantshift-conservative-auditor-v2",
+  "allowed_development_protocols": [
+    "variantshift-development-v1",
+    "variantshift-external-development-pilot-v1"
+  ],
+  "allowed_development_panels": [
+    "proteingym-v1.3",
+    "mavedb-complement-v1",
+    "venusmuthub-v1"
+  ],
+  "baseline_model": "vespag",
+  "model_ids": [
+    "carp_640m",
+    "esm2_8m",
+    "esm2_35m",
+    "esm2_150m",
+    "esm2_650m",
+    "vespag"
+  ],
+  "outer_folds": 5,
+  "inner_folds": 4,
+  "bootstrap_repeats": 10000,
+  "seed": 20260901,
+  "coverage_grid": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+  "estimator": {
+    "type": "ExtraTreesRegressor",
+    "n_estimators_inner": 250,
+    "n_estimators_final": 500,
+    "min_samples_leaf": 3,
+    "max_features": 0.7,
+    "panel_balanced_sample_weight": true
+  },
+  "gain_numeric_features": [
+    "protein_length",
+    "sequence_identity_to_development",
+    "structure_similarity_to_development",
+    "domain_coverage"
+  ],
+  "gain_categorical_features": [
+    "taxon",
+    "assay_modality",
+    "structure_available"
+  ],
+  "score_shape_features": [
+    "score_dispersion",
+    "score_tail_separation",
+    "missing_fraction",
+    "ensemble_disagreement",
+    "ensemble_agreement"
+  ],
+  "candidate_policies": [
+    "pure_regret",
+    "harm_gain_meta",
+    "harm_gain_all",
+    "harm_gain_shape",
+    "blend_0.5",
+    "blend_1.0",
+    "blend_1.5",
+    "blend_2.0"
+  ],
+  "selected_policy": "harm_gain_meta",
+  "inner_feasibility": {
+    "minimum_risk_auc_improvement": 0.0,
+    "minimum_mean_gain_change_at_50pct": -0.005
+  },
+  "development_gates": {
+    "regret_auc_ci_low_strictly_above_zero": true,
+    "risk_auc_ci_low_at_least_zero": true,
+    "mean_gain_change_at_50pct_at_least_zero": true
+  },
+  "policy": "Always deploy the fixed best development model; rank deployment confidence by the harmonic mean of predicted VespaG utility rank and predicted safety rank. Use confidence only to abstain or prioritize tasks. No model override is permitted in v2.",
+  "comparator": "Always deploy VespaG with random task abstention; analytical expected risk, regret, and utility at each coverage.",
+  "claim_boundary": "Development-selected candidate only. Confirmation and cross-panel claims require untouched outcomes."
+}

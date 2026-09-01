@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "scope": "execution-only",
+  "protocol_id": "variantshift-domainome-confirmation-v1",
+  "model_config": "configs/model-panel-v1.json",
+  "minimum_configurations": 8,
+  "minimum_families": 4,
+  "minimum_shared_targets": 300,
+  "minimum_target_coverage": 0.95,
+  "qualification_status": "not_started",
+  "models": [
+    {
+      "model_id": "esm2_8m",
+      "artifact_dir": "artifacts/confirmation/domainome-v1/esm2_8m"
+    },
+    {
+      "model_id": "esm2_35m",
+      "artifact_dir": "artifacts/confirmation/domainome-v1/esm2_35m-rerun"
+    },
+    {
+      "model_id": "esm2_150m",
+      "artifact_dir": "artifacts/confirmation/domainome-v1/esm2_150m"
+    },
+    {
+      "model_id": "esm2_650m",
+      "artifact_dir": "artifacts/confirmation/domainome-v1/esm2_650m"
+    },
+    {
+      "model_id": "esm_if1",
+      "artifact_dir": "artifacts/confirmation/domainome-v1/esm_if1"
+    },
+    {
+      "model_id": "proteinmpnn",
+      "artifact_dir": "artifacts/confirmation/domainome-v1/proteinmpnn"
+    },
+    {
+      "model_id": "saprot_35m",
+      "artifact_dir": "artifacts/confirmation/domainome-v1/saprot_35m"
+    },
+    {
+      "model_id": "tranception_l_no_retrieval",
+      "artifact_dir": "artifacts/confirmation/domainome-v1/tranception_l_no_retrieval"
+    }
+  ]
+}

@@ -531,6 +531,97 @@ def build_parser() -> argparse.ArgumentParser:
     )
     domainome_targets.add_argument("--output-dir", type=Path, required=True)
 
+    domainome_predictions = subparsers.add_parser(
+        "domainome-freeze-official-predictions",
+        help="Extract official Domainome predictions while skipping adjacent outcome columns",
+    )
+    domainome_predictions.add_argument("archive", type=Path)
+    domainome_predictions.add_argument("targets", type=Path)
+    domainome_predictions.add_argument("variants", type=Path)
+    domainome_predictions.add_argument("--output-dir", type=Path, required=True)
+
+    official_panel_audit = subparsers.add_parser(
+        "official-prediction-panel-audit",
+        help="Audit coverage of published predictions without treating them as executions",
+    )
+    official_panel_audit.add_argument("config", type=Path)
+    official_panel_audit.add_argument("predictions", type=Path)
+    official_panel_audit.add_argument("receipt", type=Path)
+    official_panel_audit.add_argument("--output", type=Path, required=True)
+
+    domainome_structures = subparsers.add_parser(
+        "domainome-freeze-structures",
+        help="Freeze sequence-validated AlphaFold crops for Domainome targets",
+    )
+    domainome_structures.add_argument("targets", type=Path)
+    domainome_structures.add_argument("--output-dir", type=Path, required=True)
+    domainome_structures.add_argument("--workers", type=int, default=12)
+
+    confirmation_structures = subparsers.add_parser(
+        "confirmation-freeze-structures",
+        help="Freeze exact-sequence AlphaFold or RCSB structures for a target-only panel",
+    )
+    confirmation_structures.add_argument("targets", type=Path)
+    confirmation_structures.add_argument("--output-dir", type=Path, required=True)
+    confirmation_structures.add_argument("--workers", type=int, default=12)
+
+    confirmation_pfam = subparsers.add_parser(
+        "confirmation-freeze-pfam",
+        help="Freeze outcome-blind Pfam/clan annotations for confirmation targets",
+    )
+    confirmation_pfam.add_argument("--target", type=Path, action="append", required=True)
+    confirmation_pfam.add_argument(
+        "--structure-audit", type=Path, action="append", required=True
+    )
+    confirmation_pfam.add_argument("--development-domains", type=Path, required=True)
+    confirmation_pfam.add_argument("--cache-dir", type=Path, required=True)
+    confirmation_pfam.add_argument("--output-dir", type=Path, required=True)
+    confirmation_pfam.add_argument("--workers", type=int, default=12)
+
+    confirmation_structure_families = subparsers.add_parser(
+        "confirmation-freeze-structure-families",
+        help="Freeze joint development/confirmation Foldseek structure families",
+    )
+    confirmation_structure_families.add_argument("structure_archive", type=Path)
+    confirmation_structure_families.add_argument("reference", type=Path)
+    confirmation_structure_families.add_argument("eligibility", type=Path)
+    confirmation_structure_families.add_argument(
+        "--target", type=Path, action="append", required=True
+    )
+    confirmation_structure_families.add_argument(
+        "--structure-audit", type=Path, action="append", required=True
+    )
+    confirmation_structure_families.add_argument("--output-dir", type=Path, required=True)
+    confirmation_structure_families.add_argument("--foldseek-binary", default="foldseek")
+    confirmation_structure_families.add_argument("--threads", type=int, default=8)
+
+    confirmation_tasks = subparsers.add_parser(
+        "confirmation-freeze-tasks",
+        help="Freeze confirmation task inclusion, directions, and exclusions",
+    )
+    confirmation_tasks.add_argument("domainome_targets", type=Path)
+    confirmation_tasks.add_argument("mavedb_score_audit", type=Path)
+    confirmation_tasks.add_argument("venus_assay_audit", type=Path)
+    confirmation_tasks.add_argument("--output-dir", type=Path, required=True)
+
+    untouched_tasks = subparsers.add_parser(
+        "confirmation-freeze-untouched-tasks",
+        help="Freeze Domainome and only the untouched external holdout tasks",
+    )
+    untouched_tasks.add_argument("full_registry", type=Path)
+    untouched_tasks.add_argument("untouched_external_registry", type=Path)
+    untouched_tasks.add_argument("--output-dir", type=Path, required=True)
+
+    qualification_panel = subparsers.add_parser(
+        "qualification-freeze-proteingym",
+        help="Freeze ProteinGym targets, structures, and official model-score parity references",
+    )
+    qualification_panel.add_argument("qualification_config", type=Path)
+    qualification_panel.add_argument("metadata", type=Path)
+    qualification_panel.add_argument("score_archive", type=Path)
+    qualification_panel.add_argument("structure_archive", type=Path)
+    qualification_panel.add_argument("--output-dir", type=Path, required=True)
+
     venus_targets = subparsers.add_parser(
         "venus-freeze-targets",
         help="Freeze a VenusMutHub target panel without reading mutation files",
@@ -553,6 +644,55 @@ def build_parser() -> argparse.ArgumentParser:
     )
     model_preflight.add_argument("--parity-dir", type=Path)
     model_preflight.add_argument("--execute", action="store_true")
+
+    execution_audit = subparsers.add_parser(
+        "models-execution-audit",
+        help="Verify prediction execution and shared coverage without model qualification",
+    )
+    execution_audit.add_argument("execution_config", type=Path)
+    execution_audit.add_argument("targets", type=Path)
+    execution_audit.add_argument("variants", type=Path)
+    execution_audit.add_argument("--output-dir", type=Path, required=True)
+
+    qualification_audit = subparsers.add_parser(
+        "models-qualification-audit",
+        help="Apply parity, independent-rerun, provenance, and coverage gates",
+    )
+    qualification_audit.add_argument("qualification_config", type=Path)
+    qualification_audit.add_argument("model_config", type=Path)
+    qualification_audit.add_argument("container_lock", type=Path)
+    qualification_audit.add_argument("confirmation_targets", type=Path)
+    qualification_audit.add_argument("confirmation_variants", type=Path)
+    qualification_audit.add_argument("outcome_lock", type=Path)
+    qualification_audit.add_argument("parity_targets", type=Path)
+    qualification_audit.add_argument("parity_variants", type=Path)
+    qualification_audit.add_argument("official_scores", type=Path)
+    qualification_audit.add_argument("run_a_root", type=Path)
+    qualification_audit.add_argument("run_b_root", type=Path)
+    qualification_audit.add_argument("parity_root", type=Path)
+    qualification_audit.add_argument("--output-dir", type=Path, required=True)
+
+    final_panel = subparsers.add_parser(
+        "models-freeze-final-panel",
+        help="Combine passed qualification receipts into the immutable primary panel",
+    )
+    final_panel.add_argument(
+        "--qualification-dir", type=Path, action="append", required=True
+    )
+    final_panel.add_argument("--model-config", type=Path, action="append", required=True)
+    final_panel.add_argument("--output-dir", type=Path, required=True)
+    final_panel.add_argument("--final-config", type=Path, required=True)
+
+    cache_audit = subparsers.add_parser(
+        "models-cache-audit",
+        help="Validate resumable target caches and freeze the remaining prediction worklist",
+    )
+    cache_audit.add_argument("model_config", type=Path)
+    cache_audit.add_argument("targets", type=Path)
+    cache_audit.add_argument("variants", type=Path)
+    cache_audit.add_argument("--model", required=True)
+    cache_audit.add_argument("--cache-dir", type=Path, required=True)
+    cache_audit.add_argument("--output-dir", type=Path, required=True)
 
     predict_panel = subparsers.add_parser(
         "predict-panel",
@@ -577,6 +717,38 @@ def build_parser() -> argparse.ArgumentParser:
     transport_fit.add_argument("--output-dir", type=Path, required=True)
     transport_fit.add_argument("--confirmation-features", type=Path)
 
+    conservative_auditor = subparsers.add_parser(
+        "conservative-auditor-fit",
+        help=(
+            "Redesign and freeze the outcome-free abstention auditor around a fixed model"
+        ),
+    )
+    conservative_auditor.add_argument("development_features", type=Path)
+    conservative_auditor.add_argument("pilot_features", type=Path)
+    conservative_auditor.add_argument("pilot_metrics", type=Path)
+    conservative_auditor.add_argument("config", type=Path)
+    conservative_auditor.add_argument("--output-dir", type=Path, required=True)
+
+    conservative_auditor_score = subparsers.add_parser(
+        "conservative-auditor-score",
+        help="Apply the frozen fixed-model auditor to outcome-free confirmation features",
+    )
+    conservative_auditor_score.add_argument("features", type=Path)
+    conservative_auditor_score.add_argument("bundle", type=Path)
+    conservative_auditor_score.add_argument("--output", type=Path, required=True)
+
+    conservative_auditor_evaluate = subparsers.add_parser(
+        "conservative-auditor-evaluate",
+        help="Run the one-shot registered Domainome/Venus confirmation without refitting",
+    )
+    conservative_auditor_evaluate.add_argument("config", type=Path)
+    conservative_auditor_evaluate.add_argument("final_freeze", type=Path)
+    conservative_auditor_evaluate.add_argument("decisions", type=Path)
+    conservative_auditor_evaluate.add_argument("prediction_registry", type=Path)
+    conservative_auditor_evaluate.add_argument("outcomes", type=Path)
+    conservative_auditor_evaluate.add_argument("outcome_lock", type=Path)
+    conservative_auditor_evaluate.add_argument("--output-dir", type=Path, required=True)
+
     transport_features = subparsers.add_parser(
         "transport-features-proteingym",
         help="Build outcome-free ProteinGym task descriptors for transport fitting",
@@ -591,6 +763,87 @@ def build_parser() -> argparse.ArgumentParser:
     transport_features.add_argument("score_archive", type=Path)
     transport_features.add_argument("--output", type=Path, required=True)
     transport_features.add_argument("--crossover-predictions", type=Path)
+
+    confirmation_features = subparsers.add_parser(
+        "transport-features-confirmation",
+        help="Build frozen outcome-free confirmation task-model descriptors",
+    )
+    confirmation_features.add_argument("prediction_registry", type=Path)
+    confirmation_features.add_argument("task_registry", type=Path)
+    confirmation_features.add_argument("model_config", type=Path)
+    confirmation_features.add_argument("--target", type=Path, action="append", required=True)
+    confirmation_features.add_argument("--variants", type=Path, action="append", required=True)
+    confirmation_features.add_argument("--overlap-audit", type=Path, required=True)
+    confirmation_features.add_argument("--exposure", type=Path, required=True)
+    confirmation_features.add_argument("--pfam", type=Path, required=True)
+    confirmation_features.add_argument("--structure-inputs", type=Path, required=True)
+    confirmation_features.add_argument("--structure-edges", type=Path, required=True)
+    confirmation_features.add_argument("--structure-audit", type=Path, required=True)
+    confirmation_features.add_argument("--output", type=Path, required=True)
+    confirmation_features.add_argument("--model", action="append")
+    confirmation_features.add_argument("--minimum-model-coverage", type=float, default=0.95)
+    confirmation_features.add_argument(
+        "--protocol-id", default="variantshift-confirmation-freeze-v1"
+    )
+
+    pilot_freeze = subparsers.add_parser(
+        "pilot-freeze",
+        help="Freeze a deterministic outcome-blind development pilot and untouched holdout",
+    )
+    pilot_freeze.add_argument("task_registry", type=Path)
+    pilot_freeze.add_argument("mavedb_targets", type=Path)
+    pilot_freeze.add_argument("venus_targets", type=Path)
+    pilot_freeze.add_argument("mavedb_audit", type=Path)
+    pilot_freeze.add_argument("venus_audit", type=Path)
+    pilot_freeze.add_argument("--shared-intersection", type=Path, required=True)
+    pilot_freeze.add_argument("--model", action="append", required=True)
+    pilot_freeze.add_argument("--venus-target-count", type=int, default=24)
+    pilot_freeze.add_argument("--output-dir", type=Path, required=True)
+
+    pilot_development = subparsers.add_parser(
+        "pilot-development-features",
+        help="Freeze the development feature subset for the pilot model panel",
+    )
+    pilot_development.add_argument("features", type=Path)
+    pilot_development.add_argument("--model", action="append", required=True)
+    pilot_development.add_argument("--output", type=Path, required=True)
+
+    pilot_outcomes = subparsers.add_parser(
+        "pilot-download-outcomes",
+        help="Reveal only the frozen development-pilot outcomes and write an access ledger",
+    )
+    pilot_outcomes.add_argument("protocol", type=Path)
+    pilot_outcomes.add_argument("outcome_lock", type=Path)
+    pilot_outcomes.add_argument("--output-dir", type=Path, required=True)
+
+    pilot_metrics = subparsers.add_parser(
+        "pilot-build-metrics",
+        help="Align frozen pilot predictions to revealed outcomes and compute task metrics",
+    )
+    pilot_metrics.add_argument("protocol", type=Path)
+    pilot_metrics.add_argument("confirmation_features", type=Path)
+    pilot_metrics.add_argument("prediction_registry", type=Path)
+    pilot_metrics.add_argument("outcomes", type=Path)
+    pilot_metrics.add_argument("--output-dir", type=Path, required=True)
+
+    pilot_evaluate = subparsers.add_parser(
+        "pilot-evaluate-signal",
+        help="Evaluate only the frozen primary and best-fixed pilot contrasts",
+    )
+    pilot_evaluate.add_argument("bundle", type=Path)
+    pilot_evaluate.add_argument("predictions", type=Path)
+    pilot_evaluate.add_argument("metrics", type=Path)
+    pilot_evaluate.add_argument("--output-dir", type=Path, required=True)
+
+    confirmation_transport = subparsers.add_parser(
+        "transport-freeze-confirmation",
+        help="Run and determinism-check the frozen selector on confirmation features",
+    )
+    confirmation_transport.add_argument("bundle", type=Path)
+    confirmation_transport.add_argument("training_features", type=Path)
+    confirmation_transport.add_argument("confirmation_features", type=Path)
+    confirmation_transport.add_argument("runtime_lock", type=Path)
+    confirmation_transport.add_argument("--output", type=Path, required=True)
 
     transport_evaluate = subparsers.add_parser(
         "transport-evaluate",
@@ -616,17 +869,25 @@ def build_parser() -> argparse.ArgumentParser:
     )
     overlap_audit.add_argument("proteingym_reference", type=Path)
     overlap_audit.add_argument("proteingym_eligibility", type=Path)
-    overlap_audit.add_argument(
-        "--confirmation-target", type=Path, action="append", required=True
-    )
+    overlap_audit.add_argument("--confirmation-target", type=Path, action="append", required=True)
     overlap_audit.add_argument("--model-config", type=Path, required=True)
     overlap_audit.add_argument("--output-dir", type=Path, required=True)
     overlap_audit.add_argument("--confirmation-pfam", type=Path)
     overlap_audit.add_argument("--development-pfam", type=Path)
     overlap_audit.add_argument("--confirmation-structure-families", type=Path)
     overlap_audit.add_argument("--development-structure-families", type=Path)
+    overlap_audit.add_argument("--publication-dates", type=Path)
     overlap_audit.add_argument("--mmseqs-binary", default="mmseqs")
     overlap_audit.add_argument("--threads", type=int, default=8)
+
+    publication_dates = subparsers.add_parser(
+        "confirmation-freeze-publication-dates",
+        help="Freeze outcome-free confirmation publication dates for exposure auditing",
+    )
+    publication_dates.add_argument("mavedb_score_audit", type=Path)
+    publication_dates.add_argument("venus_assay_audit", type=Path)
+    publication_dates.add_argument("--cache-dir", type=Path, required=True)
+    publication_dates.add_argument("--output", type=Path, required=True)
 
     budget = subparsers.add_parser(
         "compute-budget-check",
@@ -649,6 +910,30 @@ def build_parser() -> argparse.ArgumentParser:
     confirmation_freeze.add_argument("outcome_lock", type=Path)
     confirmation_freeze.add_argument("--prediction", type=Path, action="append", required=True)
     confirmation_freeze.add_argument("--method", type=Path, action="append", required=True)
+
+    selected_predictions = subparsers.add_parser(
+        "confirmation-select-predictions",
+        help="Verify and freeze one qualified execution per model and confirmation panel",
+    )
+    selected_predictions.add_argument("selection_config", type=Path)
+    selected_predictions.add_argument("model_config", type=Path)
+    selected_predictions.add_argument("qualification_dir", type=Path)
+    selected_predictions.add_argument("--output-dir", type=Path, required=True)
+
+    final_bundle = subparsers.add_parser(
+        "confirmation-freeze-bundle",
+        help="Create the immutable code, prediction, method, and outcome-lock bundle",
+    )
+    final_bundle.add_argument("repository_root", type=Path)
+    final_bundle.add_argument("final_lock", type=Path)
+    final_bundle.add_argument("selected_prediction_manifest", type=Path)
+    final_bundle.add_argument("--target", type=Path, action="append", required=True)
+    final_bundle.add_argument("--prediction", type=Path, action="append", required=True)
+    final_bundle.add_argument("--method", type=Path, action="append", required=True)
+    final_bundle.add_argument("--output-dir", type=Path, required=True)
+    final_bundle.add_argument(
+        "--protocol-id", default="variantshift-confirmation-freeze-v1"
+    )
 
     confirmation_register = subparsers.add_parser(
         "confirmation-register",
@@ -673,6 +958,14 @@ def build_parser() -> argparse.ArgumentParser:
     preregistration.add_argument("model_audit", type=Path)
     preregistration.add_argument("method", type=Path)
     preregistration.add_argument("--output-dir", type=Path, required=True)
+
+    prereg_model_audit = subparsers.add_parser(
+        "preregistration-model-audit",
+        help="Convert final qualification evidence to the preregistration model audit",
+    )
+    prereg_model_audit.add_argument("qualification_audit", type=Path)
+    prereg_model_audit.add_argument("qualification_summary", type=Path)
+    prereg_model_audit.add_argument("--output", type=Path, required=True)
 
     site_build = subparsers.add_parser(
         "site-build",
@@ -725,6 +1018,118 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
+    if arguments.command == "domainome-freeze-official-predictions":
+        from .confirmation_panels import freeze_domainome_official_predictions
+
+        outputs = freeze_domainome_official_predictions(
+            arguments.archive,
+            arguments.targets,
+            arguments.variants,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "official-prediction-panel-audit":
+        from .official_predictions import audit_official_prediction_panel
+
+        audit_official_prediction_panel(
+            arguments.config,
+            arguments.predictions,
+            arguments.receipt,
+            arguments.output,
+        )
+        print(arguments.output)
+        return 0
+
+    if arguments.command == "domainome-freeze-structures":
+        from .structure_inputs import freeze_domainome_structures
+
+        outputs = freeze_domainome_structures(
+            arguments.targets,
+            arguments.output_dir,
+            workers=arguments.workers,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "confirmation-freeze-structures":
+        from .structure_inputs import freeze_confirmation_structures
+
+        outputs = freeze_confirmation_structures(
+            arguments.targets,
+            arguments.output_dir,
+            workers=arguments.workers,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "confirmation-freeze-pfam":
+        from .confirmation_annotations import freeze_confirmation_pfam_annotations
+
+        outputs = freeze_confirmation_pfam_annotations(
+            arguments.target,
+            arguments.structure_audit,
+            arguments.development_domains,
+            arguments.cache_dir,
+            arguments.output_dir,
+            workers=arguments.workers,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "confirmation-freeze-structure-families":
+        from .confirmation_annotations import freeze_confirmation_structure_families
+
+        outputs = freeze_confirmation_structure_families(
+            arguments.structure_archive,
+            arguments.reference,
+            arguments.eligibility,
+            arguments.target,
+            arguments.structure_audit,
+            arguments.output_dir,
+            foldseek_binary=arguments.foldseek_binary,
+            threads=arguments.threads,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "confirmation-freeze-tasks":
+        from .confirmation_registry import freeze_confirmation_task_registry
+
+        outputs = freeze_confirmation_task_registry(
+            arguments.domainome_targets,
+            arguments.mavedb_score_audit,
+            arguments.venus_assay_audit,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "confirmation-freeze-untouched-tasks":
+        from .confirmation_registry import freeze_untouched_confirmation_registry
+
+        outputs = freeze_untouched_confirmation_registry(
+            arguments.full_registry,
+            arguments.untouched_external_registry,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "qualification-freeze-proteingym":
+        from .qualification_panel import freeze_proteingym_parity_panel
+
+        outputs = freeze_proteingym_parity_panel(
+            arguments.qualification_config,
+            arguments.metadata,
+            arguments.score_archive,
+            arguments.structure_archive,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
     if arguments.command == "venus-freeze-targets":
         from .venus_panel import freeze_venusmuthub_targets
 
@@ -757,6 +1162,65 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(arguments.output)
         return 0
 
+    if arguments.command == "models-execution-audit":
+        from .execution_audit import audit_executed_panel
+
+        outputs = audit_executed_panel(
+            arguments.execution_config,
+            arguments.targets,
+            arguments.variants,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "models-qualification-audit":
+        from .qualification_audit import audit_model_qualification
+
+        outputs = audit_model_qualification(
+            arguments.qualification_config,
+            arguments.model_config,
+            arguments.container_lock,
+            arguments.confirmation_targets,
+            arguments.confirmation_variants,
+            arguments.outcome_lock,
+            arguments.parity_targets,
+            arguments.parity_variants,
+            arguments.official_scores,
+            arguments.run_a_root,
+            arguments.run_b_root,
+            arguments.parity_root,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "models-freeze-final-panel":
+        from .final_panel import freeze_final_model_panel
+
+        outputs = freeze_final_model_panel(
+            arguments.qualification_dir,
+            arguments.model_config,
+            arguments.output_dir,
+            arguments.final_config,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "models-cache-audit":
+        from .execution_audit import audit_prediction_cache
+
+        outputs = audit_prediction_cache(
+            arguments.model_config,
+            arguments.model,
+            arguments.targets,
+            arguments.variants,
+            arguments.cache_dir,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
     if arguments.command == "predict-panel":
         from .model_adapters import write_panel_predictions
 
@@ -784,6 +1248,45 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
+    if arguments.command == "conservative-auditor-fit":
+        from .conservative_auditor import fit_conservative_auditor
+
+        outputs = fit_conservative_auditor(
+            arguments.development_features,
+            arguments.pilot_features,
+            arguments.pilot_metrics,
+            arguments.config,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "conservative-auditor-score":
+        from .conservative_auditor import score_conservative_auditor
+
+        outputs = score_conservative_auditor(
+            arguments.features,
+            arguments.bundle,
+            arguments.output,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "conservative-auditor-evaluate":
+        from .conservative_auditor import evaluate_conservative_confirmation
+
+        outputs = evaluate_conservative_confirmation(
+            arguments.config,
+            arguments.final_freeze,
+            arguments.decisions,
+            arguments.prediction_registry,
+            arguments.outcomes,
+            arguments.outcome_lock,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
     if arguments.command == "transport-features-proteingym":
         from .transport_features import build_proteingym_transport_features
 
@@ -798,6 +1301,106 @@ def main(argv: Sequence[str] | None = None) -> int:
             arguments.score_archive,
             arguments.output,
             crossover_predictions_path=arguments.crossover_predictions,
+        )
+        print(json.dumps(summary, indent=2, sort_keys=True))
+        return 0
+
+    if arguments.command == "transport-features-confirmation":
+        from .confirmation_features import build_confirmation_transport_features
+
+        summary = build_confirmation_transport_features(
+            arguments.prediction_registry,
+            arguments.task_registry,
+            arguments.model_config,
+            arguments.target,
+            arguments.variants,
+            arguments.overlap_audit,
+            arguments.exposure,
+            arguments.pfam,
+            arguments.structure_inputs,
+            arguments.structure_edges,
+            arguments.structure_audit,
+            arguments.output,
+            protocol_id=arguments.protocol_id,
+            model_ids=set(arguments.model) if arguments.model else None,
+            minimum_model_coverage=arguments.minimum_model_coverage,
+        )
+        print(json.dumps(summary, indent=2, sort_keys=True))
+        return 0
+
+    if arguments.command == "pilot-freeze":
+        from .pilot import freeze_development_pilot
+
+        outputs = freeze_development_pilot(
+            arguments.task_registry,
+            arguments.mavedb_targets,
+            arguments.venus_targets,
+            arguments.mavedb_audit,
+            arguments.venus_audit,
+            arguments.output_dir,
+            model_ids=arguments.model,
+            venus_target_count=arguments.venus_target_count,
+            shared_intersection_path=arguments.shared_intersection,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "pilot-development-features":
+        from .pilot import freeze_development_feature_subset
+
+        summary = freeze_development_feature_subset(
+            arguments.features,
+            arguments.output,
+            model_ids=arguments.model,
+        )
+        print(json.dumps(summary, indent=2, sort_keys=True))
+        return 0
+
+    if arguments.command == "pilot-download-outcomes":
+        from .pilot import download_frozen_pilot_outcomes
+
+        outputs = download_frozen_pilot_outcomes(
+            arguments.protocol,
+            arguments.outcome_lock,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "pilot-build-metrics":
+        from .pilot import build_pilot_task_metrics
+
+        outputs = build_pilot_task_metrics(
+            arguments.protocol,
+            arguments.confirmation_features,
+            arguments.prediction_registry,
+            arguments.outcomes,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "pilot-evaluate-signal":
+        from .pilot import evaluate_pilot_signal
+
+        outputs = evaluate_pilot_signal(
+            arguments.bundle,
+            arguments.predictions,
+            arguments.metrics,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "transport-freeze-confirmation":
+        from .final_freeze import freeze_transport_decisions
+
+        summary = freeze_transport_decisions(
+            arguments.bundle,
+            arguments.training_features,
+            arguments.confirmation_features,
+            arguments.runtime_lock,
+            arguments.output,
         )
         print(json.dumps(summary, indent=2, sort_keys=True))
         return 0
@@ -838,10 +1441,23 @@ def main(argv: Sequence[str] | None = None) -> int:
             development_pfam_path=arguments.development_pfam,
             confirmation_structure_path=arguments.confirmation_structure_families,
             development_structure_path=arguments.development_structure_families,
+            publication_dates_path=arguments.publication_dates,
             mmseqs_binary=arguments.mmseqs_binary,
             threads=arguments.threads,
         )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "confirmation-freeze-publication-dates":
+        from .confirmation_registry import freeze_confirmation_publication_dates
+
+        manifest = freeze_confirmation_publication_dates(
+            arguments.mavedb_score_audit,
+            arguments.venus_assay_audit,
+            arguments.cache_dir,
+            arguments.output,
+        )
+        print(json.dumps(manifest, indent=2, sort_keys=True))
         return 0
 
     if arguments.command == "compute-budget-check":
@@ -866,6 +1482,34 @@ def main(argv: Sequence[str] | None = None) -> int:
                 method_artifacts=arguments.method,
             )
         )
+        return 0
+
+    if arguments.command == "confirmation-select-predictions":
+        from .prediction_freeze import freeze_selected_predictions
+
+        outputs = freeze_selected_predictions(
+            arguments.selection_config,
+            arguments.model_config,
+            arguments.qualification_dir,
+            arguments.output_dir,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "confirmation-freeze-bundle":
+        from .final_freeze import freeze_confirmation_bundle
+
+        outputs = freeze_confirmation_bundle(
+            arguments.repository_root,
+            arguments.final_lock,
+            arguments.target,
+            arguments.selected_prediction_manifest,
+            arguments.prediction,
+            arguments.method,
+            arguments.output_dir,
+            protocol_id=arguments.protocol_id,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
     if arguments.command == "confirmation-register":
@@ -895,6 +1539,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             arguments.output_dir,
         )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "preregistration-model-audit":
+        from .preregistration import build_preregistration_model_audit
+
+        summary = build_preregistration_model_audit(
+            arguments.qualification_audit,
+            arguments.qualification_summary,
+            arguments.output,
+        )
+        print(json.dumps(summary, indent=2, sort_keys=True))
         return 0
 
     if arguments.command == "site-build":
