@@ -1,0 +1,22 @@
+{
+  "artifacts": {
+    "results/external-development-pilot-v1/evaluation-primary/pilot-model-summary.csv": "a235e2adcee005e181129cabf30b4a40e03743dfc52a97df8e8bcc2969c73000",
+    "results/external-development-pilot-v1/evaluation-primary/pilot-policy-summary.csv": "6e4dbc395fa000afd16de8282bdfc87f8e1b452f1fe83a61dbb90c722068348a",
+    "results/external-development-pilot-v1/evaluation-primary/pilot-primary-bootstrap-summary.csv": "47e4d82e56d2f76f86b3cacba44e280e2e19b64b521ce30178f0076c6a938727",
+    "results/external-development-pilot-v1/evaluation-primary/pilot-primary-bootstrap.csv.gz": "197d13be6c7ec120f38db0bb9f5e1bd5d46f3a38cdf307b65787a85fb68af7ec",
+    "results/external-development-pilot-v1/evaluation-primary/pilot-risk-coverage.csv": "70dc0a58988d5d224cbad6e78f034ef820cccbb56f867ad507d601af9a230144",
+    "results/external-development-pilot-v1/evaluation-primary/pilot-task-predictions.csv": "57e823571f6ab0cd409772612513925ebf6707ac7d450fe78683a3a16604bdd1"
+  },
+  "best_fixed_model": "vespag",
+  "bootstrap_repeats": 10000,
+  "classification": "development pilot; not confirmation",
+  "frozen_comparator": "score_dispersion",
+  "inputs": {
+    "results/external-development-pilot-v1/frozen-method/transport-model.joblib": "0d539ec66b681b5a55f5934b8a5a5cb2c32dff94018f8570b26a6f9630b3b9dd",
+    "results/external-development-pilot-v1/frozen-pilot-decisions.csv": "b6848499493e067530b2a3b6cbfab3c33ec41e2eeefcb8fa02b1253f94bcc0b9",
+    "results/external-development-pilot-v1/revealed-metrics/pilot-task-metrics.csv": "6e9f19d531ede56dad9f7373d7e53c8c674e7e187a95227e94a81dcbfb878414"
+  },
+  "models": 6,
+  "schema_version": 1,
+  "tasks": 36
+}

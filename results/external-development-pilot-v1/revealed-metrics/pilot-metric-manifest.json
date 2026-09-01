@@ -1,0 +1,17 @@
+{
+  "artifacts": {
+    "results/external-development-pilot-v1/revealed-metrics/pilot-task-metric-audit.csv": "e969950e986310e6c674cdc1cc7bc7980621ca9c3c6947eb48afc2afd2ca2fae",
+    "results/external-development-pilot-v1/revealed-metrics/pilot-task-metrics.csv": "6e9f19d531ede56dad9f7373d7e53c8c674e7e187a95227e94a81dcbfb878414"
+  },
+  "classification": "development pilot; not confirmation",
+  "inputs": {
+    "data/raw/external-development-pilot-v1/pilot-outcomes.csv.gz": "c5e51767eaa162143801942c8f178aeb4345dd898c3b486c54801c0366f0fcff",
+    "protocols/external-development-pilot-v1/pilot-protocol.json": "d0deec70cae610dd4d5287ab01d57b586e24bae69bf626c650f71c4fda221439",
+    "results/external-development-pilot-v1/pilot-transport-features.csv": "2c8be1c6c3a1af600452120299f59f702ac238a0dd27b418488c99d66929fd7e",
+    "results/external-development-pilot-v1/selected-predictions/selected-prediction-registry.csv": "785aa65878f8fc258fb3f7028c2fed9e2b1d6373af7e3fbba86cfbc28bd40b7a"
+  },
+  "models": 6,
+  "rows": 216,
+  "schema_version": 1,
+  "tasks": 36
+}

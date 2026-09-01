@@ -1,0 +1,26 @@
+{
+  "artifact": {
+    "results/external-development-pilot-v1/frozen-pilot-decisions.csv": "b6848499493e067530b2a3b6cbfab3c33ec41e2eeefcb8fa02b1253f94bcc0b9"
+  },
+  "deterministic_repeat": true,
+  "inputs": {
+    "containers/transport-runtime-lock-pilot-v1.json": "405cae13be1ad4e7c73523d8ad016c6eefb02e42f6dde962fc0fa756bf11c959",
+    "results/external-development-pilot-v1/development-task-features.csv": "7f9995bccd2721d5016bb6cb6d86ec100cd1f10725f27a3cafd2452d5f7dd13c",
+    "results/external-development-pilot-v1/frozen-method/transport-model.joblib": "0d539ec66b681b5a55f5934b8a5a5cb2c32dff94018f8570b26a6f9630b3b9dd",
+    "results/external-development-pilot-v1/pilot-transport-features.csv": "2c8be1c6c3a1af600452120299f59f702ac238a0dd27b418488c99d66929fd7e"
+  },
+  "models": 6,
+  "outcomes_accessed": false,
+  "rows": 300,
+  "runtime": {
+    "joblib": "1.5.3",
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "python": "3.11.0",
+    "scikit-learn": "1.9.0",
+    "scipy": "1.17.1"
+  },
+  "schema_version": 1,
+  "tasks": 50,
+  "trusted_rows": 10
+}

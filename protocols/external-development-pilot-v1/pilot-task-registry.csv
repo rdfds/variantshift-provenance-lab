@@ -1,0 +1,51 @@
+panel_id,assay_id,target_id,assay_modality,direction,direction_source,included,exclusion_reason,publication_ids,outcomes_accessed
+mavedb-complement-v1,urn:mavedb:00001200-a-1,mavedb-32f5d032de97ea22,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1101/2024.04.01.587474,False
+mavedb-complement-v1,urn:mavedb:00001200-b-1,mavedb-32f5d032de97ea22,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1101/2024.04.01.587474,False
+mavedb-complement-v1,urn:mavedb:00001200-c-1,mavedb-32f5d032de97ea22,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1101/2024.04.01.587474,False
+mavedb-complement-v1,urn:mavedb:00001200-d-1,mavedb-32f5d032de97ea22,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1101/2024.04.01.587474,False
+mavedb-complement-v1,urn:mavedb:00001200-e-1,mavedb-32f5d032de97ea22,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1101/2024.04.01.587474,False
+mavedb-complement-v1,urn:mavedb:00000659-a-1,mavedb-93100c3b9be6e587,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1172/jci168156,False
+mavedb-complement-v1,urn:mavedb:00001235-a-1,mavedb-a5cec053cd1989b7,multiplexed variant effect,-1.0,frozen MaveDB metadata orientation,True,,10.1126/science.aax3649,False
+mavedb-complement-v1,urn:mavedb:00000665-a-1,mavedb-aebeb991234cd8a3,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1038/s44320-024-00043-8,False
+mavedb-complement-v1,urn:mavedb:00000665-b-1,mavedb-aebeb991234cd8a3,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1038/s44320-024-00043-8,False
+mavedb-complement-v1,urn:mavedb:00000665-c-1,mavedb-aebeb991234cd8a3,multiplexed variant effect,-1.0,frozen MaveDB metadata orientation,True,,10.1038/s44320-024-00043-8,False
+mavedb-complement-v1,urn:mavedb:00000665-d-1,mavedb-aebeb991234cd8a3,multiplexed variant effect,-1.0,frozen MaveDB metadata orientation,True,,10.1038/s44320-024-00043-8,False
+mavedb-complement-v1,urn:mavedb:00000094-a-2,mavedb-c6dd0092b775896c,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1101/gr.276562.122,False
+mavedb-complement-v1,urn:mavedb:00000094-a-3,mavedb-c6dd0092b775896c,multiplexed variant effect,-1.0,frozen MaveDB metadata orientation,True,,10.1101/gr.276562.122,False
+mavedb-complement-v1,urn:mavedb:00001234-a-1,mavedb-e3ca60f18e3b6e98,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1073/pnas.1431692100,False
+mavedb-complement-v1,urn:mavedb:00001234-b-1,mavedb-e3ca60f18e3b6e98,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1073/pnas.1431692100,False
+mavedb-complement-v1,urn:mavedb:00001234-c-1,mavedb-e3ca60f18e3b6e98,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1073/pnas.1431692100,False
+mavedb-complement-v1,urn:mavedb:00001234-d-1,mavedb-e3ca60f18e3b6e98,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1073/pnas.1431692100,False
+mavedb-complement-v1,urn:mavedb:00001234-e-1,mavedb-e3ca60f18e3b6e98,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1073/pnas.1431692100,False
+mavedb-complement-v1,urn:mavedb:00001234-f-1,mavedb-e3ca60f18e3b6e98,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1073/pnas.1431692100,False
+mavedb-complement-v1,urn:mavedb:00001234-g-1,mavedb-e3ca60f18e3b6e98,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1073/pnas.1431692100,False
+mavedb-complement-v1,urn:mavedb:00001234-h-1,mavedb-e3ca60f18e3b6e98,multiplexed variant effect,1.0,frozen MaveDB metadata orientation,True,,10.1073/pnas.1431692100,False
+venusmuthub-v1,Q8KLM3_activity,venus-07739b7c44051d98,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1074/jbc.m611912200,False
+venusmuthub-v1,Q65EX3_activity,venus-0ed16c1325aea2c9,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1073/pnas.1019480108,False
+venusmuthub-v1,A0A0I9QGZ2_kcat,venus-1972eefa4a6ef629,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1002/anie.201701169,False
+venusmuthub-v1,A0A0I9QGZ2_kcatkm,venus-1972eefa4a6ef629,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1002/anie.201701169,False
+venusmuthub-v1,A0A0I9QGZ2_km,venus-1972eefa4a6ef629,activity,-1.0,lower Michaelis constant is favorable,True,,10.1002/anie.201701169,False
+venusmuthub-v1,Q06135_activity,venus-220a25f64746e26e,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1074/jbc.m807990200,False
+venusmuthub-v1,Q58431_activity,venus-320f26d1be8a0cb0,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1021/bi0484769,False
+venusmuthub-v1,3FCR_activity-substrate-1,venus-3876c90807a78d74,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1021/acscatal.4c00987,False
+venusmuthub-v1,3FCR_activity-substrate-2,venus-3876c90807a78d74,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1021/acscatal.4c00987,False
+venusmuthub-v1,A2RJT9_DCIP_activity,venus-39a9db03eeb2ed00,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1074/jbc.m303767200,False
+venusmuthub-v1,A2RJT9_oxygen_activity,venus-39a9db03eeb2ed00,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1074/jbc.m303767200,False
+venusmuthub-v1,P24058_vmax,venus-454b0fb8de143bcd,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1074/jbc.m107465200,False
+venusmuthub-v1,A0A059TC02_activity,venus-4d282f160e018c4f,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1105/tpc.114.127399,False
+venusmuthub-v1,C6DAH4_activity,venus-64be3ba2a292eb0f,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1002/cbic.201700609,False
+venusmuthub-v1,P78330_activity,venus-6df418116e5febc9,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1074/jbc.m204866200,False
+venusmuthub-v1,7LOO_activity,venus-7e0f1f31cc7ee851,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1021/acs.jafc.4c03715,False
+venusmuthub-v1,Q8LPL7_activity,venus-a60540654b3cbbf9,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,?10.1093/nar/gkz070,False
+venusmuthub-v1,O94220_activity,venus-b1ee988208ad234a,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1016/j.fob.2013.10.009,False
+venusmuthub-v1,P80036_activity,venus-b2c012e22fa464aa,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1271/bbb.65.1542,False
+venusmuthub-v1,E8RUP5_activity,venus-ba768a97843a2ef2,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1021/jacs.6b10389,False
+venusmuthub-v1,Q86XE5_kcat,venus-bff43a6e4a79b5f8,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1371/journal.pone.0026021,False
+venusmuthub-v1,P46849_activity,venus-c71bd410457488cf,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1016/j.str.2010.01.016,False
+venusmuthub-v1,P06802_activity,venus-db874159a334ddcf,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1074/jbc.m007552200,False
+venusmuthub-v1,Q70PR7_activity,venus-e2c390013035df74,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,?10.1016/j.bmc.2004.02.029,False
+venusmuthub-v1,P73574_activity,venus-e534b07a29d6ecf2,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,?10.1016/j.febslet.2015.09.001,False
+venusmuthub-v1,P36136_kcat,venus-e882ec45e80e2ece,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1074/jbc.m110.118315,False
+venusmuthub-v1,P36136_vmax,venus-e882ec45e80e2ece,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1074/jbc.m110.118315,False
+venusmuthub-v1,P25745_activity,venus-f68755df0ab4af4d,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1038/nature04896,False
+venusmuthub-v1,P95480_vmax,venus-f6ad6a376a4ccae7,activity,1.0,"higher activity, turnover, or catalytic efficiency is favorable",True,,10.1002/anie.200802466,False
