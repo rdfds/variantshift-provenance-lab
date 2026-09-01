@@ -1,0 +1,23 @@
+{
+  "adaptive_analysis_disclosure": "The external pilot was explicitly development data and informed the v2 redesign. Only a subsequent untouched evaluation can support confirmation claims.",
+  "baseline_model": "vespag",
+  "confidence": "fixed harmonic mean of family-cross-fitted predicted VespaG utility rank and predicted safety rank (one minus predicted regret percentile)",
+  "decision": "deploy VespaG or abstain; no model override",
+  "development_only": true,
+  "inputs": {
+    "configs/conservative-auditor-v2.json": "6bc9340c833f0c89996ecfdda3a7190debbc381269cd544bd47a60ebb52a185b",
+    "results/external-development-pilot-v1/development-task-features.csv": "7f9995bccd2721d5016bb6cb6d86ec100cd1f10725f27a3cafd2452d5f7dd13c",
+    "results/external-development-pilot-v1/pilot-transport-features.csv": "2c8be1c6c3a1af600452120299f59f702ac238a0dd27b418488c99d66929fd7e",
+    "results/external-development-pilot-v1/revealed-metrics/pilot-task-metrics.csv": "6e9f19d531ede56dad9f7373d7e53c8c674e7e187a95227e94a81dcbfb878414"
+  },
+  "method_id": "variantshift-conservative-auditor-v2",
+  "schema_version": 1,
+  "selected_candidate_policy": "harm_gain_meta",
+  "training_families": 150,
+  "training_panels": [
+    "mavedb-complement-v1",
+    "proteingym-v1.3",
+    "venusmuthub-v1"
+  ],
+  "training_tasks": 231
+}

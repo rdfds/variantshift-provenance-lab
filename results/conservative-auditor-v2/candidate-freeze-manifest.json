@@ -1,0 +1,27 @@
+{
+  "artifacts": {
+    "bootstrap": "8c98091539f4b938ebf408120f0d5aaa5cbcb397d55df7bda312f68fe60ff60b",
+    "bootstrap_summary": "9111077616be464e214b1d318c7505b475c6652927dd683f1aadad2db6ea3689",
+    "bundle": "fc252f4245ca4cfca5d55621071853b3588538cba08eca18583080490af5edfa",
+    "candidates": "e6e0b4e5af8f427eaf904a239d882e4cb1458de0640886f73ed313dfeaf5213a",
+    "crossfit": "8df12e339f02b3182e0022edd488ef4147b5b099631d0de82e7657fda42261d2",
+    "curves": "cfbf5caf9970ff9d0dd130c2001aab15425aff1a0d2c23f9af939567d9992efa",
+    "development": "2e02012d443e5bfc38343e772772ce543bdd924ca35e6d9f357c8ca87538339d",
+    "final_candidates": "0a4b4fc645b7e6eedb15b7be5da0c8f982bd2bd2f988c8136445a3f6340e0154",
+    "folds": "2b8748448e5e99bc0b75be2a8b3d3e94e0fb2ef4b0280759415f55135f70ad80",
+    "gates": "39953cf846f7725f4ab2ab88f4cc32afbd4e04cbe1de875733a1e2c1985e10bb",
+    "method": "23aa48c5eea9262fbd28e11bcaeb4173c449707fbcb8d880e5a234af8b19046a",
+    "panel_holdout": "cb57c6a849e3b605653949d6b1936b6148117acec08380342795b826a6edbb19",
+    "panels": "0987d2e17a2db053cd25ebfe43d02428de0f498f6f10ab3a343b5109d0b91c27"
+  },
+  "baseline_policy": "always deploy VespaG or abstain",
+  "confirmation_outcomes_requested_by_this_run": false,
+  "development_only": true,
+  "family_heldout_gate_passed": true,
+  "implementation_sha256": "197ad63bfa9b0c9e7f454304b3cd79a644f7157a7385d49b7d86eccb7745926d",
+  "leave_one_panel_out_gate_passed": false,
+  "method_id": "variantshift-conservative-auditor-v2",
+  "model_override_permitted": false,
+  "schema_version": 1,
+  "state": "development_candidate_frozen"
+}
