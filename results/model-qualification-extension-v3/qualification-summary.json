@@ -1,0 +1,42 @@
+{
+  "artifacts": {
+    "model-qualification-audit.csv": "922c95317ef675b74007d4c44d4620f775dc18e79c8c1f748c1621cb1f21edc0",
+    "protein-gym-parity-audit.csv": "6bd44f564c17047d0f6863b97e19f120f1e924f3681aeee8d08570cf43292c14",
+    "qualified-shared-targets.csv": "3ba6cdf59f9e08b0ef45b6ce4fec4854c0c79205172c5ded0d8cca5d905653a9"
+  },
+  "confirmation_outcomes_accessed": false,
+  "gates": {
+    "configurations": true,
+    "families": true,
+    "shared_confirmation_targets": true,
+    "uniform_source_and_runner": true
+  },
+  "inputs": {
+    "confirmation_targets_sha256": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e",
+    "confirmation_variants_sha256": "eb4891a705b60ed19ebfd2485a1bf3f07c786413455caea198c911e56f83232f",
+    "container_lock_sha256": "ed1cbe75fbd5a9fdc5cd93a04d6ba6cdfe89b92fe2935e116b5515c6760b4f56",
+    "model_config_sha256": "cf0131d2504a73bb6dd72197a5b7d4d660ac192292ffbc6d39bcefb73bc3b02a",
+    "official_scores_sha256": "6808b7a915936e58fc925f59e579a041650cf412c62c965e5e5a422d2fd5c8ab",
+    "outcome_lock_sha256": "018d3f7926230403adce8744ded9ab0363a19ea2ca349cfc0de29197f7c48c85",
+    "parity_targets_sha256": "0166883bdd2f9e164d8d9cfdfc3f7718f9a2b9143fb82a35112246d8b15c375f",
+    "parity_variants_sha256": "55eb4f17575869e259b6d06ea8fcd642ec85ea5db7440d536f9861aba26d2185",
+    "qualification_config_sha256": "a21feb83a8504350fe54d20cf64d29ee00196a64c63fb68581a911d99b8ad093"
+  },
+  "outcome_lock_state": "targets_frozen",
+  "protocol_id": "variantshift-model-qualification-extension-v3",
+  "qualification_status": "passed",
+  "qualified_configurations": 2,
+  "qualified_families": 2,
+  "schema_version": 1,
+  "shared_confirmation_targets": 426,
+  "thresholds": {
+    "minimum_configurations": 2,
+    "minimum_families": 2,
+    "minimum_parity_spearman": 0.99,
+    "minimum_parity_targets": 8,
+    "minimum_parity_variants_per_target": 500,
+    "minimum_repeat_spearman": 0.999,
+    "minimum_shared_confirmation_targets": 300,
+    "minimum_substitution_coverage": 0.95
+  }
+}

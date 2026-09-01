@@ -1,0 +1,42 @@
+{
+  "artifacts": {
+    "model-qualification-audit.csv": "fe074cb948bd710490254a1f82a84021c55e3dd124c78992c0f25a60524ca501",
+    "protein-gym-parity-audit.csv": "b24b205f3a81014bcf4e10d555b99c5f844d4a738eaebe9a9bf1497e6c1e0420",
+    "qualified-shared-targets.csv": "05822d3762c7609880bfd94bb004af9b34e49e49cfa99a0d59dc307b53a985d1"
+  },
+  "confirmation_outcomes_accessed": false,
+  "gates": {
+    "configurations": true,
+    "families": true,
+    "shared_confirmation_targets": true,
+    "uniform_source_and_runner": true
+  },
+  "inputs": {
+    "confirmation_targets_sha256": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e",
+    "confirmation_variants_sha256": "eb4891a705b60ed19ebfd2485a1bf3f07c786413455caea198c911e56f83232f",
+    "container_lock_sha256": "ae52b83f05595fb2892b9adba4c61966424b21727638ac88d391ba4f10f1e272",
+    "model_config_sha256": "720df6822abd3ac7195895ae7d4dfecd34ace0acc18deab033819cc5a90b79c0",
+    "official_scores_sha256": "ae1f3b0c9c7cda56e63f49fda93406426c3ed8e69c5132da3407e538df2a7a4a",
+    "outcome_lock_sha256": "018d3f7926230403adce8744ded9ab0363a19ea2ca349cfc0de29197f7c48c85",
+    "parity_targets_sha256": "4f5e4364028b19201408871fc349a96e36aa4fd1e3f1301ea662452b197f45e2",
+    "parity_variants_sha256": "0aafc1348b92b586d42e538e925f2db0decd71478104446184bd54a41c0de5ff",
+    "qualification_config_sha256": "59e1f6ca72ec3380f8210812562e3db20cb653922fd189a4b5496e1814c25f21"
+  },
+  "outcome_lock_state": "targets_frozen",
+  "protocol_id": "variantshift-model-qualification-v1",
+  "qualification_status": "passed",
+  "qualified_configurations": 8,
+  "qualified_families": 4,
+  "schema_version": 1,
+  "shared_confirmation_targets": 413,
+  "thresholds": {
+    "minimum_configurations": 8,
+    "minimum_families": 4,
+    "minimum_parity_spearman": 0.99,
+    "minimum_parity_targets": 8,
+    "minimum_parity_variants_per_target": 500,
+    "minimum_repeat_spearman": 0.999,
+    "minimum_shared_confirmation_targets": 300,
+    "minimum_substitution_coverage": 0.95
+  }
+}

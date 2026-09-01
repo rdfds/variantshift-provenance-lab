@@ -1,0 +1,17 @@
+{
+  "inputs": {
+    "model_config_sha256": "ec9b51cc538b2f5f139181ff8e451d1418f7278845fa11b8dfb4b542a859655b",
+    "targets_sha256": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e",
+    "variants_sha256": "eb4891a705b60ed19ebfd2485a1bf3f07c786413455caea198c911e56f83232f"
+  },
+  "invalid_cached_targets": 0,
+  "model_id": "tranception_l_no_retrieval",
+  "model_specification_sha256": "c46789639fcaa2eb66c7ab9ef9526930324b0b201ce810831decfdd9296157ad",
+  "outcomes_accessed": false,
+  "qualification_status": "not_started",
+  "remaining_targets": 0,
+  "schema_version": 1,
+  "scope": "outcome-blind-prediction-cache",
+  "target_count": 426,
+  "valid_cached_targets": 426
+}

@@ -1,0 +1,9 @@
+model_id,dms_id,target_id,shared_variants,parity_spearman,threshold,parity_pass
+prosst_2048,A0A1I9GEU1_NEIME_Kennouche_2019,A0A1I9GEU1_NEIME,922,0.964067,0.99,false
+prosst_2048,DN7A_SACS2_Tsuboyama_2023_1JIC,DN7A_SACS2,1008,0.940483,0.99,false
+prosst_2048,MET_HUMAN_Estevam_2023,MET_HUMAN,5393,0.952139,0.99,false
+prosst_2048,MLAC_ECOLI_MacRae_2023,MLAC_ECOLI,4007,0.944692,0.99,false
+prosst_2048,SCIN_STAAR_Tsuboyama_2023_2QFF,SCIN_STAAR,1212,0.922900,0.99,false
+prosst_2048,SOX30_HUMAN_Tsuboyama_2023_7JJK,SOX30_HUMAN,1010,0.969059,0.99,false
+prosst_2048,TPMT_HUMAN_Matreyek_2018,TPMT_HUMAN,3648,0.965194,0.99,false
+prosst_2048,VRPI_BPT7_Tsuboyama_2023_2WNM,VRPI_BPT7,1047,0.952995,0.99,false
