@@ -1,0 +1,2 @@
+assay_id,model,sequence_length,single_substitution_variants,mutated_positions,pearson,spearman,max_abs_difference,mean_abs_difference
+TCRG1_MOUSE_Tsuboyama_2023_1E0L,ESM2_8M,37,621,35,0.9999999999981616,1.0,0.00001621246337935034,0.000002951053797526663
