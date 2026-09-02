@@ -35,12 +35,22 @@ separately in [`proteingym/extended/`](proteingym/extended/). It omits the 8.7 M
 held-out prediction file; that file is reproducible locally and contains no aggregate claim used in
 the README.
 
+## Locked-box MaveDB validation
+
+[`mavedb-external-v1/`](mavedb-external-v1/) contains the complete post-outcome audit and aggregate
+results for the panel frozen in [`../protocols/mavedb-external-v1/`](../protocols/mavedb-external-v1/).
+It publishes all 45 inclusion decisions, 21 eligible-assay estimates, protein-balanced summaries,
+10,000 nested-bootstrap replicates, model and checkpoint provenance, the official-score parity
+audit, and SHA-256 records for all 45 raw public inputs. Raw score tables and the reusable 78,982-row
+prediction cache remain outside Git.
+
 Verify the committed outputs:
 
 ```bash
 variantshift verify-artifacts results/run-manifest.json
 variantshift verify-artifacts results/proteingym/run-manifest.json
 variantshift verify-artifacts results/proteingym/extended/run-manifest.json
+variantshift verify-artifacts results/mavedb-external-v1/run-manifest.json
 ```
 
 Regenerate the expanded analyses after downloading the dataset:

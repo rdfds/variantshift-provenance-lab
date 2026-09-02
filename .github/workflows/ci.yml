@@ -31,3 +31,4 @@ jobs:
           variantshift verify-artifacts results/run-manifest.json
           variantshift verify-artifacts results/proteingym/run-manifest.json
           variantshift verify-artifacts results/proteingym/extended/run-manifest.json
+          variantshift verify-artifacts results/mavedb-external-v1/run-manifest.json

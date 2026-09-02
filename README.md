@@ -346,6 +346,27 @@ This protocol creates an auditable methods-before-outcomes boundary. It is an ex
 computational validation, not a substitute for measurements generated prospectively after model
 and variant selection.
 
+The completed run retained 21 directed assays with 142,204 measurements across 10 proteins. The
+primary ESM-2 8M masked-marginal estimate was mean Spearman 0.105 (nested-bootstrap 95% interval
+0.034–0.183), versus a descriptive ProteinGym estimate of 0.203. Top-decile recall was 0.106 against
+a random baseline of approximately 0.100. The positive signal therefore replicated, but at much
+lower strength and without demonstrated top-variant selection utility.
+
+![VariantShift locked-box MaveDB validation](docs/mavedb-external-validation.svg)
+
+The [`external validation report`](docs/EXTERNAL_VALIDATION_REPORT.md) publishes the full timeline,
+attrition ledger, scorer-parity check, nested uncertainty, protein heterogeneity, and limitations.
+CI verifies the committed outputs against
+[`results/mavedb-external-v1/run-manifest.json`](results/mavedb-external-v1/run-manifest.json).
+
+After retrieving the raw public score tables, reproduce the executed analysis and figure with:
+
+```bash
+make mavedb-evaluate-external
+make mavedb-external-figure
+variantshift verify-artifacts results/mavedb-external-v1/run-manifest.json
+```
+
 ## Limitations
 
 - The primary robustness result covers two fitted EC50 endpoints; the transfer matrix covers 20
@@ -368,6 +389,9 @@ and variant selection.
   unavailable model has been evaluated.
 - Aggregate performance does not establish that a model is ready to prioritize wet-lab
   experiments.
+- The locked-box MaveDB run is temporally external and outcome-blind at the analysis boundary, but
+  its measurements pre-existed the prediction run. Only a new assay performed after frozen variant
+  selection can test prospective experimental enrichment.
 
 ## License
 
