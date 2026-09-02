@@ -1,0 +1,87 @@
+{
+  "score_archive": "data/raw/proteingym/zero_shot_substitutions_scores.zip",
+  "minimum_predictor_coverage": 0.9,
+  "outer_folds": 5,
+  "alpha_grid": [0.1, 1.0, 10.0, 100.0, 1000.0],
+  "bootstrap_repeats": 2000,
+  "seed": 20260902,
+  "pairs": [
+    {
+      "protein_id": "CP2C9_HUMAN",
+      "assay_a": "CP2C9_HUMAN_Amorosi_2021_abundance",
+      "phenotype_a": "abundance",
+      "assay_b": "CP2C9_HUMAN_Amorosi_2021_activity",
+      "phenotype_b": "activity/binding"
+    },
+    {
+      "protein_id": "HXK4_HUMAN",
+      "assay_a": "HXK4_HUMAN_Gersing_2023_abundance",
+      "phenotype_a": "abundance",
+      "assay_b": "HXK4_HUMAN_Gersing_2022_activity",
+      "phenotype_b": "activity"
+    },
+    {
+      "protein_id": "KCNE1_HUMAN",
+      "assay_a": "KCNE1_HUMAN_Muhammad_2023_expression",
+      "phenotype_a": "surface expression",
+      "assay_b": "KCNE1_HUMAN_Muhammad_2023_function",
+      "phenotype_b": "channel function"
+    },
+    {
+      "protein_id": "KCNJ2_MOUSE",
+      "assay_a": "KCNJ2_MOUSE_Coyote-Maestas_2022_surface",
+      "phenotype_a": "surface trafficking",
+      "assay_b": "KCNJ2_MOUSE_Coyote-Maestas_2022_function",
+      "phenotype_b": "ion conduction"
+    },
+    {
+      "protein_id": "OXDA_RHOTO",
+      "assay_a": "OXDA_RHOTO_Vanella_2023_expression",
+      "phenotype_a": "surface expression",
+      "assay_b": "OXDA_RHOTO_Vanella_2023_activity",
+      "phenotype_b": "activity"
+    },
+    {
+      "protein_id": "PTEN_HUMAN",
+      "assay_a": "PTEN_HUMAN_Matreyek_2021",
+      "phenotype_a": "abundance",
+      "assay_b": "PTEN_HUMAN_Mighell_2018",
+      "phenotype_b": "activity"
+    },
+    {
+      "protein_id": "Q53Z42_HUMAN",
+      "assay_a": "Q53Z42_HUMAN_McShan_2019_expression",
+      "phenotype_a": "surface expression",
+      "assay_b": "Q53Z42_HUMAN_McShan_2019_binding-TAPBPR",
+      "phenotype_b": "binding"
+    },
+    {
+      "protein_id": "RASK_HUMAN",
+      "assay_a": "RASK_HUMAN_Weng_2022_abundance",
+      "phenotype_a": "abundance",
+      "assay_b": "RASK_HUMAN_Weng_2022_binding-DARPin_K55",
+      "phenotype_b": "binding"
+    },
+    {
+      "protein_id": "S22A1_HUMAN",
+      "assay_a": "S22A1_HUMAN_Yee_2023_abundance",
+      "phenotype_a": "abundance",
+      "assay_b": "S22A1_HUMAN_Yee_2023_activity",
+      "phenotype_b": "activity"
+    },
+    {
+      "protein_id": "SPIKE_SARS2",
+      "assay_a": "SPIKE_SARS2_Starr_2020_expression",
+      "phenotype_a": "expression",
+      "assay_b": "SPIKE_SARS2_Starr_2020_binding",
+      "phenotype_b": "binding"
+    },
+    {
+      "protein_id": "VKOR1_HUMAN",
+      "assay_a": "VKOR1_HUMAN_Chiasson_2020_abundance",
+      "phenotype_a": "abundance",
+      "assay_b": "VKOR1_HUMAN_Chiasson_2020_activity",
+      "phenotype_b": "activity"
+    }
+  ]
+}
