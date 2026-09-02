@@ -332,6 +332,20 @@ variantshift verify-artifacts results/run-manifest.json
 
 When the dataset is available locally, the same command verifies its hash as well.
 
+## Locked-box external validation
+
+[`protocols/mavedb-external-v1`](protocols/mavedb-external-v1) freezes a label-blind external panel
+before any MaveDB score table is accessed. The exhaustive registry snapshot yielded 65 eligible
+metadata candidates; 20 assays were excluded by a predeclared ProteinGym family-overlap rule. The
+remaining 45 assays span 17 named targets and 18 distinct target sequences published after the
+ProteinGym v1.3 release. Public calibration metadata, MMseqs2 alignments, model identifiers,
+long-sequence scoring rules, outcome eligibility, estimands, and the nested-bootstrap success
+criterion are all fixed with `outcomes_accessed: false`.
+
+This protocol creates an auditable methods-before-outcomes boundary. It is an external
+computational validation, not a substitute for measurements generated prospectively after model
+and variant selection.
+
 ## Limitations
 
 - The primary robustness result covers two fitted EC50 endpoints; the transfer matrix covers 20
