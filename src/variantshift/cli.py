@@ -478,6 +478,36 @@ def build_parser() -> argparse.ArgumentParser:
     )
     external_download.add_argument("protocol", type=Path)
     external_download.add_argument("output_dir", type=Path)
+
+    external_evaluate = subparsers.add_parser(
+        "mavedb-evaluate-external",
+        help="Execute the frozen MaveDB cohort, scoring, and nested evaluation",
+    )
+    external_evaluate.add_argument("protocol_dir", type=Path)
+    external_evaluate.add_argument("score_dir", type=Path)
+    external_evaluate.add_argument(
+        "--work-dir", type=Path, default=Path("data/processed/mavedb-external-v1")
+    )
+    external_evaluate.add_argument(
+        "--output-dir", type=Path, default=Path("results/mavedb-external-v1")
+    )
+    external_evaluate.add_argument("--device")
+    external_evaluate.add_argument("--batch-size", type=int, default=8)
+    external_evaluate.add_argument("--bootstrap-repeats", type=int, default=10_000)
+    external_evaluate.add_argument("--bootstrap-seed", type=int, default=2_026_0829)
+    external_evaluate.add_argument("--reuse-predictions", action="store_true")
+
+    external_figure = subparsers.add_parser(
+        "mavedb-external-figure",
+        help="Render the locked-box external-validation summary as SVG",
+    )
+    external_figure.add_argument("protocol", type=Path)
+    external_figure.add_argument("assay_audit", type=Path)
+    external_figure.add_argument("bootstrap_summary", type=Path)
+    external_figure.add_argument("protein_metrics", type=Path)
+    external_figure.add_argument(
+        "--output", type=Path, default=Path("docs/mavedb-external-validation.svg")
+    )
     return parser
 
 
@@ -511,6 +541,39 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         outputs = download_selected_score_tables(arguments.protocol, arguments.output_dir)
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "mavedb-evaluate-external":
+        from .external_validation import run_external_validation
+
+        outputs = run_external_validation(
+            arguments.protocol_dir,
+            arguments.score_dir,
+            arguments.work_dir,
+            arguments.output_dir,
+            device=arguments.device,
+            batch_size=arguments.batch_size,
+            bootstrap_repeats=arguments.bootstrap_repeats,
+            bootstrap_seed=arguments.bootstrap_seed,
+            reuse_predictions=arguments.reuse_predictions,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "mavedb-external-figure":
+        import pandas as pd
+
+        from .external_visualize import render_external_figure
+
+        protocol = json.loads(arguments.protocol.read_text())
+        output = render_external_figure(
+            protocol,
+            pd.read_csv(arguments.assay_audit),
+            pd.read_csv(arguments.bootstrap_summary),
+            pd.read_csv(arguments.protein_metrics),
+            arguments.output,
+        )
+        print(output)
         return 0
 
     if arguments.command == "download":
