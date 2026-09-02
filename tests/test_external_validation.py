@@ -1,9 +1,11 @@
 import pandas as pd
+import pytest
 
 from variantshift.external_validation import (
     ExternalSelectionCriteria,
     calibration_orientation,
     canonicalize_mavedb_scores,
+    evaluate_external_cohort,
     evaluate_external_predictions,
     parse_mave_hgvs_protein_substitution,
     select_metadata_candidates,
@@ -89,3 +91,77 @@ def test_evaluate_external_predictions_reports_selection_metrics() -> None:
     metrics = evaluate_external_predictions(frame)
     assert metrics["spearman"] == 1.0
     assert metrics["top_recall"] == 1.0
+
+
+def test_external_nested_bootstrap_preserves_protein_balancing() -> None:
+    cohort_rows = []
+    prediction_rows = []
+    for assay_index, protein in enumerate(["P1", "P1", "P2"]):
+        urn = f"urn:{assay_index}"
+        digest = f"digest{assay_index}"
+        for position in range(1, 6):
+            mutation = f"A{position}C"
+            cohort_rows.append(
+                {
+                    "urn": urn,
+                    "target_name": protein,
+                    "protein_id": protein,
+                    "sequence_sha256": digest,
+                    "mutation_codes": mutation,
+                    "position": position,
+                    "DMS_score": float(position),
+                }
+            )
+            prediction_rows.append(
+                {
+                    "sequence_sha256": digest,
+                    "mutation_codes": mutation,
+                    "masked_marginal": float(position),
+                    "wild_type_marginal": float(6 - position),
+                }
+            )
+    outputs = evaluate_external_cohort(
+        pd.DataFrame(cohort_rows),
+        pd.DataFrame(prediction_rows),
+        bootstrap_repeats=100,
+        bootstrap_seed=7,
+    )
+    assay_metrics, protein_metrics, point_summary, intervals, bootstraps = outputs
+    assert len(assay_metrics) == 6
+    assert protein_metrics["protein_id"].nunique() == 2
+    assert point_summary.loc[
+        point_summary["model"].eq("masked_marginal"), "mean_spearman"
+    ].item() == pytest.approx(1.0)
+    assert intervals.loc[
+        intervals["model"].eq("masked_marginal"), "success_lower_bound_above_zero"
+    ].item()
+    assert len(bootstraps) == 100
+
+
+def test_external_strategy_difference_bootstrap_is_paired() -> None:
+    cohort = pd.DataFrame(
+        {
+            "urn": ["urn:1"] * 6,
+            "target_name": ["P1"] * 6,
+            "protein_id": ["P1"] * 6,
+            "sequence_sha256": ["digest"] * 6,
+            "mutation_codes": [f"A{i}C" for i in range(1, 7)],
+            "position": list(range(1, 7)),
+            "DMS_score": [0.0, 0.3, 0.1, 0.8, 0.5, 1.0],
+        }
+    )
+    predictions = pd.DataFrame(
+        {
+            "sequence_sha256": ["digest"] * 6,
+            "mutation_codes": [f"A{i}C" for i in range(1, 7)],
+            "masked_marginal": [0.2, 0.4, 0.3, 0.7, 0.6, 0.9],
+            "wild_type_marginal": [0.2, 0.4, 0.3, 0.7, 0.6, 0.9],
+        }
+    )
+    *_, bootstrap = evaluate_external_cohort(
+        cohort,
+        predictions,
+        bootstrap_repeats=100,
+        bootstrap_seed=11,
+    )
+    assert bootstrap["masked_minus_wild_type"].eq(0).all()
