@@ -460,6 +460,24 @@ def build_parser() -> argparse.ArgumentParser:
     pg_research_figure.add_argument(
         "--output", type=Path, default=Path("artifacts/proteingym-research.svg")
     )
+
+    external_freeze = subparsers.add_parser(
+        "mavedb-freeze-external",
+        help="Freeze a label-blind post-ProteinGym MaveDB validation panel",
+    )
+    external_freeze.add_argument("proteingym_reference", type=Path)
+    external_freeze.add_argument(
+        "--output-dir", type=Path, default=Path("protocols/mavedb-external-v1")
+    )
+    external_freeze.add_argument("--mmseqs-binary", default="mmseqs")
+    external_freeze.add_argument("--threads", type=int, default=8)
+
+    external_download = subparsers.add_parser(
+        "mavedb-download-external",
+        help="Access score tables for an already committed locked-box panel",
+    )
+    external_download.add_argument("protocol", type=Path)
+    external_download.add_argument("output_dir", type=Path)
     return parser
 
 
@@ -475,6 +493,25 @@ def _load_filtered(arguments: argparse.Namespace):
 
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = build_parser().parse_args(argv)
+
+    if arguments.command == "mavedb-freeze-external":
+        from .external_validation import freeze_external_panel
+
+        outputs = freeze_external_panel(
+            arguments.proteingym_reference,
+            arguments.output_dir,
+            binary=arguments.mmseqs_binary,
+            threads=arguments.threads,
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "mavedb-download-external":
+        from .external_validation import download_selected_score_tables
+
+        outputs = download_selected_score_tables(arguments.protocol, arguments.output_dir)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
 
     if arguments.command == "download":
         path = download_dataset(
