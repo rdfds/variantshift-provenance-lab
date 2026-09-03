@@ -8,6 +8,7 @@ from variantshift.transportability import (
     group_conformal_quantile,
     hierarchical_bootstrap_mean,
     selective_policy_curve,
+    summarize_policy_curves,
 )
 
 
@@ -78,6 +79,8 @@ def test_selective_curve_and_hierarchical_bootstrap_are_task_level() -> None:
     )
     assert len(bootstrap) == 20
     assert np.isfinite(bootstrap["estimate"]).all()
+    summary = summarize_policy_curves(curve)
+    assert summary.loc[0, "risk_coverage_auc"] >= 0
 
 
 def test_transport_features_reject_outcome_leakage() -> None:
