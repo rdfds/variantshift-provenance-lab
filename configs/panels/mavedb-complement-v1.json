@@ -1,0 +1,23 @@
+{
+  "protocol_id": "variantshift-mavedb-complement-confirmation-v1",
+  "panel_id": "mavedb-complement-v1",
+  "source": "MaveDB public target metadata",
+  "source_version": "API snapshot frozen before outcome access",
+  "adapter": "target_table",
+  "target_input": "../../data/confirmation-targets/mavedb-complement-v1/targets.csv",
+  "exposure_policy": "model-specific clean, possible, known, or undocumented",
+  "inclusion": {
+    "target_type": "protein",
+    "variant_type": "single amino-acid substitution",
+    "minimum_unique_variants": 100,
+    "minimum_assayed_positions": 10,
+    "direction_resolved_from_metadata_without_scores": true
+  },
+  "exclusion": {
+    "proteingym_experiment": true,
+    "mavedb_external_v1_urn": true,
+    "meta_analysis_score_set": true,
+    "outcome_table_previously_downloaded": true,
+    "ambiguous_effect_direction": true
+  }
+}
