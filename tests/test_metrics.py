@@ -1,7 +1,12 @@
 import numpy as np
 import pytest
 
-from variantshift.metrics import conformal_radius, interval_coverage, regression_metrics
+from variantshift.metrics import (
+    conformal_radius,
+    interval_coverage,
+    normalized_discounted_cumulative_gain,
+    regression_metrics,
+)
 
 
 def test_perfect_predictions() -> None:
@@ -28,3 +33,12 @@ def test_interval_coverage() -> None:
     observed = np.array([0.0, 1.0, 3.0])
     predicted = np.array([0.0, 2.0, 1.0])
     assert interval_coverage(observed, predicted, radius=1.0) == pytest.approx(2 / 3)
+
+
+def test_ndcg_is_one_for_perfect_ranking_and_scale_invariant() -> None:
+    observed = np.asarray([-10.0, 0.0, 5.0, 20.0])
+    predicted = np.asarray([0.1, 0.2, 0.3, 0.4])
+    assert normalized_discounted_cumulative_gain(observed, predicted) == pytest.approx(1.0)
+    assert normalized_discounted_cumulative_gain(observed * 100 + 7, predicted) == pytest.approx(
+        1.0
+    )
