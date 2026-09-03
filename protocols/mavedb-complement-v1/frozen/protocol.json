@@ -1,0 +1,28 @@
+{
+  "exclusion": {
+    "ambiguous_effect_direction": true,
+    "mavedb_external_v1_urn": true,
+    "meta_analysis_score_set": true,
+    "outcome_table_previously_downloaded": true,
+    "proteingym_experiment": true
+  },
+  "exposure_policy": "model-specific clean, possible, known, or undocumented",
+  "inclusion": {
+    "direction_resolved_from_metadata_without_scores": true,
+    "minimum_assayed_positions": 10,
+    "minimum_unique_variants": 100,
+    "target_type": "protein",
+    "variant_type": "single amino-acid substitution"
+  },
+  "outcome_status": "not_accessed",
+  "panel_id": "mavedb-complement-v1",
+  "protocol_id": "variantshift-mavedb-complement-confirmation-v1",
+  "schema_version": 1,
+  "source": "MaveDB public target metadata",
+  "source_git_commit": "cfb61bfc35e7ec52ac3ae3c8739613088605ed35",
+  "source_version": "API snapshot frozen before outcome access",
+  "target_count": 8,
+  "target_sha256": "f5548322f8483ecbad8bf05b583f84e3404ea681e0a935f8824e3347ef067c21",
+  "variant_count": 94981,
+  "variant_sha256": "1e9161ee9e1efd82faec1f0294b62051d5b025541baea216fcd72d1f01727de9"
+}
