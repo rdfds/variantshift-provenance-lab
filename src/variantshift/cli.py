@@ -516,6 +516,15 @@ def build_parser() -> argparse.ArgumentParser:
     panel_freeze.add_argument("config", type=Path)
     panel_freeze.add_argument("output_dir", type=Path)
 
+    mavedb_complement = subparsers.add_parser(
+        "mavedb-freeze-complement-targets",
+        help="Freeze the untouched MaveDB complement from metadata and target sequences only",
+    )
+    mavedb_complement.add_argument("reference", type=Path)
+    mavedb_complement.add_argument("prior_protocol", type=Path)
+    mavedb_complement.add_argument("--output-dir", type=Path, required=True)
+    mavedb_complement.add_argument("--cutoff", default="2026-08-30")
+
     model_preflight = subparsers.add_parser(
         "models-preflight",
         help="Audit model licenses, execution, coverage, parity, and repeatability",
@@ -641,6 +650,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         from .panels import freeze_panel
 
         outputs = freeze_panel(arguments.config, arguments.output_dir)
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "mavedb-freeze-complement-targets":
+        from .confirmation_panels import (
+            MaveDBComplementCriteria,
+            freeze_mavedb_complement_targets,
+        )
+
+        outputs = freeze_mavedb_complement_targets(
+            arguments.reference,
+            arguments.prior_protocol,
+            arguments.output_dir,
+            criteria=MaveDBComplementCriteria(frozen_on_or_before=arguments.cutoff),
+        )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
