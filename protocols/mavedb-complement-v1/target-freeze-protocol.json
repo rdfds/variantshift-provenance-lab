@@ -1,0 +1,70 @@
+{
+  "artifact_sha256": {
+    "audit": "ecf49f75f7a3dc7190d29864fa2e94559d4522e4e5a3c49f815fe2b75fa0aae8",
+    "metadata": "dd0113458367930845110587b4edb8436a48fd27433dad43b25cdc38eba02b2b",
+    "targets": "f5548322f8483ecbad8bf05b583f84e3404ea681e0a935f8824e3347ef067c21"
+  },
+  "created_at_utc": "2026-08-31T02:00:58.407217+00:00",
+  "criteria": {
+    "frozen_on_or_before": "2026-08-30",
+    "maximum_sequence_length": 2500,
+    "minimum_reported_variants": 100,
+    "minimum_sequence_length": 20,
+    "post_reveal_minimum_assayed_positions": 10,
+    "post_reveal_minimum_single_substitutions": 100
+  },
+  "outcome_endpoint_requests": 0,
+  "outcomes_accessed": false,
+  "panel": {
+    "selected_score_sets": 23,
+    "selected_target_sequences": 8,
+    "selected_urns": [
+      "urn:mavedb:00000094-a-2",
+      "urn:mavedb:00000094-a-3",
+      "urn:mavedb:00000659-a-1",
+      "urn:mavedb:00000665-a-1",
+      "urn:mavedb:00000665-b-1",
+      "urn:mavedb:00000665-c-1",
+      "urn:mavedb:00000665-d-1",
+      "urn:mavedb:00001200-a-1",
+      "urn:mavedb:00001200-b-1",
+      "urn:mavedb:00001200-c-1",
+      "urn:mavedb:00001200-d-1",
+      "urn:mavedb:00001200-e-1",
+      "urn:mavedb:00001216-a-1",
+      "urn:mavedb:00001231-a-2",
+      "urn:mavedb:00001234-a-1",
+      "urn:mavedb:00001234-b-1",
+      "urn:mavedb:00001234-c-1",
+      "urn:mavedb:00001234-d-1",
+      "urn:mavedb:00001234-e-1",
+      "urn:mavedb:00001234-f-1",
+      "urn:mavedb:00001234-g-1",
+      "urn:mavedb:00001234-h-1",
+      "urn:mavedb:00001235-a-1"
+    ],
+    "target_only_candidates": 705
+  },
+  "post_reveal_rules": {
+    "direction": "frozen metadata_orientation only; no outcome-based reversal",
+    "duplicate_protein_consequence": "median",
+    "minimum_assayed_positions": 10,
+    "minimum_single_amino_acid_substitutions": 100
+  },
+  "preexisting_exclusions": {
+    "mavedb_development_v1_urns": 45,
+    "proteingym_mavedb_urns": 11,
+    "proteingym_publication_dois": 125
+  },
+  "protocol_id": "variantshift-mavedb-complement-confirmation-v1",
+  "schema_version": 1,
+  "source": {
+    "api": "https://api.mavedb.org/api/v1",
+    "api_version": {
+      "name": "mavedb-api",
+      "version": "2026.2.7.2"
+    },
+    "registry_records": 2805,
+    "registry_sha256": "42496ff974297acf095750c26362455fe5f6fe91a0109f83764e88ee92d1c514"
+  }
+}
