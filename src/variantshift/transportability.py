@@ -10,6 +10,7 @@ from typing import Any
 import joblib
 import numpy as np
 import pandas as pd
+from scipy.integrate import trapezoid
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.impute import SimpleImputer
@@ -502,7 +503,7 @@ def summarize_policy_curves(curves: pd.DataFrame) -> pd.DataFrame:
             {
                 "policy": policy,
                 "risk_coverage_auc": float(
-                    np.trapz(group["failure_rate"], group["coverage"])
+                    trapezoid(group["failure_rate"], group["coverage"])
                 ),
                 "failure_rate_at_50pct": float(at_half["failure_rate"]),
                 "mean_selection_gain_at_50pct": float(at_half["mean_selection_gain_sd"]),
@@ -519,7 +520,7 @@ def _risk_auc(selected: pd.DataFrame, target_column: str) -> float:
     for coverage in coverages:
         count = max(1, int(np.ceil(len(ordered) * coverage)))
         risks.append(float(np.mean(ordered.iloc[:count][target_column] <= 0)))
-    return float(np.trapz(risks, coverages))
+    return float(trapezoid(risks, coverages))
 
 
 def _task_hierarchy(
