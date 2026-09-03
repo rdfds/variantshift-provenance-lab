@@ -1,0 +1,55 @@
+{
+  "best_average_model": "s3f_msa",
+  "best_label_free_comparator": "elastic_net",
+  "config": {
+    "assay_column": "assay_id",
+    "bootstrap_repeats": 10000,
+    "calibration_fraction": 0.2,
+    "categorical_features": [
+      "taxon",
+      "assay_modality",
+      "model_family",
+      "model_modalities",
+      "exposure_status",
+      "structure_available"
+    ],
+    "coverage": 0.9,
+    "group_column": "family_id",
+    "model_column": "model_id",
+    "numeric_features": [
+      "protein_length",
+      "assayed_fraction",
+      "mutated_positions",
+      "msa_depth",
+      "msa_neff",
+      "alignment_coverage",
+      "sequence_identity_to_development",
+      "structure_similarity_to_development",
+      "domain_coverage",
+      "score_dispersion",
+      "score_tail_separation",
+      "missing_fraction",
+      "ensemble_disagreement",
+      "ensemble_agreement"
+    ],
+    "outer_folds": 5,
+    "protein_column": "protein_id",
+    "seed": 20260830,
+    "target_column": "selection_gain_sd",
+    "task_column": "task_id"
+  },
+  "conformal_quantile": 0.6577075605521401,
+  "formal_scope": "one-sided group conformal under exchangeable protein-family tasks",
+  "name": "VariantShift Transportability Score",
+  "parameters": {
+    "l2_regularization": 1.0,
+    "learning_rate": 0.03,
+    "max_iter": 500,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 20
+  },
+  "primary_endpoint": "task-level failure risk-coverage AUC",
+  "primary_failure": "selection_gain_sd <= 0",
+  "schema_version": 1,
+  "training_frame_sha256": "e869dafdc1ecda91ca2323d417ae2aeaff560e8bc0d73f4681d59c2775514d89"
+}
