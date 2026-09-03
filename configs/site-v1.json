@@ -1,0 +1,62 @@
+{
+  "title": "VariantShift",
+  "subtitle": "Audited model transport, calibration, and selective deployment under protein-family shift",
+  "tables": [
+    {
+      "id": "transport_summary",
+      "title": "Transport summary",
+      "description": "Development-only task-level risk and utility. These results are not confirmation evidence.",
+      "kind": "table",
+      "path": "../results/transport-v1/transport-summary.csv"
+    },
+    {
+      "id": "risk_coverage",
+      "title": "Risk–coverage",
+      "description": "Family-held-out selective deployment curves on the development panel.",
+      "kind": "risk_coverage",
+      "path": "../results/transport-v1/risk-coverage.csv"
+    },
+    {
+      "id": "transport_bootstrap",
+      "title": "Transport inference",
+      "description": "Nested family, protein, and assay bootstrap comparison with the strongest development comparator.",
+      "kind": "table",
+      "path": "../results/transport-v1/transport-bootstrap-summary.csv"
+    },
+    {
+      "id": "fold_audit",
+      "title": "Split audit",
+      "description": "Fit, calibration, and test family counts for every outer fold.",
+      "kind": "table",
+      "path": "../results/transport-v1/transport-fold-audit.csv"
+    },
+    {
+      "id": "model_audit",
+      "title": "Model panel",
+      "description": "License and execution readiness; not-run models are not eligible for the primary panel.",
+      "kind": "table",
+      "path": "../results/model-panel-v1/metadata-audit.csv"
+    },
+    {
+      "id": "model_landscape",
+      "title": "ProteinGym models",
+      "description": "Paired development landscape across 195 ProteinGym assays and 169 proteins.",
+      "kind": "table",
+      "path": "../results/proteingym/extended/modern-zero-shot-summary.csv"
+    },
+    {
+      "id": "mavedb_complement",
+      "title": "MaveDB target audit",
+      "description": "Target-only selection audit. No score endpoint was accessed to create this table.",
+      "kind": "table",
+      "path": "../protocols/mavedb-complement-v1/score-set-audit.csv"
+    },
+    {
+      "id": "mavedb_development",
+      "title": "MaveDB development",
+      "description": "Previously revealed MaveDB v1 development results; excluded from confirmation.",
+      "kind": "table",
+      "path": "../results/mavedb-external-v1/bootstrap-summary.csv"
+    }
+  ]
+}
