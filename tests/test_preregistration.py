@@ -1,0 +1,48 @@
+import json
+
+import pandas as pd
+
+from variantshift.outcome_lock import create_outcome_lock, freeze_predictions
+from variantshift.preregistration import build_preregistration_bundle
+
+
+def test_preregistration_is_built_only_from_frozen_artifacts(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / ".git").mkdir()
+    target = tmp_path / "targets.csv"
+    prediction = tmp_path / "predictions.csv"
+    target.write_text("target_id,sequence\nT1,AC\n")
+    prediction.write_text("target_id,variant_id,score\nT1,A1C,0.1\n")
+    method = tmp_path / "method.json"
+    method.write_text(json.dumps({"name": "VariantShift", "features": ["length"]}))
+    protocol = tmp_path / "protocol.json"
+    protocol.write_text(
+        json.dumps(
+            {
+                "protocol_id": "p1",
+                "panel_id": "confirmation",
+                "inclusion": {"minimum_variants": 100},
+                "exclusion": {"outcome_seen": True},
+            }
+        )
+    )
+    model_audit = tmp_path / "model-audit.csv"
+    pd.DataFrame(
+        {
+            "model_id": ["eligible", "failed"],
+            "primary_eligible": [True, False],
+            "exclusion_reason": ["", "parity_failed"],
+        }
+    ).to_csv(model_audit, index=False)
+    lock = tmp_path / "outcome-lock.json"
+    create_outcome_lock(lock, protocol_id="p1", target_artifacts=[target, protocol])
+    freeze_predictions(lock, prediction_artifacts=[prediction], method_artifacts=[method])
+    monkeypatch.setattr("variantshift.preregistration.git_revision", lambda _: "abc123")
+    outputs = build_preregistration_bundle(
+        protocol, lock, model_audit, method, tmp_path / "registration"
+    )
+    payload = json.loads(outputs["registration"].read_text())
+    assert payload["outcome_state"] == "predictions_frozen"
+    assert payload["eligible_models"] == ["eligible"]
+    assert "failed" in payload["excluded_models"]
+    assert outputs["checksums"].read_text().count("\n") == 6
