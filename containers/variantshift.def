@@ -1,0 +1,23 @@
+Bootstrap: docker
+From: python:3.11.9-slim-bookworm
+
+%labels
+    org.opencontainers.image.title VariantShift
+    org.opencontainers.image.version 1.0.0
+    org.opencontainers.image.source https://github.com/rdfds/VariantShift
+
+%files
+    . /opt/variantshift
+
+%post
+    python -m pip install --no-cache-dir /opt/variantshift
+
+%environment
+    export PYTHONHASHSEED=0
+    export LC_ALL=C.UTF-8
+
+%runscript
+    exec variantshift "$@"
+
+%test
+    variantshift --help >/dev/null
