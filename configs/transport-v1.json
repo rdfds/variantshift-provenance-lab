@@ -9,8 +9,6 @@
     "alignment_coverage",
     "sequence_identity_to_development",
     "structure_similarity_to_development",
-    "mean_plddt",
-    "disorder_fraction",
     "domain_coverage",
     "score_dispersion",
     "score_tail_separation",
@@ -24,9 +22,7 @@
     "model_family",
     "model_modalities",
     "exposure_status",
-    "pfam_novel",
-    "sequence_family_novel",
-    "structure_family_novel"
+    "structure_available"
   ],
   "group_column": "family_id",
   "task_column": "task_id",
@@ -37,5 +33,6 @@
   "coverage": 0.9,
   "outer_folds": 5,
   "calibration_fraction": 0.2,
+  "bootstrap_repeats": 10000,
   "seed": 20260830
 }
