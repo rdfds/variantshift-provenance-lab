@@ -151,7 +151,7 @@ def all_single_substitutions(targets: pd.DataFrame) -> pd.DataFrame:
 
 def read_table(path: Path) -> pd.DataFrame:
     path = Path(path)
-    if path.suffix == ".csv":
+    if path.suffix == ".csv" or path.name.endswith(".csv.gz"):
         return pd.read_csv(path)
     if path.suffix in {".jsonl", ".ndjson"}:
         return pd.read_json(path, lines=True)
@@ -166,8 +166,9 @@ def read_table(path: Path) -> pd.DataFrame:
 def write_table(frame: pd.DataFrame, path: Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    if path.suffix == ".csv":
-        frame.to_csv(path, index=False, lineterminator="\n")
+    if path.suffix == ".csv" or path.name.endswith(".csv.gz"):
+        compression = "gzip" if path.name.endswith(".csv.gz") else None
+        frame.to_csv(path, index=False, lineterminator="\n", compression=compression)
     elif path.suffix in {".jsonl", ".ndjson"}:
         frame.to_json(path, orient="records", lines=True)
     elif path.suffix == ".parquet":
