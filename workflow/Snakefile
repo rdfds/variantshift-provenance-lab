@@ -1,0 +1,101 @@
+configfile: "workflow/config.example.yaml"
+
+
+rule all:
+    input:
+        "results/model-panel-v1/metadata-audit.csv",
+        "results/transport-v1/transport-method.json",
+        "results/transport-v1/transport-bootstrap-summary.csv",
+        "site/index.html",
+
+
+rule model_metadata_audit:
+    input:
+        config["model_config"]
+    output:
+        "results/model-panel-v1/metadata-audit.csv"
+    resources:
+        mem_mb=config["resources"]["preflight_mem_mb"]
+    shell:
+        "variantshift models-preflight {input} --output {output}"
+
+
+rule transport_features:
+    input:
+        runs=config["proteingym"]["runs"],
+        eligibility=config["proteingym"]["eligibility"],
+        reference=config["proteingym"]["reference"],
+        families=config["proteingym"]["families"],
+        sequence=config["proteingym"]["sequence_alignments"],
+        structure=config["proteingym"]["structure_alignments"],
+        domains=config["proteingym"]["domain_overlaps"],
+        scores=config["proteingym"]["scores"],
+        crossover=config["proteingym"]["crossover_predictions"],
+    output:
+        "results/transport-v1/development-task-features.csv"
+    threads: 1
+    resources:
+        mem_mb=32000
+    shell:
+        "variantshift transport-features-proteingym {input.runs} {input.eligibility} "
+        "{input.reference} {input.families} {input.sequence} {input.structure} "
+        "{input.domains} {input.scores} --crossover-predictions {input.crossover} "
+        "--output {output}"
+
+
+rule transport_fit:
+    input:
+        features=rules.transport_features.output,
+        config=config["transport_config"],
+    output:
+        method="results/transport-v1/transport-method.json",
+        bundle="results/transport-v1/transport-model.joblib",
+        summary="results/transport-v1/transport-summary.csv",
+        bootstrap="results/transport-v1/transport-bootstrap-summary.csv",
+        risk="results/transport-v1/risk-coverage.csv",
+    threads: 4
+    resources:
+        mem_mb=64000
+    shell:
+        "variantshift transport-fit {input.features} {input.config} --output-dir results/transport-v1"
+
+
+rule site:
+    input:
+        config["site_config"],
+        rules.model_metadata_audit.output,
+        rules.transport_fit.output.method,
+        rules.transport_fit.output.summary,
+        rules.transport_fit.output.bootstrap,
+        rules.transport_fit.output.risk,
+    output:
+        "site/index.html"
+    shell:
+        "variantshift site-build {input[0]} site"
+
+
+# This rule is intentionally not part of `all`. Run it only after executable
+# preflight passes for every model named in confirmation.executable_models.
+rule confirmation_predictions:
+    input:
+        models=config["model_config"],
+        targets=config["confirmation"]["targets"],
+        variants=config["confirmation"]["variants"],
+    output:
+        predictions="artifacts/confirmation/predictions.csv",
+        audit="artifacts/confirmation/prediction-audit.csv",
+        provenance="artifacts/confirmation/model-provenance.json",
+    params:
+        protocol_id=config["confirmation"]["protocol_id"],
+        model_args=" ".join(
+            f"--model {model}" for model in config["confirmation"]["executable_models"]
+        ),
+    threads: 4
+    resources:
+        mem_mb=config["resources"]["prediction_mem_mb"],
+        gpu=config["resources"]["prediction_gpu"],
+        runtime=config["resources"]["prediction_minutes"],
+    shell:
+        "variantshift predict-panel {input.models} {input.targets} {input.variants} "
+        "--protocol-id {params.protocol_id} {params.model_args} "
+        "--output-dir artifacts/confirmation --cache-dir artifacts/model-prediction-cache"
