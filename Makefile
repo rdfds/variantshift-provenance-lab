@@ -1,4 +1,4 @@
-.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-family-clusters proteingym-heldout-family proteingym-structure-clusters proteingym-heldout-structure-family proteingym-curated-families proteingym-heldout-curated-family proteingym-heldout-curated-family-ablation proteingym-modern-zero-shot proteingym-crossover proteingym-figure proteingym-extended-figure proteingym-research-figure mavedb-freeze-external mavedb-download-external mavedb-evaluate-external mavedb-external-figure clean
+.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-family-clusters proteingym-heldout-family proteingym-structure-clusters proteingym-heldout-structure-family proteingym-curated-families proteingym-heldout-curated-family proteingym-heldout-curated-family-ablation proteingym-modern-zero-shot proteingym-crossover proteingym-figure proteingym-extended-figure proteingym-research-figure mavedb-freeze-external mavedb-download-external mavedb-evaluate-external mavedb-external-figure model-preflight transport-features transport-fit site workflow-local workflow-slurm clean
 
 DATASET := data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 PROTEINGYM_DIR := data/raw/proteingym
@@ -111,6 +111,24 @@ mavedb-evaluate-external:
 
 mavedb-external-figure:
 	variantshift mavedb-external-figure $(MAVEDB_PROTOCOL)/protocol.json $(MAVEDB_RESULTS)/assay-audit.csv $(MAVEDB_RESULTS)/bootstrap-summary.csv $(MAVEDB_RESULTS)/protein-metrics.csv --output docs/mavedb-external-validation.svg
+
+model-preflight:
+	variantshift models-preflight configs/model-panel-v1.json --output results/model-panel-v1/metadata-audit.csv
+
+transport-features:
+	variantshift transport-features-proteingym results/proteingym/extended/modern-zero-shot-runs.csv results/proteingym/eligibility.csv $(PROTEINGYM_REFERENCE) results/proteingym/extended/curated-family-assignments.csv results/proteingym/extended/sequence-family-alignments.csv results/proteingym/extended/structure-family-alignments.csv results/proteingym/extended/curated-pfam-domain-overlaps.csv $(PROTEINGYM_SCORES) --crossover-predictions results/proteingym/extended/crossover-heldout-predictions.csv --output results/transport-v1/development-task-features.csv
+
+transport-fit: transport-features
+	variantshift transport-fit results/transport-v1/development-task-features.csv configs/transport-v1.json --output-dir results/transport-v1
+
+site: model-preflight transport-fit
+	variantshift site-build configs/site-v1.json site
+
+workflow-local:
+	snakemake --snakefile workflow/Snakefile --profile workflow/profiles/local
+
+workflow-slurm:
+	snakemake --snakefile workflow/Snakefile --profile workflow/profiles/slurm
 
 clean:
 	rm -rf artifacts .coverage htmlcov .pytest_cache
