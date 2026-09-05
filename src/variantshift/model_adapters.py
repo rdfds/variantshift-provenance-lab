@@ -7,6 +7,7 @@ import json
 import shutil
 import subprocess
 import tempfile
+import time
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -98,10 +99,27 @@ class ModelAdapter(ABC):
         checkpoint = self.specification.checkpoint
         if checkpoint and Path(checkpoint).is_file():
             checkpoint_hash = sha256_file(Path(checkpoint))
+        elif checkpoint:
+            checkpoint_names = [item.strip() for item in checkpoint.split(";") if item.strip()]
+            checkpoint_paths = [
+                Path.home() / ".cache" / "torch" / "hub" / "checkpoints" / f"{name}.pt"
+                for name in checkpoint_names
+            ]
+            if checkpoint_paths and all(path.is_file() for path in checkpoint_paths):
+                member_hashes = [sha256_file(path) for path in checkpoint_paths]
+                checkpoint_hash = hashlib.sha256(
+                    json.dumps(member_hashes, separators=(",", ":")).encode("utf-8")
+                ).hexdigest()
+        container_hash = self.specification.container_digest
+        if self.specification.container_image:
+            container_path = Path(self.specification.container_image)
+            if container_path.is_file():
+                container_hash = sha256_file(container_path)
         return {
             "specification": asdict(self.specification),
             "specification_sha256": self.specification.digest(),
             "checkpoint_sha256": checkpoint_hash,
+            "container_sha256": container_hash,
             "environment": environment_versions(),
         }
 
@@ -266,6 +284,7 @@ def score_panel(
         key = prediction_cache_key(adapter.specification, target, target_variants)
         cached = cache_dir / f"{key}.csv"
         cache_hit = cached.is_file()
+        started = time.perf_counter()
         try:
             if cache_hit:
                 scores = pd.read_csv(cached)
@@ -290,6 +309,7 @@ def score_panel(
             coverage = 0.0
             status = "failed"
             error = f"{type(exception).__name__}: {exception}"
+        elapsed_seconds = time.perf_counter() - started
         audit_rows.append(
             {
                 "model_id": adapter.specification.model_id,
@@ -298,6 +318,10 @@ def score_panel(
                 "cache_key": key,
                 "cache_hit": cache_hit,
                 "coverage": coverage,
+                "elapsed_seconds": elapsed_seconds,
+                "variants_per_second": (
+                    len(target_variants) / elapsed_seconds if elapsed_seconds > 0 else np.nan
+                ),
                 "status": status,
                 "error": error,
             }
@@ -334,6 +358,7 @@ def preflight_models(
 ) -> pd.DataFrame:
     """Apply deterministic metadata, coverage, parity, and repeatability gates."""
     rows: list[dict[str, object]] = []
+    passing_targets_by_model: dict[str, set[str]] = {}
     for specification in specifications:
         row: dict[str, object] = {
             "model_id": specification.model_id,
@@ -348,6 +373,8 @@ def preflight_models(
             "exposure_status": specification.exposure_status,
             "container_image": specification.container_image,
             "container_digest": specification.container_digest,
+            "checkpoint_sha256": specification.checkpoint_sha256,
+            "provenance_complete": False,
             "metadata_complete": bool(
                 specification.source_url
                 and specification.license_name
@@ -358,6 +385,10 @@ def preflight_models(
             "coverage": np.nan,
             "parity_spearman": np.nan,
             "repeat_spearman": np.nan,
+            "elapsed_seconds": np.nan,
+            "variants_per_second": np.nan,
+            "target_count": 0 if targets is None else int(targets["target_id"].nunique()),
+            "targets_at_95pct_coverage": 0,
             "primary_eligible": False,
             "exclusion_reason": "execution_not_requested",
         }
@@ -368,7 +399,7 @@ def preflight_models(
             raise ValueError("Executable preflight requires target and variant tables")
         try:
             adapter = adapter_from_specification(specification)
-            first, _ = score_panel(
+            first, first_audit = score_panel(
                 adapter,
                 targets,
                 variants,
@@ -388,6 +419,28 @@ def preflight_models(
                 suffixes=("_first", "_second"),
             )
             row["coverage"] = float(first["score"].notna().mean())
+            passing_targets = set(
+                first_audit.loc[
+                    first_audit["status"].eq("ok")
+                    & first_audit["coverage"].ge(0.95),
+                    "target_id",
+                ].astype(str)
+            )
+            passing_targets_by_model[specification.model_id] = passing_targets
+            row["targets_at_95pct_coverage"] = len(passing_targets)
+            row["elapsed_seconds"] = float(first_audit["elapsed_seconds"].sum())
+            row["variants_per_second"] = float(
+                len(first) / max(float(row["elapsed_seconds"]), 1e-12)
+            )
+            provenance = adapter.provenance()
+            row["checkpoint_sha256"] = provenance["checkpoint_sha256"]
+            row["container_digest"] = provenance["container_sha256"]
+            checkpoint_complete = (
+                not specification.checkpoint or bool(row["checkpoint_sha256"])
+            )
+            row["provenance_complete"] = bool(
+                checkpoint_complete and row["container_digest"]
+            )
             row["repeat_spearman"] = float(
                 spearmanr(merged["score_first"], merged["score_second"]).statistic
             )
@@ -406,6 +459,7 @@ def preflight_models(
                 and float(row["coverage"]) >= 0.95
                 and float(row["repeat_spearman"]) >= 0.999
                 and parity_passes
+                and bool(row["provenance_complete"])
             )
             row["execution_status"] = "passed"
             row["primary_eligible"] = eligible
@@ -414,7 +468,26 @@ def preflight_models(
             row["execution_status"] = "failed"
             row["exclusion_reason"] = f"{type(exception).__name__}: {exception}"
         rows.append(row)
-    return pd.DataFrame(rows)
+    audit = pd.DataFrame(rows)
+    eligible_ids = audit.loc[audit["primary_eligible"].astype(bool), "model_id"].astype(str)
+    eligible_sets = [passing_targets_by_model.get(model_id, set()) for model_id in eligible_ids]
+    shared_targets = set.intersection(*eligible_sets) if eligible_sets else set()
+    family_count = int(
+        audit.loc[audit["primary_eligible"].astype(bool), "family"].nunique()
+    )
+    feasibility_passed = bool(
+        len(eligible_ids) >= 8 and family_count >= 4 and len(shared_targets) >= 300
+    )
+    audit["primary_eligible_model_count"] = len(eligible_ids)
+    audit["primary_family_count"] = family_count
+    audit["primary_shared_target_count"] = len(shared_targets)
+    audit["primary_shared_targets_sha256"] = (
+        hashlib.sha256("\n".join(sorted(shared_targets)).encode("utf-8")).hexdigest()
+        if shared_targets
+        else ""
+    )
+    audit["feasibility_gate_passed"] = feasibility_passed
+    return audit
 
 
 def write_panel_predictions(
