@@ -126,7 +126,7 @@ def freeze_panel(config_path: Path, output_dir: Path) -> dict[str, Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     outputs = {
         "targets": output_dir / "targets.csv",
-        "variants": output_dir / "variants.csv",
+        "variants": output_dir / str(config.get("variant_filename", "variants.csv")),
         "protocol": output_dir / "protocol.json",
         "schemas": output_dir / "schemas.json",
         "outcome_lock": output_dir / "outcome-lock.json",
