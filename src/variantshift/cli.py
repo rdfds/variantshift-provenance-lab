@@ -525,6 +525,15 @@ def build_parser() -> argparse.ArgumentParser:
     mavedb_complement.add_argument("--output-dir", type=Path, required=True)
     mavedb_complement.add_argument("--cutoff", default="2026-08-30")
 
+    venus_targets = subparsers.add_parser(
+        "venus-freeze-targets",
+        help="Freeze a VenusMutHub target panel without reading mutation files",
+    )
+    venus_targets.add_argument("reference", type=Path)
+    venus_targets.add_argument("mavedb_development_metadata", type=Path)
+    venus_targets.add_argument("--output-dir", type=Path, required=True)
+    venus_targets.add_argument("--workers", type=int, default=12)
+
     model_preflight = subparsers.add_parser(
         "models-preflight",
         help="Audit model licenses, execution, coverage, parity, and repeatability",
@@ -664,6 +673,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             arguments.prior_protocol,
             arguments.output_dir,
             criteria=MaveDBComplementCriteria(frozen_on_or_before=arguments.cutoff),
+        )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "venus-freeze-targets":
+        from .venus_panel import freeze_venusmuthub_targets
+
+        outputs = freeze_venusmuthub_targets(
+            arguments.reference,
+            arguments.mavedb_development_metadata,
+            arguments.output_dir,
+            workers=arguments.workers,
         )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
