@@ -1,0 +1,31 @@
+# Publication readiness audit
+
+Status is based on executable evidence in this repository, not the intended study design.
+
+| Requirement | Status | Evidence or blocker |
+| --- | --- | --- |
+| 195-assay ProteinGym development layer | Complete | Audited results under `results/proteingym/` |
+| Previously revealed MaveDB development layer | Complete | 45 downloaded, 21 direction-eligible assays |
+| Stable public schemas | Complete | Five versioned table contracts and tests |
+| Outcome-access firewall | Complete | One-way lock, hash checks, and leakage tests |
+| Task-level transport pipeline | Complete | Family cross-fit, calibration, policies, 10,000 nested bootstrap |
+| Development scientific gate | Failed | Current calibrated selector loses to the best comparator |
+| Untouched MaveDB target freeze | Complete | 23 score sets, 8 sequences, zero score requests |
+| Human Domainome target freeze | Blocked | No public retained-domain target-only manifest identified |
+| VenusMutHub target freeze | Complete | 126 assays, 91 unique sequences, zero mutation-file requests |
+| Eight executable model configurations | Failed | Metadata audit only; zero configurations have executable parity evidence |
+| Four model/input families | Pending | Configuration exists, execution evidence does not |
+| 300 shared confirmation targets | Pending | MaveDB plus VenusMutHub provide 99; Domainome remains blocked |
+| OSF preregistration | Intentionally pending | Cannot publish before predictions and final method are frozen |
+| Confirmation outcome reveal | Locked | Prohibited before public registration |
+| Zenodo 1.0 DOI | Pending | Create only after final immutable release candidate |
+
+## Venue interpretation
+
+No top-journal submission is justified at the current state. The software and development study are
+substantial, but the central selector does not yet pass its internal development gate and the broad
+confirmation/model panel has not run. If the declared confirmation gates pass, a Nature Methods
+Analysis becomes plausible but remains highly selective. Strong broad external findings with a
+less decisive method fit Nature Communications; a human-genomics-centered result may fit Genome
+Biology. A rigorous negative benchmark remains suitable for Bioinformatics or PLOS Computational
+Biology.
