@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 from variantshift.outcome_lock import (
+    assert_evaluation_artifacts_locked,
     assert_outcomes_accessible,
     assert_target_only,
     create_outcome_lock,
@@ -38,6 +39,20 @@ def test_confirmation_lock_is_one_way_and_requires_public_registration(tmp_path)
     assert_outcomes_accessible(lock)
     record_outcome_reveal(lock, outcome_artifacts=[outcome])
     assert read_outcome_lock(lock)["state"] == "revealed"
+    assert_evaluation_artifacts_locked(
+        lock,
+        prediction_artifact=prediction,
+        method_artifact=method,
+        outcome_artifact=outcome,
+    )
+    prediction.write_text("target_id,variant_id,score\nT1,A1C,0.2\n")
+    with pytest.raises(ValueError, match="not the frozen"):
+        assert_evaluation_artifacts_locked(
+            lock,
+            prediction_artifact=prediction,
+            method_artifact=method,
+            outcome_artifact=outcome,
+        )
 
 
 def test_target_only_firewall_rejects_outcome_columns() -> None:
