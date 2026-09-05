@@ -3,8 +3,9 @@
   "panel_id": "venusmuthub-v1",
   "source": "VenusMutHub small-scale experimental benchmark",
   "source_version": "Repository snapshot frozen before outcome access",
-  "adapter": "fasta",
-  "target_input": "../../data/confirmation-targets/venusmuthub-v1/wild_type.fasta",
+  "adapter": "target_table",
+  "target_input": "../../protocols/venusmuthub-v1/targets.csv",
+  "variant_filename": "variants.csv.gz",
   "exposure_policy": "model-specific clean, possible, known, or undocumented",
   "inclusion": {
     "variant_type": "single amino-acid substitution",
