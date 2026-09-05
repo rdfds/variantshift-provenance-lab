@@ -5,6 +5,7 @@ type: software
 authors:
   - family-names: Variankaval
     given-names: Rohan
-version: 0.5.0
+version: 1.0.0
+date-released: 2026-08-30
 repository-code: "https://github.com/rdfds/variantshift-provenance-lab"
 license: MIT
