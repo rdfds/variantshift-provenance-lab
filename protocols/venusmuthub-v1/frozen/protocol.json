@@ -1,0 +1,24 @@
+{
+  "exclusion": {
+    "ambiguous_effect_direction": true,
+    "exact_publication_overlap_with_development": true,
+    "exact_sequence_overlap_with_development": true
+  },
+  "exposure_policy": "model-specific clean, possible, known, or undocumented",
+  "inclusion": {
+    "effect_direction_resolved_without_scores": true,
+    "reference_sequence_resolved": true,
+    "variant_type": "single amino-acid substitution"
+  },
+  "outcome_status": "not_accessed",
+  "panel_id": "venusmuthub-v1",
+  "protocol_id": "variantshift-venusmuthub-confirmation-v1",
+  "schema_version": 1,
+  "source": "VenusMutHub small-scale experimental benchmark",
+  "source_git_commit": "ab2819fe3a9b8732423fa8a0e01ab31d0ff4bf87",
+  "source_version": "Repository snapshot frozen before outcome access",
+  "target_count": 91,
+  "target_sha256": "6384809e028e9ad221244870852a43b6d6d9a61e88b1c54d715c4aa707d2e733",
+  "variant_count": 737713,
+  "variant_sha256": "32190f8ad2ff25e4b2faeecebfdc2af718a93726cdf2bb2da924ed51f3c5873d"
+}

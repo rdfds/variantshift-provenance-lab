@@ -1,0 +1,99 @@
+{
+  "schema_catalog_version": 1,
+  "schemas": {
+    "outcomes-v1": {
+      "required": [
+        "protocol_id",
+        "panel_id",
+        "dataset_id",
+        "assay_id",
+        "target_id",
+        "variant_id",
+        "effect",
+        "direction"
+      ],
+      "unique": [
+        "protocol_id",
+        "panel_id",
+        "dataset_id",
+        "assay_id",
+        "target_id",
+        "variant_id"
+      ],
+      "version": 1
+    },
+    "predictions-v1": {
+      "required": [
+        "protocol_id",
+        "panel_id",
+        "target_id",
+        "variant_id",
+        "model_id",
+        "model_version",
+        "score",
+        "status"
+      ],
+      "unique": [
+        "protocol_id",
+        "panel_id",
+        "target_id",
+        "variant_id",
+        "model_id"
+      ],
+      "version": 1
+    },
+    "targets-v1": {
+      "required": [
+        "panel_id",
+        "target_id",
+        "protein_id",
+        "sequence",
+        "sequence_sha256",
+        "sequence_length"
+      ],
+      "unique": [
+        "panel_id",
+        "target_id"
+      ],
+      "version": 1
+    },
+    "task-metrics-v1": {
+      "required": [
+        "protocol_id",
+        "panel_id",
+        "dataset_id",
+        "assay_id",
+        "target_id",
+        "protein_id",
+        "family_id",
+        "model_id",
+        "selection_gain_sd"
+      ],
+      "unique": [
+        "protocol_id",
+        "panel_id",
+        "dataset_id",
+        "assay_id",
+        "target_id",
+        "model_id"
+      ],
+      "version": 1
+    },
+    "variants-v1": {
+      "required": [
+        "panel_id",
+        "target_id",
+        "variant_id",
+        "position",
+        "reference",
+        "alternate"
+      ],
+      "unique": [
+        "panel_id",
+        "target_id",
+        "variant_id"
+      ],
+      "version": 1
+    }
+  }
+}
