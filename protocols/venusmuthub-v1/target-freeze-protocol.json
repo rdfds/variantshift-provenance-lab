@@ -1,0 +1,31 @@
+{
+  "artifact_sha256": {
+    "assay_audit": "cf6bf1802aa20aebadd2ae129b0d59d3fdbf08c1b8036d3d6016574bd50742e1",
+    "doi_snapshot": "3edd2e4ea3677b1679d5609c588231a602617fb62aa71ca6dbac5b1ff895e201",
+    "sequence_resolution": "e235d23c17efcb096943d680b21c20387b53c0d1393aa060cd85cab2fc034594",
+    "source_tree": "b3d2b661a903e559a0cb9ea78d0b7bb31495a5167c83088ce892e19dd6aa30e5",
+    "targets": "e2e49a3a2f26f639ec69c17d748094c501f9be7728e90198118e9c51f4ffa781"
+  },
+  "created_at_utc": "2026-08-31T02:14:51.143106+00:00",
+  "mutation_file_requests": 0,
+  "outcomes_accessed": false,
+  "panel": {
+    "selected_assays": 126,
+    "selected_target_sequences": 91,
+    "source_assays": 796
+  },
+  "protocol_id": "variantshift-venusmuthub-confirmation-v1",
+  "schema_version": 1,
+  "selection": {
+    "overlap": "exact sequence and DOI absent from ProteinGym and MaveDB development",
+    "post_reveal": "retain only valid single substitutions matching the frozen sequence",
+    "publication": "DOI required and absent from development",
+    "sequence": "unambiguous RCSB protein entity or canonical UniProt sequence",
+    "source": "single_mutant path metadata only"
+  },
+  "source": {
+    "dataset": "AI4Protein/VenusMutHub",
+    "revision": "08a27d07b5764af58f99d26734d096ebe2a5f9cf",
+    "tree_url": "https://huggingface.co/api/datasets/AI4Protein/VenusMutHub/tree/main/single_mutant?recursive=true&expand=false&limit=1000"
+  }
+}

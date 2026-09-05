@@ -1,0 +1,4808 @@
+[
+  {
+    "oid": "c284e2750bdb5e9d85fd84aafc8a6c86c81e5a4b",
+    "path": "single_mutant/activity",
+    "size": 0,
+    "type": "directory"
+  },
+  {
+    "oid": "d34481396a1ef74649971f4ba96311c470e4ede0",
+    "path": "single_mutant/dti_binding",
+    "size": 0,
+    "type": "directory"
+  },
+  {
+    "oid": "6a6ce89081859898ad06b57c753c8d1000e5c791",
+    "path": "single_mutant/ppi_binding",
+    "size": 0,
+    "type": "directory"
+  },
+  {
+    "oid": "64956e9cd181a5137760fafa6a7f781f990a1b00",
+    "path": "single_mutant/selectivity",
+    "size": 0,
+    "type": "directory"
+  },
+  {
+    "oid": "250c3ec79dab6c93b18b6a7c4245db458fb68353",
+    "path": "single_mutant/stability",
+    "size": 0,
+    "type": "directory"
+  },
+  {
+    "oid": "1f003745ad45b35d278ca335d6681ffb3e05bfae",
+    "path": "single_mutant/activity/3FCR_activity-substrate-1.csv",
+    "size": 3796,
+    "type": "file"
+  },
+  {
+    "oid": "da57e7efdee21ce04e110b23ae3e79d6e53f5675",
+    "path": "single_mutant/activity/3FCR_activity-substrate-2.csv",
+    "size": 3800,
+    "type": "file"
+  },
+  {
+    "oid": "a3c88ccd1b2c88276eb08047efa6181ef84a4e0c",
+    "path": "single_mutant/activity/5A71_kcat.csv",
+    "size": 2016,
+    "type": "file"
+  },
+  {
+    "oid": "50c1e4fe62fede1ffc8b3c79420b9284c22aed51",
+    "path": "single_mutant/activity/5A71_kcatkm.csv",
+    "size": 2003,
+    "type": "file"
+  },
+  {
+    "oid": "9fc6521672b443ca86aa127780417e055f070521",
+    "path": "single_mutant/activity/6JXG_activity.csv",
+    "size": 5167,
+    "type": "file"
+  },
+  {
+    "oid": "8eb14b8ae3ff1e0b5aa4499f79a823a66121791d",
+    "path": "single_mutant/activity/7LOO_activity.csv",
+    "size": 6764,
+    "type": "file"
+  },
+  {
+    "oid": "2c3958ce28d05dcdf7b244f583967fe2f3f1baa0",
+    "path": "single_mutant/activity/7YVR_activity.csv",
+    "size": 41100,
+    "type": "file"
+  },
+  {
+    "oid": "cfcc7925527df9f96195a8b96c39cfe5ea1696b6",
+    "path": "single_mutant/activity/A0A059TC02_activity.csv",
+    "size": 1760,
+    "type": "file"
+  },
+  {
+    "oid": "1908ce0409ec8ff4797799811e438bf3af7dcc8e",
+    "path": "single_mutant/activity/A0A0H2V871_DGE_activity.csv",
+    "size": 4336,
+    "type": "file"
+  },
+  {
+    "oid": "eb5408680c938b5ff257244f8006c80903eeaadf",
+    "path": "single_mutant/activity/A0A0H2V871_Ent_activity.csv",
+    "size": 4332,
+    "type": "file"
+  },
+  {
+    "oid": "f47c715fafd4b057a99f47672bc03b7dc9216e18",
+    "path": "single_mutant/activity/A0A0I9QGZ2_kcat.csv",
+    "size": 3428,
+    "type": "file"
+  },
+  {
+    "oid": "35e055536f93c57745ac616793be11282f498793",
+    "path": "single_mutant/activity/A0A0I9QGZ2_kcatkm.csv",
+    "size": 3421,
+    "type": "file"
+  },
+  {
+    "oid": "68fd5e7f543b6f8dec2f28dc5571dea533f2a59a",
+    "path": "single_mutant/activity/A0A0I9QGZ2_km.csv",
+    "size": 3465,
+    "type": "file"
+  },
+  {
+    "oid": "5c3877e9763dd0450e9a18f6ca387b31506c6e50",
+    "path": "single_mutant/activity/A0A0K8P6T7_TPA_activity.csv",
+    "size": 4656,
+    "type": "file"
+  },
+  {
+    "oid": "e5c3f18bec1e268cffa17feb35d140eee56ce53b",
+    "path": "single_mutant/activity/A0A0K8P6T7_activity.csv",
+    "size": 4259,
+    "type": "file"
+  },
+  {
+    "oid": "7c46e19dce1a16037ee88285145ccb937718172f",
+    "path": "single_mutant/activity/A0A0K8P8E7_activity.csv",
+    "size": 11064,
+    "type": "file"
+  },
+  {
+    "oid": "e7f25c5ef35d600162ed65ad4286ed5ac1ec7161",
+    "path": "single_mutant/activity/A0A0P0ZBS7_activity.csv",
+    "size": 2358,
+    "type": "file"
+  },
+  {
+    "oid": "42f9a71988339c680bc01d6ed9c96dd2ded66e48",
+    "path": "single_mutant/activity/A0MGZ7_substrate_VII_activity.csv",
+    "size": 9508,
+    "type": "file"
+  },
+  {
+    "oid": "bd9cff4a7fd0f01f8cf7dfad34576accc4d30a13",
+    "path": "single_mutant/activity/A0MGZ7_substrate_VI_activity.csv",
+    "size": 9498,
+    "type": "file"
+  },
+  {
+    "oid": "dbc846a6db89f04258b6ae310f7ffd40c8bc3eaa",
+    "path": "single_mutant/activity/A2QAN3_kcat.csv",
+    "size": 5125,
+    "type": "file"
+  },
+  {
+    "oid": "acc55608967f91f685e2aec3b92721199a59348c",
+    "path": "single_mutant/activity/A2QAN3_kcatkm.csv",
+    "size": 5126,
+    "type": "file"
+  },
+  {
+    "oid": "e839b765d7f3e0d61690589f15ae182072652752",
+    "path": "single_mutant/activity/A2RJT9_DCIP_activity.csv",
+    "size": 3582,
+    "type": "file"
+  },
+  {
+    "oid": "7fb76c0af1aa580c03f3100dc4a86a63fa54a8a2",
+    "path": "single_mutant/activity/A2RJT9_oxygen_activity.csv",
+    "size": 3577,
+    "type": "file"
+  },
+  {
+    "oid": "74fde95492d70de741e4a6a099f87f3ced8d6153",
+    "path": "single_mutant/activity/A4QAA6_activity.csv",
+    "size": 2018,
+    "type": "file"
+  },
+  {
+    "oid": "5150df262635fef754f812592b42e8b5db508d0c",
+    "path": "single_mutant/activity/A4XGA6_M5_Epimerization_activity.csv",
+    "size": 2850,
+    "type": "file"
+  },
+  {
+    "oid": "d8d19a31bd3afa887834148c9234603c337fcc61",
+    "path": "single_mutant/activity/A4XGA6_M5_Isomerization_activity.csv",
+    "size": 2850,
+    "type": "file"
+  },
+  {
+    "oid": "8da9216680147165d24a6e7e74aa4fb284d2f845",
+    "path": "single_mutant/activity/ACY56506_1_km.csv",
+    "size": 1586,
+    "type": "file"
+  },
+  {
+    "oid": "4c0889341aae10860050093e7099d9f20868a762",
+    "path": "single_mutant/activity/AHW42593_1_activity.csv",
+    "size": 2728,
+    "type": "file"
+  },
+  {
+    "oid": "279fbef8b62e34edcb2b3a80be72a8a49a431dea",
+    "path": "single_mutant/activity/AHZ56660_1_kcat.csv",
+    "size": 1860,
+    "type": "file"
+  },
+  {
+    "oid": "2c236ae9e1de14e3506c837c6c3ff9b787f8c2ae",
+    "path": "single_mutant/activity/AHZ56660_1_km.csv",
+    "size": 1862,
+    "type": "file"
+  },
+  {
+    "oid": "59a0a08b06a5f7fbd2d2bc93e8024113243e80cd",
+    "path": "single_mutant/activity/ALB07219_1_activity.csv",
+    "size": 1905,
+    "type": "file"
+  },
+  {
+    "oid": "85caae8a7b9bd4b1b250c6543171a8bd43436449",
+    "path": "single_mutant/activity/BAA88830_1_activity.csv",
+    "size": 7959,
+    "type": "file"
+  },
+  {
+    "oid": "f9e4fb1237ac185b1131ddc92f2f075a20c7f7df",
+    "path": "single_mutant/activity/BAA_activity.csv",
+    "size": 4078,
+    "type": "file"
+  },
+  {
+    "oid": "d051475e4ffd017d9bde6adadb913d4192134ea0",
+    "path": "single_mutant/activity/C6DAH4_activity.csv",
+    "size": 3833,
+    "type": "file"
+  },
+  {
+    "oid": "e46bcde7e542668dd7210d172342f8c94e70eb71",
+    "path": "single_mutant/activity/CCA64021_1_activity.csv",
+    "size": 5635,
+    "type": "file"
+  },
+  {
+    "oid": "bd1a9aca294029f6dee21e0770909d3a20e85e6e",
+    "path": "single_mutant/activity/CQR83192_1_activity.csv",
+    "size": 3193,
+    "type": "file"
+  },
+  {
+    "oid": "9d5d200724d78c02e2241f0b4a71fdc6fa390ebe",
+    "path": "single_mutant/activity/CQR83192_1_kcat.csv",
+    "size": 3194,
+    "type": "file"
+  },
+  {
+    "oid": "9412a72c07fb324844fa072378150cc238df4f78",
+    "path": "single_mutant/activity/D4Z2G1_activity.csv",
+    "size": 3107,
+    "type": "file"
+  },
+  {
+    "oid": "248f5d7d8ec4cff79893585f40ec6692766c6c6e",
+    "path": "single_mutant/activity/E8RUP5_activity.csv",
+    "size": 4268,
+    "type": "file"
+  },
+  {
+    "oid": "0c949feb000d2f60c494729f3583a86b8d978dc3",
+    "path": "single_mutant/activity/I6XD65_NAM_activity.csv",
+    "size": 2005,
+    "type": "file"
+  },
+  {
+    "oid": "ab1811ee52bb3d9872a6526b164cecba98b239be",
+    "path": "single_mutant/activity/I6XD65_PZA_activity.csv",
+    "size": 2001,
+    "type": "file"
+  },
+  {
+    "oid": "8badb4cca50bbf31109a1ce6e9e1ee760fd0741f",
+    "path": "single_mutant/activity/KdAKR_activity.csv",
+    "size": 2940,
+    "type": "file"
+  },
+  {
+    "oid": "dd6199e73c4a144e35d8ac8c189445f0129033f4",
+    "path": "single_mutant/activity/KmAKR_variant_3_activity.csv",
+    "size": 6139,
+    "type": "file"
+  },
+  {
+    "oid": "eb164089d02ee9f00d9dfbd83bfa238b4ff8eef9",
+    "path": "single_mutant/activity/MN539024_1_km.csv",
+    "size": 1989,
+    "type": "file"
+  },
+  {
+    "oid": "c1d148ada3122ee17a5267de13944adc88e5278f",
+    "path": "single_mutant/activity/MT038422_1_activity_hydrolysis.csv",
+    "size": 4053,
+    "type": "file"
+  },
+  {
+    "oid": "102a43f68b865dc29a0f2ba1eac90e1bc4c403aa",
+    "path": "single_mutant/activity/MT038422_1_activity_transpeptidation.csv",
+    "size": 4060,
+    "type": "file"
+  },
+  {
+    "oid": "816b485c2f4abeba22708e141b9cf1b42f052fe4",
+    "path": "single_mutant/activity/MT038422_1_kcat.csv",
+    "size": 4059,
+    "type": "file"
+  },
+  {
+    "oid": "a23a556a1b1968e2de6d7378c14361e9a44d55f5",
+    "path": "single_mutant/activity/MT038422_1_kcatkm.csv",
+    "size": 4062,
+    "type": "file"
+  },
+  {
+    "oid": "aecb9b446d20c8b3ad91e03c813ac6f462d5824c",
+    "path": "single_mutant/activity/MT038422_1_km.csv",
+    "size": 4113,
+    "type": "file"
+  },
+  {
+    "oid": "7f7c2c1420d0e6642e362a8c52d31fb84dfa1384",
+    "path": "single_mutant/activity/O06543_activity.csv",
+    "size": 10808,
+    "type": "file"
+  },
+  {
+    "oid": "7739b334904bfba98936f5510c3b21baf4fef20f",
+    "path": "single_mutant/activity/O52063_activity.csv",
+    "size": 6258,
+    "type": "file"
+  },
+  {
+    "oid": "2b0dd95dd5fd08535b8713a352c99f47e4b091ac",
+    "path": "single_mutant/activity/O54728_activity.csv",
+    "size": 19042,
+    "type": "file"
+  },
+  {
+    "oid": "325f7297b01926bc9c989e16f59c328b0e4bf46e",
+    "path": "single_mutant/activity/O75355_ADPase_activity.csv",
+    "size": 6523,
+    "type": "file"
+  },
+  {
+    "oid": "6878dc8fe6ab016e325e4a968f33537b47891935",
+    "path": "single_mutant/activity/O75355_ATPase_activity.csv",
+    "size": 6526,
+    "type": "file"
+  },
+  {
+    "oid": "167b5cacba43b0373998b3c6ff7bc31dd69c41bc",
+    "path": "single_mutant/activity/O94220_activity.csv",
+    "size": 6886,
+    "type": "file"
+  },
+  {
+    "oid": "0d3d8a752448806b72481a86c897ae50f2384013",
+    "path": "single_mutant/activity/P00813_activity.csv",
+    "size": 6021,
+    "type": "file"
+  },
+  {
+    "oid": "b4d50da1532af5b7335accc9012191d4483c81a7",
+    "path": "single_mutant/activity/P05030_activity.csv",
+    "size": 13961,
+    "type": "file"
+  },
+  {
+    "oid": "8617e7ac890f972dfbd227a9974d2b2c109ae987",
+    "path": "single_mutant/activity/P05150_activity.csv",
+    "size": 7721,
+    "type": "file"
+  },
+  {
+    "oid": "6e595a2f7416b3de43c77e6345fa224b94f86b6f",
+    "path": "single_mutant/activity/P06802_activity.csv",
+    "size": 10110,
+    "type": "file"
+  },
+  {
+    "oid": "411b0655d49388ea2ac77d437f153505c1e17ac8",
+    "path": "single_mutant/activity/P0A2M9_kcatkm.csv",
+    "size": 4065,
+    "type": "file"
+  },
+  {
+    "oid": "ea5cfb9a558db1987025e4ec4e1af24864ec2d04",
+    "path": "single_mutant/activity/P0A2M9_vmax.csv",
+    "size": 4079,
+    "type": "file"
+  },
+  {
+    "oid": "62d29c7be58b6f1a0496086c9c8555a8b8db1359",
+    "path": "single_mutant/activity/P0A873_vmax.csv",
+    "size": 12552,
+    "type": "file"
+  },
+  {
+    "oid": "e55890cda9f3cd3e6e7c9c4267a1c1b5a6a3c1b0",
+    "path": "single_mutant/activity/P0A8I5_kcat.csv",
+    "size": 1284,
+    "type": "file"
+  },
+  {
+    "oid": "45ec5f508c7eb4f04ba0e7bed63364ea2941780d",
+    "path": "single_mutant/activity/P0ADG7_kcat.csv",
+    "size": 6027,
+    "type": "file"
+  },
+  {
+    "oid": "f6381f2d4d0db716e3a67a7c6ee458543582a0f2",
+    "path": "single_mutant/activity/P15042_1_activity.csv",
+    "size": 10940,
+    "type": "file"
+  },
+  {
+    "oid": "6bd0e66e1a86a0283cf63a5dcc14d5008725e5cc",
+    "path": "single_mutant/activity/P15042_2_activity.csv",
+    "size": 10278,
+    "type": "file"
+  },
+  {
+    "oid": "d0c1ded8db3fd93897ae7af6f1f687459c7c207f",
+    "path": "single_mutant/activity/P24058_vmax.csv",
+    "size": 10077,
+    "type": "file"
+  },
+  {
+    "oid": "a039be8bbe4e6ded49bb5c0d8d4c6bd79926e4f7",
+    "path": "single_mutant/activity/P25745_activity.csv",
+    "size": 7616,
+    "type": "file"
+  },
+  {
+    "oid": "e30fd9af935e8fa81175b66937b2dc5a73a7b37d",
+    "path": "single_mutant/activity/P27346_activity_PTO.csv",
+    "size": 2216,
+    "type": "file"
+  },
+  {
+    "oid": "ebbbbf5435463827efb7de0ea7e5d0a750cd450f",
+    "path": "single_mutant/activity/P27346_activity_aKG.csv",
+    "size": 2220,
+    "type": "file"
+  },
+  {
+    "oid": "08e231af9d358b9c18aa35506eac1593e845aeab",
+    "path": "single_mutant/activity/P32738_kcat.csv",
+    "size": 7208,
+    "type": "file"
+  },
+  {
+    "oid": "49942bcf6eb11fea4771ce76bf22171f920745f3",
+    "path": "single_mutant/activity/P33018_kcatkm.csv",
+    "size": 2929,
+    "type": "file"
+  },
+  {
+    "oid": "0b185a9ba6e5c144af2f9d5febd057adf0b657cd",
+    "path": "single_mutant/activity/P33018_vmax.csv",
+    "size": 2929,
+    "type": "file"
+  },
+  {
+    "oid": "6c38dd43101760cd82e0fe319907b813c411508f",
+    "path": "single_mutant/activity/P36136_kcat.csv",
+    "size": 2852,
+    "type": "file"
+  },
+  {
+    "oid": "950842069ea31466b0fb3a0853a045e2d3e62738",
+    "path": "single_mutant/activity/P36136_vmax.csv",
+    "size": 2852,
+    "type": "file"
+  },
+  {
+    "oid": "0843426ba8fc1890b3522f24c143c45cc0612db4",
+    "path": "single_mutant/activity/P46544_activity.csv",
+    "size": 8295,
+    "type": "file"
+  },
+  {
+    "oid": "9707ac3e9b63bb89b6c93589c257b361b667d5dd",
+    "path": "single_mutant/activity/P46849_activity.csv",
+    "size": 4219,
+    "type": "file"
+  },
+  {
+    "oid": "c189ab66c793143eb58897440f38cb2f4c5e8a71",
+    "path": "single_mutant/activity/P49768_1_activity.csv",
+    "size": 5298,
+    "type": "file"
+  },
+  {
+    "oid": "91add5325461dcbcc0014da7e7d63fa260df10f5",
+    "path": "single_mutant/activity/P51697_activity.csv",
+    "size": 3007,
+    "type": "file"
+  },
+  {
+    "oid": "3884c73d9dcfb274d4769ce3f8bf706c603bc5a5",
+    "path": "single_mutant/activity/P52061_kcat.csv",
+    "size": 5241,
+    "type": "file"
+  },
+  {
+    "oid": "60efc3ef295fbb807e66a2e21683da30ad649da3",
+    "path": "single_mutant/activity/P58004_kcat.csv",
+    "size": 4934,
+    "type": "file"
+  },
+  {
+    "oid": "9016b8424302f7ee1206481b021aed1d4bdc116b",
+    "path": "single_mutant/activity/P73574_activity.csv",
+    "size": 1841,
+    "type": "file"
+  },
+  {
+    "oid": "5b6359d86b48a1b1e8b33ac9fe863d30cbd4bedc",
+    "path": "single_mutant/activity/P73832_activity.csv",
+    "size": 3430,
+    "type": "file"
+  },
+  {
+    "oid": "4a3044caf0b32b55be290268df38593c397c3682",
+    "path": "single_mutant/activity/P77555_kcat.csv",
+    "size": 4366,
+    "type": "file"
+  },
+  {
+    "oid": "c58ebfedcb9db345e7cf80efc23f5cffa6e79731",
+    "path": "single_mutant/activity/P77555_kcatkm.csv",
+    "size": 4360,
+    "type": "file"
+  },
+  {
+    "oid": "88221b6c58a0a172cbf2f7937b795020492f8bee",
+    "path": "single_mutant/activity/P78330_activity.csv",
+    "size": 3080,
+    "type": "file"
+  },
+  {
+    "oid": "14c5ef70d866a41e8182618d77d8fdcd90a78ed2",
+    "path": "single_mutant/activity/P80036_activity.csv",
+    "size": 6718,
+    "type": "file"
+  },
+  {
+    "oid": "439579b6f82452099dbfc628ef272b3c4afff305",
+    "path": "single_mutant/activity/P95480_vmax.csv",
+    "size": 3323,
+    "type": "file"
+  },
+  {
+    "oid": "84124825be8bcab19cd5acafe72bbf7834a6d383",
+    "path": "single_mutant/activity/P9WHH9_DTNB_activity.csv",
+    "size": 10973,
+    "type": "file"
+  },
+  {
+    "oid": "99f4c10bd6eebface2d0dd42da9fdb9d5dcd08e6",
+    "path": "single_mutant/activity/P9WHH9_LDH_activity.csv",
+    "size": 10969,
+    "type": "file"
+  },
+  {
+    "oid": "639695bb077114629c5f5fa87cdf47991402de9d",
+    "path": "single_mutant/activity/P9WHH9_PDH_activity.csv",
+    "size": 10971,
+    "type": "file"
+  },
+  {
+    "oid": "3070de85c08f6b6abafb39ceea48f7a4062a20b8",
+    "path": "single_mutant/activity/Q02353_N_deacetylase_activity.csv",
+    "size": 8062,
+    "type": "file"
+  },
+  {
+    "oid": "ffdb28a4bf1d23213d1bda40816918259c64042e",
+    "path": "single_mutant/activity/Q02353_N_sulfotransferase_activity.csv",
+    "size": 8071,
+    "type": "file"
+  },
+  {
+    "oid": "d6c2ca662c18147c52c55ec9e4cbdf4b7e345426",
+    "path": "single_mutant/activity/Q02890_activity.csv",
+    "size": 16893,
+    "type": "file"
+  },
+  {
+    "oid": "92458e35b9e9e92d1ee675e35e3170b337b34e53",
+    "path": "single_mutant/activity/Q03154_kcat.csv",
+    "size": 4661,
+    "type": "file"
+  },
+  {
+    "oid": "cf4803fb018ec3bea7f6ddd7374dd9b2e2da4a73",
+    "path": "single_mutant/activity/Q06135_activity.csv",
+    "size": 7375,
+    "type": "file"
+  },
+  {
+    "oid": "125348debe04ad155c5992680da6cd7adc859b4e",
+    "path": "single_mutant/activity/Q071N0_kcatkm.csv",
+    "size": 4885,
+    "type": "file"
+  },
+  {
+    "oid": "608c2b128f5be8fb379d4cc23ad9fd1d798ea34e",
+    "path": "single_mutant/activity/Q14RS0_activity.csv",
+    "size": 1783,
+    "type": "file"
+  },
+  {
+    "oid": "b5c831d7e505c6686f1c1cb7d43445ac7da1c1c7",
+    "path": "single_mutant/activity/Q16769_kcat.csv",
+    "size": 4883,
+    "type": "file"
+  },
+  {
+    "oid": "9d8eb131f3e523d56cd283a9181d8a9c27dfc2ea",
+    "path": "single_mutant/activity/Q16774_kcat.csv",
+    "size": 1707,
+    "type": "file"
+  },
+  {
+    "oid": "82035826162e4d0f46a3a30671c9aca0a2b71968",
+    "path": "single_mutant/activity/Q2FHP2_activity.csv",
+    "size": 1930,
+    "type": "file"
+  },
+  {
+    "oid": "e706f10f734d452ac90d786568fa3edffcd4a4ec",
+    "path": "single_mutant/activity/Q2FV54_activity.csv",
+    "size": 4953,
+    "type": "file"
+  },
+  {
+    "oid": "73bb14b660d3ae87c9de9a2742f78be072ae9b71",
+    "path": "single_mutant/activity/Q3YW59_activity.csv",
+    "size": 11162,
+    "type": "file"
+  },
+  {
+    "oid": "7d927ecb7745da42ea935aa574d79295ebce3832",
+    "path": "single_mutant/activity/Q44244_NSAR_kcat.csv",
+    "size": 3830,
+    "type": "file"
+  },
+  {
+    "oid": "22452dd002ff706ee78c4fa62ac4140374dc3885",
+    "path": "single_mutant/activity/Q44244_OSBS_kcat.csv",
+    "size": 3826,
+    "type": "file"
+  },
+  {
+    "oid": "7696e01435f0100db5bbfef7a9ed970031bab7d7",
+    "path": "single_mutant/activity/Q4KAC6_kcat.csv",
+    "size": 2185,
+    "type": "file"
+  },
+  {
+    "oid": "03933b42294ca487a07bcb23d8f84f5164fe4153",
+    "path": "single_mutant/activity/Q4KAC6_kcatkm.csv",
+    "size": 2183,
+    "type": "file"
+  },
+  {
+    "oid": "e687026cbf2c9f5e7b06b31e383e4896295be101",
+    "path": "single_mutant/activity/Q4KAC6_km.csv",
+    "size": 2278,
+    "type": "file"
+  },
+  {
+    "oid": "805fcee052ba7cceb30e6618850c79e6a2e2947a",
+    "path": "single_mutant/activity/Q51559_activity.csv",
+    "size": 32534,
+    "type": "file"
+  },
+  {
+    "oid": "e5de28253eb641caf7338e72bb9507512ecccec7",
+    "path": "single_mutant/activity/Q57261_activity.csv",
+    "size": 2901,
+    "type": "file"
+  },
+  {
+    "oid": "91bfc4bc49c7d7db9ed179490c7fb5064e2ef4c1",
+    "path": "single_mutant/activity/Q58431_activity.csv",
+    "size": 2832,
+    "type": "file"
+  },
+  {
+    "oid": "e1de2c48f4f2ab1087cf8bbc23b5d7321e2e3e6a",
+    "path": "single_mutant/activity/Q65EX3_activity.csv",
+    "size": 4459,
+    "type": "file"
+  },
+  {
+    "oid": "099b72adc99237eda43ebea69fb293d518de695e",
+    "path": "single_mutant/activity/Q6VAB4_kcatkm.csv",
+    "size": 8466,
+    "type": "file"
+  },
+  {
+    "oid": "5aeb85418ca890c8897a07f0ecff0adfcf3df81e",
+    "path": "single_mutant/activity/Q70PR7_activity.csv",
+    "size": 6068,
+    "type": "file"
+  },
+  {
+    "oid": "ef24fcefdb02a844132c24cc88a2d076c293a05c",
+    "path": "single_mutant/activity/Q7SIG4_activity.csv",
+    "size": 11696,
+    "type": "file"
+  },
+  {
+    "oid": "57052cc0cf849d11483754bcdc0bf4c4bffaf412",
+    "path": "single_mutant/activity/Q86GC8_activity.csv",
+    "size": 10057,
+    "type": "file"
+  },
+  {
+    "oid": "065fb6f7be000dd50b936de0106ae610fe4c8606",
+    "path": "single_mutant/activity/Q86XE5_kcat.csv",
+    "size": 4094,
+    "type": "file"
+  },
+  {
+    "oid": "c53c3a0c232961f0d7ebf4bdbe0bf515173bc0eb",
+    "path": "single_mutant/activity/Q887Q3_activity.csv",
+    "size": 12588,
+    "type": "file"
+  },
+  {
+    "oid": "32b44f8479171ee3b10474d7650c30db059ff1d1",
+    "path": "single_mutant/activity/Q88LS1_activity.csv",
+    "size": 3921,
+    "type": "file"
+  },
+  {
+    "oid": "4b2682517d58f23fc96e8f39d78bad7c1e1ca69d",
+    "path": "single_mutant/activity/Q8GCH2_kcat.csv",
+    "size": 4148,
+    "type": "file"
+  },
+  {
+    "oid": "ff78be975e1d5c23d929105f653ac60611ac8aaa",
+    "path": "single_mutant/activity/Q8IYT2_activity.csv",
+    "size": 8609,
+    "type": "file"
+  },
+  {
+    "oid": "7152db653d126a1c639ea925076679ab0ba242e5",
+    "path": "single_mutant/activity/Q8JFY9_activity.csv",
+    "size": 2763,
+    "type": "file"
+  },
+  {
+    "oid": "4a7cfcbe772e48577717bc4ee82069384182c9e3",
+    "path": "single_mutant/activity/Q8KLM3_activity.csv",
+    "size": 3663,
+    "type": "file"
+  },
+  {
+    "oid": "7e15fd8e3eb4b1e10a70eaaedd3d51fc1b41f278",
+    "path": "single_mutant/activity/Q8LPL7_activity.csv",
+    "size": 4063,
+    "type": "file"
+  },
+  {
+    "oid": "eb339beaa5aa41609addeb57fa209c9713227938",
+    "path": "single_mutant/activity/QNC43959_1_kcat_substrate_R.csv",
+    "size": 3732,
+    "type": "file"
+  },
+  {
+    "oid": "df52af40d187d14c631b22a8249ff0840591ef96",
+    "path": "single_mutant/activity/QNC43959_1_kcat_substrate_S.csv",
+    "size": 3726,
+    "type": "file"
+  },
+  {
+    "oid": "b9706345bd0e67c9768d9f7f1d00b2040a697fad",
+    "path": "single_mutant/activity/QNC43959_1_kcatkm_substrate_R.csv",
+    "size": 3721,
+    "type": "file"
+  },
+  {
+    "oid": "76b3bea180d5bffd5f1889f768525b20ed36a09f",
+    "path": "single_mutant/activity/QNC43959_1_kcatkm_substrate_S.csv",
+    "size": 3721,
+    "type": "file"
+  },
+  {
+    "oid": "ea66f3e6fd106c3f9272f7d8d0e75db0c92a019e",
+    "path": "single_mutant/activity/QNC43959_1_ratio_of_kcatkm_R_over_S.csv",
+    "size": 3719,
+    "type": "file"
+  },
+  {
+    "oid": "ac2547f929d84d26df0928df9605cf98f1db0c4f",
+    "path": "single_mutant/activity/WP_012492804_activity.csv",
+    "size": 27843,
+    "type": "file"
+  },
+  {
+    "oid": "b82d70627840dab144788cdc7fe4a02d7ce4a337",
+    "path": "single_mutant/dti_binding/1MLC_2_Kd-wtKd-mut.csv",
+    "size": 1646,
+    "type": "file"
+  },
+  {
+    "oid": "9552abfd471bf7071f5db980c6b45c300745555b",
+    "path": "single_mutant/dti_binding/BindingDB_O60885_227644_Kd.csv",
+    "size": 1373,
+    "type": "file"
+  },
+  {
+    "oid": "3bbe553ed07f4474c3d613b59d64ceffd1d6a459",
+    "path": "single_mutant/dti_binding/BindingDB_P00519_13216_Kd.csv",
+    "size": 2925,
+    "type": "file"
+  },
+  {
+    "oid": "69036342721dab43faa47e362b9554f79e4bb9d5",
+    "path": "single_mutant/dti_binding/BindingDB_P00519_13530_Kd.csv",
+    "size": 2618,
+    "type": "file"
+  },
+  {
+    "oid": "194da6bd117fa64e686b4156e35af41ca79999f7",
+    "path": "single_mutant/dti_binding/BindingDB_P00519_13534_Kd.csv",
+    "size": 2946,
+    "type": "file"
+  },
+  {
+    "oid": "a40fd8762402b3d6459308ad13b13efdc8a52a9d",
+    "path": "single_mutant/dti_binding/BindingDB_P00519_4814_Kd.csv",
+    "size": 2619,
+    "type": "file"
+  },
+  {
+    "oid": "b74cef8074563dfab86770801218ceaab3a0c2fe",
+    "path": "single_mutant/dti_binding/BindingDB_P00519_6572_Kd.csv",
+    "size": 2911,
+    "type": "file"
+  },
+  {
+    "oid": "fba6a80b26035302e88cf21fcd961d55c489fbe0",
+    "path": "single_mutant/dti_binding/BindingDB_P00519_693815_IC50.csv",
+    "size": 11601,
+    "type": "file"
+  },
+  {
+    "oid": "16e0ff768a27505508679dc175134718430026b0",
+    "path": "single_mutant/dti_binding/BindingDB_P00519_693816_IC50.csv",
+    "size": 12757,
+    "type": "file"
+  },
+  {
+    "oid": "d9e68f14822c99dc32f007f262bbba9f49b4321e",
+    "path": "single_mutant/dti_binding/BindingDB_P08483_214800_Kd.csv",
+    "size": 6497,
+    "type": "file"
+  },
+  {
+    "oid": "0ca7f7a863761bea13ba841f43aaf3ce75b85b43",
+    "path": "single_mutant/dti_binding/BindingDB_P08483_50004656_Ki.csv",
+    "size": 6499,
+    "type": "file"
+  },
+  {
+    "oid": "f7f64ed9e135fa46da5abbb1404d763286feb8ce",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_516918_IC50.csv",
+    "size": 11377,
+    "type": "file"
+  },
+  {
+    "oid": "23cbbfb478e5de4284bf60b2f6636023f578a0f8",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_516919_IC50.csv",
+    "size": 11378,
+    "type": "file"
+  },
+  {
+    "oid": "b575b6b9a1328e9b3a68408962f3a626570879c6",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_516963_IC50.csv",
+    "size": 11374,
+    "type": "file"
+  },
+  {
+    "oid": "bf4e2ea0f571ff032ef713b49939d0fe93cfc364",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_516969_IC50.csv",
+    "size": 11376,
+    "type": "file"
+  },
+  {
+    "oid": "a6bd32c118efbae281896f122370e6eb1e8fca6b",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_516999_IC50.csv",
+    "size": 11378,
+    "type": "file"
+  },
+  {
+    "oid": "99a3f72a9d272c63fd14b56b7d6629c6367c2d20",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_517000_IC50.csv",
+    "size": 11379,
+    "type": "file"
+  },
+  {
+    "oid": "3d749223f2dcd77d800e45e381a36bbfe9fcb503",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_517003_IC50.csv",
+    "size": 11378,
+    "type": "file"
+  },
+  {
+    "oid": "9e69b10c4650b8e945769e825199f4390503eaf0",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_517112_IC50.csv",
+    "size": 11376,
+    "type": "file"
+  },
+  {
+    "oid": "186ccc31e77f0860039ee8a7d297afbae6648800",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_517113_IC50.csv",
+    "size": 11375,
+    "type": "file"
+  },
+  {
+    "oid": "5f13c4030c4636347aedc4534939eb18563e3774",
+    "path": "single_mutant/dti_binding/BindingDB_P08581_517126_IC50.csv",
+    "size": 11376,
+    "type": "file"
+  },
+  {
+    "oid": "f047fef4398856dfcfc16aabc818ca9b25a45b34",
+    "path": "single_mutant/dti_binding/BindingDB_P21554_21278_Kd.csv",
+    "size": 4525,
+    "type": "file"
+  },
+  {
+    "oid": "4859b65570fa7d8694b8fc2b344c45724685c731",
+    "path": "single_mutant/dti_binding/BindingDB_P21554_50072775_Kd.csv",
+    "size": 4524,
+    "type": "file"
+  },
+  {
+    "oid": "81b5954bb066ff39fdc61fca12fe60f4bddf76cd",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621080_Kd.csv",
+    "size": 8189,
+    "type": "file"
+  },
+  {
+    "oid": "e70a90b4a476ff7d3e966542ec67ddeff28ffee1",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621098_Kd.csv",
+    "size": 8189,
+    "type": "file"
+  },
+  {
+    "oid": "65f37cc56cc1f1b857d38e91c15323dce3dd9072",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621116_Kd.csv",
+    "size": 8185,
+    "type": "file"
+  },
+  {
+    "oid": "148c95c3718c170aaa25144b1b216d635aa6311d",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621117_Kd.csv",
+    "size": 8173,
+    "type": "file"
+  },
+  {
+    "oid": "38f1e8078b2ce9572de58b947456a23e1264cf2c",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621136_Kd.csv",
+    "size": 8192,
+    "type": "file"
+  },
+  {
+    "oid": "40b3c1386ff558c0b394a9b5d04fa951d32056c7",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621137_Kd.csv",
+    "size": 8188,
+    "type": "file"
+  },
+  {
+    "oid": "13affa1617f6f49c680a7478cec9a33692e386fb",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621161_Kd.csv",
+    "size": 8188,
+    "type": "file"
+  },
+  {
+    "oid": "bbcc4606d3a59197fd262e82d1f11384ace2f899",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621166_Kd.csv",
+    "size": 8186,
+    "type": "file"
+  },
+  {
+    "oid": "dc3c67bdfcbce9b362553c1266e979c10e47214c",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621167_Kd.csv",
+    "size": 8186,
+    "type": "file"
+  },
+  {
+    "oid": "830ef0765625b1dec79c3aee40975fec3c1a3382",
+    "path": "single_mutant/dti_binding/BindingDB_P36888_621169_Kd.csv",
+    "size": 8185,
+    "type": "file"
+  },
+  {
+    "oid": "ce657d8baec993b7616f705b8410e842c53d3e8c",
+    "path": "single_mutant/dti_binding/BindingDB_P41145_21130_Ki.csv",
+    "size": 10593,
+    "type": "file"
+  },
+  {
+    "oid": "72b736fc4ecb9a92ad3f7e8f949bdc53326f10f3",
+    "path": "single_mutant/dti_binding/BindingDB_P41145_214798_Ki.csv",
+    "size": 10594,
+    "type": "file"
+  },
+  {
+    "oid": "3b3a8a49a0c7bfccf2faa68adbf7fd8556aad533",
+    "path": "single_mutant/dti_binding/BindingDB_P41145_214799_Ki.csv",
+    "size": 10583,
+    "type": "file"
+  },
+  {
+    "oid": "83605ea41ce6912d336b712581eac2cc087b3dc3",
+    "path": "single_mutant/dti_binding/BindingDB_P41145_50001714_Kd.csv",
+    "size": 10590,
+    "type": "file"
+  },
+  {
+    "oid": "b753b1eda61d5db7d72f9d32a0f6cc0aea85a995",
+    "path": "single_mutant/dti_binding/BindingDB_P41145_50159165_Ki.csv",
+    "size": 10610,
+    "type": "file"
+  },
+  {
+    "oid": "13fa572cfbb8853f375f09327ddf9fa78da13053",
+    "path": "single_mutant/dti_binding/BindingDB_Q01827_50017712_IC50.csv",
+    "size": 4369,
+    "type": "file"
+  },
+  {
+    "oid": "1761b4336f232ea68cdc3bf236dc188127e82fbc",
+    "path": "single_mutant/dti_binding/BindingDB_Q86TI2_213827_Ki.csv",
+    "size": 13373,
+    "type": "file"
+  },
+  {
+    "oid": "6f8be4ddddb19fb7f74e4c5cba5fca6889561dba",
+    "path": "single_mutant/dti_binding/BindingDB_Q873X9_10850_Kd.csv",
+    "size": 4613,
+    "type": "file"
+  },
+  {
+    "oid": "e50e2f17dd51de3578242b37c45969510a568dee",
+    "path": "single_mutant/dti_binding/BindingDB_Q873X9_10854_Kd.csv",
+    "size": 3709,
+    "type": "file"
+  },
+  {
+    "oid": "290fbdc3bb0cfdc0f3954c615b1367a69fe90404",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1A22_A_kd.csv",
+    "size": 13904,
+    "type": "file"
+  },
+  {
+    "oid": "6af65424754ee214e259eb01614a03e9c006c062",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1A22_B_kd.csv",
+    "size": 15964,
+    "type": "file"
+  },
+  {
+    "oid": "959fad65c5c24268a836d0d05deb669969c31797",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1A4Y_A_kd.csv",
+    "size": 7798,
+    "type": "file"
+  },
+  {
+    "oid": "b38ec75bf3dbf770f9ca9e1c6c1994dc27361599",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1A4Y_B_kd.csv",
+    "size": 2375,
+    "type": "file"
+  },
+  {
+    "oid": "2df52472f7f95761bc07b9d75a5b188c8ce4df0f",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1AHW_C_kd.csv",
+    "size": 2063,
+    "type": "file"
+  },
+  {
+    "oid": "338efd893283f9459ff447f846d66b69968bb05d",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1AK4_D_kd.csv",
+    "size": 2745,
+    "type": "file"
+  },
+  {
+    "oid": "db730b8749150cf08bab3ad4795589458b965c19",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1AO7_A_kd.csv",
+    "size": 9576,
+    "type": "file"
+  },
+  {
+    "oid": "e8382d14ea87bdab9b570bc6514da0348eae266a",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1AO7_D_kd.csv",
+    "size": 4904,
+    "type": "file"
+  },
+  {
+    "oid": "ef276ba8d8e3d04579550c213f01a74d6b70c069",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1AO7_E_kd.csv",
+    "size": 3068,
+    "type": "file"
+  },
+  {
+    "oid": "1d85a6271889ad9fae9343c7cad360c5a837437d",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1B41_B_kd.csv",
+    "size": 1726,
+    "type": "file"
+  },
+  {
+    "oid": "22f7aea68c30560fbda169c546b3e50f63f61290",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1BJ1_H_kd.csv",
+    "size": 2460,
+    "type": "file"
+  },
+  {
+    "oid": "f0ebcb9b078c75cac60245e47e831688071ecc09",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1BRS_A_kd.csv",
+    "size": 2820,
+    "type": "file"
+  },
+  {
+    "oid": "b44473e3a9a474f09330d30dc37eca10e74df0a6",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1BRS_D_kd.csv",
+    "size": 1043,
+    "type": "file"
+  },
+  {
+    "oid": "7988de97c680bf40f78032b8961127fcca62edc4",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1C1Y_B_kd.csv",
+    "size": 1338,
+    "type": "file"
+  },
+  {
+    "oid": "396c5d98b619c0181e1ea0bc9f375fd947e4f014",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1C4Z_A_kd.csv",
+    "size": 8265,
+    "type": "file"
+  },
+  {
+    "oid": "223c665d442c6986632a7a07d052e590b05b850e",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1C4Z_D_kd.csv",
+    "size": 4387,
+    "type": "file"
+  },
+  {
+    "oid": "6abaddf0efde50a2d1b04198965275f04704a468",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1CBW_I_kd.csv",
+    "size": 2567,
+    "type": "file"
+  },
+  {
+    "oid": "66fa8c01ad7e6db6e4937532ccde1d2b838798e3",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1CHO_I_kd.csv",
+    "size": 14635,
+    "type": "file"
+  },
+  {
+    "oid": "8d61edcf5b5fe90ee4b2f70a8066dcd64f3b548b",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1DAN_T_kd.csv",
+    "size": 4183,
+    "type": "file"
+  },
+  {
+    "oid": "56801cf6b95a62bc736f81db476e577228ba63b8",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1DAN_U_kd.csv",
+    "size": 6049,
+    "type": "file"
+  },
+  {
+    "oid": "276877337862499ab5ef232b01a8f49d04aaa0fa",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1DQJ_C_kd.csv",
+    "size": 1708,
+    "type": "file"
+  },
+  {
+    "oid": "c1aa795fce08836d97a7c7cfa3c7bc5ecb172dfe",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1DVF_A_kd.csv",
+    "size": 823,
+    "type": "file"
+  },
+  {
+    "oid": "fc9e041c208ebc036021b2a7afcc2e2b690356c4",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1DVF_B_kd.csv",
+    "size": 1438,
+    "type": "file"
+  },
+  {
+    "oid": "f760ec8f765984a6f5691fe0cbafce5bff21dd27",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1DVF_D_kd.csv",
+    "size": 1190,
+    "type": "file"
+  },
+  {
+    "oid": "cfa51544ea8cb79f6ec70dfff70b9b60ca9fe19b",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1E50_A_kd.csv",
+    "size": 1568,
+    "type": "file"
+  },
+  {
+    "oid": "f19e507b757781106d4a97c44a7481bb01a2f129",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1EAW_A_kd.csv",
+    "size": 7214,
+    "type": "file"
+  },
+  {
+    "oid": "cf4b675a55c3b8af4eb3098e29299db95cd80f27",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1EMV_A_kd.csv",
+    "size": 3698,
+    "type": "file"
+  },
+  {
+    "oid": "f5e2371ced1697057f9f303e96ffacf6115e0cf4",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1EMV_B_kd.csv",
+    "size": 1906,
+    "type": "file"
+  },
+  {
+    "oid": "8678eba21692ae3291339e698ec769c689e777a7",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1FC2_C_kd.csv",
+    "size": 1254,
+    "type": "file"
+  },
+  {
+    "oid": "633f07b6f4eb819a208d4b04eb04748e18b84732",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1FFW_A_kd.csv",
+    "size": 1704,
+    "type": "file"
+  },
+  {
+    "oid": "f970121eb5890a6221240c55853383de8f56a5b1",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1FFW_B_kd.csv",
+    "size": 776,
+    "type": "file"
+  },
+  {
+    "oid": "1565e314e1c7cfcc58ce7e87a147595bd207bac1",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1FSS_B_kd.csv",
+    "size": 1731,
+    "type": "file"
+  },
+  {
+    "oid": "5fb4dc4acb22cc36bcab46bcfcb1503f07b4e2dc",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1GC1_C_kd.csv",
+    "size": 11095,
+    "type": "file"
+  },
+  {
+    "oid": "8a4aa5e20fbd448b88ff0b972307ed6eec280f98",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1GUA_B_kd.csv",
+    "size": 932,
+    "type": "file"
+  },
+  {
+    "oid": "ebce5a911d2c6bfe20112e79dc892333c430f4fd",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1IAR_A_kd.csv",
+    "size": 5532,
+    "type": "file"
+  },
+  {
+    "oid": "53b6b51c6466a88fb1ec5e8704b1383a790a0143",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1JTD_A_kd.csv",
+    "size": 3192,
+    "type": "file"
+  },
+  {
+    "oid": "eb74b74f11276feb0268b0485121a1a29e35b647",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1JTD_B_kd.csv",
+    "size": 7496,
+    "type": "file"
+  },
+  {
+    "oid": "292f42894070ca374130be12520eb5720d500f32",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1K8R_A_kd.csv",
+    "size": 2493,
+    "type": "file"
+  },
+  {
+    "oid": "fc1841d707705d5d7d5b8dcb49d186260ff664f5",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1KNE_A_kd.csv",
+    "size": 719,
+    "type": "file"
+  },
+  {
+    "oid": "d4481b9c3d6659496fceba8817a58a74eb41f8ed",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1KTZ_B_kd.csv",
+    "size": 2893,
+    "type": "file"
+  },
+  {
+    "oid": "9dcf8933d92e181def46334bb1b606f328c5c498",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1LFD_A_kd.csv",
+    "size": 2906,
+    "type": "file"
+  },
+  {
+    "oid": "461520be50745bb8e81b4f432cc5f96c58ac6352",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1LFD_B_kd.csv",
+    "size": 2334,
+    "type": "file"
+  },
+  {
+    "oid": "14ab4920bbc4d69b6d95e8c133f5ff5dca9f5c41",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1MAH_A_kd.csv",
+    "size": 5062,
+    "type": "file"
+  },
+  {
+    "oid": "478dcddaa45bd62abeb1c096a2ba3697476de01e",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1MI5_D_kd.csv",
+    "size": 5329,
+    "type": "file"
+  },
+  {
+    "oid": "e170568630e70c59015aebf80538ae208c4bd61a",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1MI5_E_kd.csv",
+    "size": 4475,
+    "type": "file"
+  },
+  {
+    "oid": "fd32deae6954b0ff011bed7013f507b3ff8c0425",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1MLC_B_kd.csv",
+    "size": 1971,
+    "type": "file"
+  },
+  {
+    "oid": "2a6b5d56a9d19772ed6f554c253808dba9bf3710",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1OGA_A_kd.csv",
+    "size": 7844,
+    "type": "file"
+  },
+  {
+    "oid": "bc7e4d935f66196e59a75a7e541c959080662e9e",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1OGA_E_kd.csv",
+    "size": 5083,
+    "type": "file"
+  },
+  {
+    "oid": "1e45269fca774fae09444b2178f597f960c8cadf",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1PPF_I_kd.csv",
+    "size": 15224,
+    "type": "file"
+  },
+  {
+    "oid": "6b664dc043a266a2ce24f22683afdd3c445c5aa7",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1R0R_I_kd.csv",
+    "size": 14308,
+    "type": "file"
+  },
+  {
+    "oid": "55bdaffea4844548de73eae3ca4fc55b9e29cc95",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1TM1_I_kd.csv",
+    "size": 1540,
+    "type": "file"
+  },
+  {
+    "oid": "4e104131d22fe2546ed26e16f8179af303da7190",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1VFB_A_kd.csv",
+    "size": 1871,
+    "type": "file"
+  },
+  {
+    "oid": "8fa958f2e7821390d3c02cd4bf6708ea5733d271",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1VFB_B_kd.csv",
+    "size": 3117,
+    "type": "file"
+  },
+  {
+    "oid": "553717c4f0d259ef961a87eed4277a699745c7cc",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1VFB_C_kd.csv",
+    "size": 1866,
+    "type": "file"
+  },
+  {
+    "oid": "e758c097fc1e35f3ebf87e462a6d28e571e110d6",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1XD3_B_kd.csv",
+    "size": 1818,
+    "type": "file"
+  },
+  {
+    "oid": "26ec8773560b5a5fc39938b4bf18bef84ecd824d",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1YY9_C_kd.csv",
+    "size": 1914,
+    "type": "file"
+  },
+  {
+    "oid": "1e18970ca09c0e84451e724fdca939857ec99697",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1YY9_D_kd.csv",
+    "size": 1991,
+    "type": "file"
+  },
+  {
+    "oid": "c6ea18af236bb600b77e6eb643af289e0028cff9",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_1Z7X_W_kd.csv",
+    "size": 8295,
+    "type": "file"
+  },
+  {
+    "oid": "55e3bf62bed00f7f34eb57294352e41b1b34e69c",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_2BNR_A_kd.csv",
+    "size": 7546,
+    "type": "file"
+  },
+  {
+    "oid": "8029905f67ae978bf73b2ef1d5c47d2d7ac8e473",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_2FTL_I_kd.csv",
+    "size": 2579,
+    "type": "file"
+  },
+  {
+    "oid": "22e1dea71fc267630455ff3e9dd7df13244fd173",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_2G2U_B_kd.csv",
+    "size": 4590,
+    "type": "file"
+  },
+  {
+    "oid": "8ccc214c2df0967dbee4ad704002a3c8eff1ae92",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_2JEL_P_kd.csv",
+    "size": 4799,
+    "type": "file"
+  },
+  {
+    "oid": "eba1aab2ec6735954f52df1394381587c1be4278",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_2NYY_A_kd.csv",
+    "size": 24594,
+    "type": "file"
+  },
+  {
+    "oid": "93329ae948fa4710ec8dbb0edf0941ab509383f5",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_2NYY_D_kd.csv",
+    "size": 1725,
+    "type": "file"
+  },
+  {
+    "oid": "4da4f61772c52504d4212d61f0d1a2b1b05ea177",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_2NZ9_A_kd.csv",
+    "size": 24588,
+    "type": "file"
+  },
+  {
+    "oid": "96df39006a45b7b7dec07fce778866ac57724370",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_2WPT_A_kd.csv",
+    "size": 1786,
+    "type": "file"
+  },
+  {
+    "oid": "c08afbb193188ce396ba2401a523f4ccaa933f5f",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_2WPT_B_kd.csv",
+    "size": 1683,
+    "type": "file"
+  },
+  {
+    "oid": "ee3d296471e5808f39301c4ba1b9f357cd95c21e",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3BK3_C_kd.csv",
+    "size": 1216,
+    "type": "file"
+  },
+  {
+    "oid": "2d28d5be9a93d2af097915332c5cb0276041f403",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3C60_C_kd.csv",
+    "size": 2306,
+    "type": "file"
+  },
+  {
+    "oid": "e031627e503f4b058491fe7380a6ff19284e3532",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3C60_D_kd.csv",
+    "size": 5433,
+    "type": "file"
+  },
+  {
+    "oid": "7b0d92b487d23bc0841bf3c738b108aad4b3817c",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3M62_A_kd.csv",
+    "size": 8851,
+    "type": "file"
+  },
+  {
+    "oid": "235ec7f2f6574e8feda5f48a215feb4fd7edb639",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3M62_B_kd.csv",
+    "size": 899,
+    "type": "file"
+  },
+  {
+    "oid": "6e0406437f23a5aedc009a0f3ae1f86883dd68ed",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3NGB_H_kd.csv",
+    "size": 8227,
+    "type": "file"
+  },
+  {
+    "oid": "f51e9d8f6e6fe5caed7eb2b7d18b61eb6be41206",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3NGB_L_kd.csv",
+    "size": 1891,
+    "type": "file"
+  },
+  {
+    "oid": "c277b1ef3df23ed0b9aed609075792bba6ee37eb",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3NPS_A_kd.csv",
+    "size": 7193,
+    "type": "file"
+  },
+  {
+    "oid": "3d287346cd0bd01a5f4421d7980dd1ebbd9a62bd",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3QDG_D_kd.csv",
+    "size": 2047,
+    "type": "file"
+  },
+  {
+    "oid": "8ecea8b10946697c97446cc643657fce023b7596",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3QDJ_D_kd.csv",
+    "size": 2047,
+    "type": "file"
+  },
+  {
+    "oid": "b9128b87cf1494fb779d4d06408ea0282b1b0bc1",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3QHY_B_kd.csv",
+    "size": 7446,
+    "type": "file"
+  },
+  {
+    "oid": "daa3cc6bd511a3452ddd59de90f936874900ae7d",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3QIB_A_kd.csv",
+    "size": 1264,
+    "type": "file"
+  },
+  {
+    "oid": "c28a261bd537ee34e6d25cfbaa5b7f8bbcf95be7",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3QIB_B_kd.csv",
+    "size": 1740,
+    "type": "file"
+  },
+  {
+    "oid": "3d091e539474c7aa39c14673c7aabcd09ef51996",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SE3_A_kd.csv",
+    "size": 5303,
+    "type": "file"
+  },
+  {
+    "oid": "5c4a9c6bf6a8b691d84850d29024a44c9f5c4f6e",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SE4_A_kd.csv",
+    "size": 3760,
+    "type": "file"
+  },
+  {
+    "oid": "f08b0a6dd97962572908ab7ed8fd93f23c222dca",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SE4_B_kd.csv",
+    "size": 1041,
+    "type": "file"
+  },
+  {
+    "oid": "40f2088d069e4585354fb5636215ffdc73948fc3",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SE4_C_kd.csv",
+    "size": 1950,
+    "type": "file"
+  },
+  {
+    "oid": "838cbc1f9d2e98a3e38fbfe835c30a73108f6b95",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SE8_H_kd.csv",
+    "size": 5313,
+    "type": "file"
+  },
+  {
+    "oid": "cd1b721a9439c23d58817b1214c525865124ee40",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SE8_L_kd.csv",
+    "size": 1661,
+    "type": "file"
+  },
+  {
+    "oid": "75d5a3b6266cb81586520cb615f02870e637db84",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SE9_H_kd.csv",
+    "size": 4775,
+    "type": "file"
+  },
+  {
+    "oid": "dc2ccf2c898d3037e4cd9f7478206ded756d8244",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SE9_L_kd.csv",
+    "size": 1429,
+    "type": "file"
+  },
+  {
+    "oid": "6151a066b103066798f672728d1ce8c4d55ed654",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SGB_I_kd.csv",
+    "size": 14159,
+    "type": "file"
+  },
+  {
+    "oid": "0023322b3ebedd52c69bf457c18b100103470d4c",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3SZK_C_kd.csv",
+    "size": 3571,
+    "type": "file"
+  },
+  {
+    "oid": "6cf10005373402a332043c1391cef1a09804d49b",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_3VR6_G_kd.csv",
+    "size": 1242,
+    "type": "file"
+  },
+  {
+    "oid": "065b738d9f1f4747c6f124c0d2d7616e1c2065fb",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_4OFY_A_kd.csv",
+    "size": 1814,
+    "type": "file"
+  },
+  {
+    "oid": "0e2f4ff44e1fe92e14eba43393efbfe8a4e0bc05",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_4OZG_H_kd.csv",
+    "size": 2153,
+    "type": "file"
+  },
+  {
+    "oid": "b78b147a8294f90a6f3e41b4c91306addbd77725",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_4P5T_C_kd.csv",
+    "size": 2270,
+    "type": "file"
+  },
+  {
+    "oid": "7bae5f09d0749a14371fb306127840c82cb8c258",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_4RS1_A_kd.csv",
+    "size": 3252,
+    "type": "file"
+  },
+  {
+    "oid": "8b5ffe7340fcd5e163ba57410e8dc3d3a807d003",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_4RS1_B_kd.csv",
+    "size": 3251,
+    "type": "file"
+  },
+  {
+    "oid": "89008aadc602f7bd30877899b23adeace8d43c03",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_5C6T_A_kd.csv",
+    "size": 5948,
+    "type": "file"
+  },
+  {
+    "oid": "9f4b6f045e470c82f5843d201953e0b235c94d97",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_5C6T_H_kd.csv",
+    "size": 860,
+    "type": "file"
+  },
+  {
+    "oid": "e86b9627cded9b581597040445ab979eef298d03",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_5M2O_A_kd.csv",
+    "size": 1166,
+    "type": "file"
+  },
+  {
+    "oid": "8c9ff8abeefef087a2e94f14093496fa6a00556c",
+    "path": "single_mutant/ppi_binding/PPB_Affinity_5M2O_B_kd.csv",
+    "size": 722,
+    "type": "file"
+  },
+  {
+    "oid": "1788c234b3c39c32927667df356def95c596ed7f",
+    "path": "single_mutant/selectivity/1BXZ_ee.csv",
+    "size": 2570,
+    "type": "file"
+  },
+  {
+    "oid": "190e457a8eaefadc0c2272b6a612916cf5095f26",
+    "path": "single_mutant/selectivity/1Z42_ee_1.csv",
+    "size": 12307,
+    "type": "file"
+  },
+  {
+    "oid": "a7a01fb1890ac99cf77f1c7dd422e7090c7c06fa",
+    "path": "single_mutant/selectivity/1Z42_ee_2.csv",
+    "size": 10186,
+    "type": "file"
+  },
+  {
+    "oid": "72c0ba6efda03acdfcbc6f6da9abca3a9d177401",
+    "path": "single_mutant/selectivity/1Z42_ee_3.csv",
+    "size": 10192,
+    "type": "file"
+  },
+  {
+    "oid": "af349daef689a857d0ea3d3d6c30954632c8b516",
+    "path": "single_mutant/selectivity/2Q0Q_ee_1.csv",
+    "size": 10318,
+    "type": "file"
+  },
+  {
+    "oid": "4c30214a30016d64b33ad9ca0b1cbf7d848214c8",
+    "path": "single_mutant/selectivity/2Q0Q_ee_2.csv",
+    "size": 8972,
+    "type": "file"
+  },
+  {
+    "oid": "76bb1de8dcacbc92860d6236c2c68b3a7569bcc5",
+    "path": "single_mutant/selectivity/2YLR_ee.csv",
+    "size": 21670,
+    "type": "file"
+  },
+  {
+    "oid": "16792ec138bf814e2ca2130d0ce1e07e27cf25ac",
+    "path": "single_mutant/selectivity/4OVI_ee_2.csv",
+    "size": 7759,
+    "type": "file"
+  },
+  {
+    "oid": "e29301848f640e6ab967c7d18fa037f60d73ef45",
+    "path": "single_mutant/selectivity/4OVI_ee_3.csv",
+    "size": 2795,
+    "type": "file"
+  },
+  {
+    "oid": "194a53c4d29ea69926a87a486312b5c82fea23d2",
+    "path": "single_mutant/selectivity/4OVI_ee_4_substreate_1a.csv",
+    "size": 3348,
+    "type": "file"
+  },
+  {
+    "oid": "95d370d6bcf874543007645bc819eb6343367671",
+    "path": "single_mutant/selectivity/5A71_ee.csv",
+    "size": 4673,
+    "type": "file"
+  },
+  {
+    "oid": "c7c12d48a8a97da226f967e4625f359a47e1e4f3",
+    "path": "single_mutant/selectivity/5Z2X_ee.csv",
+    "size": 7119,
+    "type": "file"
+  },
+  {
+    "oid": "807f8dc81e662810dba054b0e23c53e64583e1cb",
+    "path": "single_mutant/selectivity/7YVR_de.csv",
+    "size": 55696,
+    "type": "file"
+  },
+  {
+    "oid": "8dbd027d6ba28f65149780ee74871b6543878deb",
+    "path": "single_mutant/selectivity/A0A0I9QGZ2_ee_1.csv",
+    "size": 6825,
+    "type": "file"
+  },
+  {
+    "oid": "25f6027c11a6f51920e82b537cc8d6f1bb8961e1",
+    "path": "single_mutant/selectivity/A0A0I9QGZ2_ee_2.csv",
+    "size": 10894,
+    "type": "file"
+  },
+  {
+    "oid": "00622dbc3a9a3ca1eeb17e5ac659ec5c59ff46ca",
+    "path": "single_mutant/selectivity/A0A7I6N400_ee.csv",
+    "size": 1396,
+    "type": "file"
+  },
+  {
+    "oid": "c40f100b803350defa45ed2f13e86785761e2884",
+    "path": "single_mutant/selectivity/EHK72968_1_ee.csv",
+    "size": 2844,
+    "type": "file"
+  },
+  {
+    "oid": "e1ebc3191c52f6116eaab1e9786c6aa18c0751b1",
+    "path": "single_mutant/selectivity/KAL2709656_de.csv",
+    "size": 40444,
+    "type": "file"
+  },
+  {
+    "oid": "8cd0c3d475f330c040248fcaa2e5ec5aba54569b",
+    "path": "single_mutant/selectivity/P08684_ee_1.csv",
+    "size": 12097,
+    "type": "file"
+  },
+  {
+    "oid": "93d3ac49b21463a5bba49abcb878979c676cb3d4",
+    "path": "single_mutant/selectivity/P08684_ee_2.csv",
+    "size": 12126,
+    "type": "file"
+  },
+  {
+    "oid": "c8986015c66ac6c61faefbbfc8fb9f3b3bf70ce0",
+    "path": "single_mutant/selectivity/P14779_ee.csv",
+    "size": 16990,
+    "type": "file"
+  },
+  {
+    "oid": "b6554e25b943d4354500c79fa3175d42f292cb4d",
+    "path": "single_mutant/selectivity/P29379_ee.csv",
+    "size": 1459,
+    "type": "file"
+  },
+  {
+    "oid": "4295db3c37c94161f8448085e80d3099947b7b09",
+    "path": "single_mutant/selectivity/Q9ZAG3_ee.csv",
+    "size": 2892,
+    "type": "file"
+  },
+  {
+    "oid": "90afc9aefdfe010debef940ceb888d55e11f1650",
+    "path": "single_mutant/selectivity/WP_012492804_ee.csv",
+    "size": 27819,
+    "type": "file"
+  },
+  {
+    "oid": "e853cadb43c403872ce8ce7c116e3caa82a85e75",
+    "path": "single_mutant/selectivity/myoglobin_ee.csv",
+    "size": 1675,
+    "type": "file"
+  },
+  {
+    "oid": "d569a1feda129008024174ae933c2d8949226d3f",
+    "path": "single_mutant/selectivity/nitrilase_ee.csv",
+    "size": 2088,
+    "type": "file"
+  },
+  {
+    "oid": "a43ba6a045306b07e776104978cc0568be75474a",
+    "path": "single_mutant/stability/Creatinase_dTm.csv",
+    "size": 12167,
+    "type": "file"
+  },
+  {
+    "oid": "790a44218aad05408e10479ed3dd652078bd66aa",
+    "path": "single_mutant/stability/Q306_1DIV_ddG.csv",
+    "size": 5009,
+    "type": "file"
+  },
+  {
+    "oid": "ffaac78a481ede1889ae880b86e1ab0a96488650",
+    "path": "single_mutant/stability/Q306_1PIN_ddG.csv",
+    "size": 9817,
+    "type": "file"
+  },
+  {
+    "oid": "ec92c777053a8c599f55b0bb1afcdb5ae7000175",
+    "path": "single_mutant/stability/S4346_1A5E_dTm.csv",
+    "size": 1703,
+    "type": "file"
+  },
+  {
+    "oid": "d20eb1685b2a1b72144c589b00d74595af3ae264",
+    "path": "single_mutant/stability/S4346_1AKY_dTm.csv",
+    "size": 1427,
+    "type": "file"
+  },
+  {
+    "oid": "44099f66d8e89afb0bee4c10679ddd5c64d0515b",
+    "path": "single_mutant/stability/S4346_1AQH_dTm.csv",
+    "size": 5161,
+    "type": "file"
+  },
+  {
+    "oid": "d8f06fc965692c43efae27e1528817ceadba7151",
+    "path": "single_mutant/stability/S4346_1BK7_dTm.csv",
+    "size": 1863,
+    "type": "file"
+  },
+  {
+    "oid": "71699cad8e05accd3733e5cb3926755a62173f17",
+    "path": "single_mutant/stability/S4346_1BNI_dTm.csv",
+    "size": 5271,
+    "type": "file"
+  },
+  {
+    "oid": "0e6c36c702d7a666d62da2293d27a0a1adc6ef83",
+    "path": "single_mutant/stability/S4346_1BVC_dTm.csv",
+    "size": 6112,
+    "type": "file"
+  },
+  {
+    "oid": "1c6da0cdede1bccff22dca2981c440103fd3edd4",
+    "path": "single_mutant/stability/S4346_1C9O_dTm.csv",
+    "size": 1876,
+    "type": "file"
+  },
+  {
+    "oid": "f40d0850c8dda0d377517ee9cb271f789b7de3e9",
+    "path": "single_mutant/stability/S4346_1CF1_dTm.csv",
+    "size": 10433,
+    "type": "file"
+  },
+  {
+    "oid": "5e56b6d00ce8b9b9d3f32e763b0f8558ccad2e52",
+    "path": "single_mutant/stability/S4346_1CFD_dTm.csv",
+    "size": 1466,
+    "type": "file"
+  },
+  {
+    "oid": "b425e208072a0bf709bbdfc77762439c891d1bd2",
+    "path": "single_mutant/stability/S4346_1CM2_dTm.csv",
+    "size": 909,
+    "type": "file"
+  },
+  {
+    "oid": "49c7a12a9d7d39a3ca2d97e5c4e8c110c1ed9b49",
+    "path": "single_mutant/stability/S4346_1CSP_dTm.csv",
+    "size": 4309,
+    "type": "file"
+  },
+  {
+    "oid": "96b59d88a09c4de3d1c7ad8bb201dc84eae78686",
+    "path": "single_mutant/stability/S4346_1CYO_dTm.csv",
+    "size": 1182,
+    "type": "file"
+  },
+  {
+    "oid": "7c695fe078b26f96bdcec680e033a189f9505007",
+    "path": "single_mutant/stability/S4346_1E0W_dTm.csv",
+    "size": 3930,
+    "type": "file"
+  },
+  {
+    "oid": "f7bc16c7a9c2735c58357d7f04e43b813a5c2577",
+    "path": "single_mutant/stability/S4346_1EY0_dTm.csv",
+    "size": 23147,
+    "type": "file"
+  },
+  {
+    "oid": "f2000d67092123a08615242732fcc7aba79f3b62",
+    "path": "single_mutant/stability/S4346_1F6R_dTm.csv",
+    "size": 3136,
+    "type": "file"
+  },
+  {
+    "oid": "bf89b39b8df20f044ce86b6ec9dc92f67943fef2",
+    "path": "single_mutant/stability/S4346_1G5A_dTm.csv",
+    "size": 33938,
+    "type": "file"
+  },
+  {
+    "oid": "4a6ab94121fc97fc2bc513386e29729767001d3b",
+    "path": "single_mutant/stability/S4346_1H0C_dTm.csv",
+    "size": 6944,
+    "type": "file"
+  },
+  {
+    "oid": "bddd39352b2aab712af77e4e20ade8cfce84f439",
+    "path": "single_mutant/stability/S4346_1H8V_dTm.csv",
+    "size": 3695,
+    "type": "file"
+  },
+  {
+    "oid": "97b97daa6016f8f317416073122b7e2afeef26e1",
+    "path": "single_mutant/stability/S4346_1HRC_dTm.csv",
+    "size": 1190,
+    "type": "file"
+  },
+  {
+    "oid": "38bd785f407a2d8b9e6eb130523e8df869e404c3",
+    "path": "single_mutant/stability/S4346_1HUE_dTm.csv",
+    "size": 862,
+    "type": "file"
+  },
+  {
+    "oid": "4b92d972194b3025738e1ca44fe47de6dbb1c6a9",
+    "path": "single_mutant/stability/S4346_1I1N_dTm.csv",
+    "size": 4069,
+    "type": "file"
+  },
+  {
+    "oid": "99aca512c4261aca0518986ce0adc1cfaf64b72c",
+    "path": "single_mutant/stability/S4346_1IHB_dTm.csv",
+    "size": 1418,
+    "type": "file"
+  },
+  {
+    "oid": "1ef8d38b7e6470a635443e9d8a30819b2b445a1d",
+    "path": "single_mutant/stability/S4346_1IO2_dTm.csv",
+    "size": 3173,
+    "type": "file"
+  },
+  {
+    "oid": "0c9488928a643bd9e7b6e1e1bd7d55f5574230b5",
+    "path": "single_mutant/stability/S4346_1IOB_dTm.csv",
+    "size": 1182,
+    "type": "file"
+  },
+  {
+    "oid": "a4a23ce161441a1c9f426ac6eadefdfdbb3b58c9",
+    "path": "single_mutant/stability/S4346_1K23_dTm.csv",
+    "size": 2277,
+    "type": "file"
+  },
+  {
+    "oid": "837aa0ff0a92423c84c204a2f33b02dc2057c314",
+    "path": "single_mutant/stability/S4346_1KF2_dTm.csv",
+    "size": 9134,
+    "type": "file"
+  },
+  {
+    "oid": "bcb24cc3f44bebd44a943d1c06a623faea5f39c0",
+    "path": "single_mutant/stability/S4346_1L63_dTm.csv",
+    "size": 32288,
+    "type": "file"
+  },
+  {
+    "oid": "64a9b92695d4b4ffb4f32b3811b2033b85f7c905",
+    "path": "single_mutant/stability/S4346_1LHM_dTm.csv",
+    "size": 2157,
+    "type": "file"
+  },
+  {
+    "oid": "9013563555d18f03be9ef4856d8ab4ad9d05f627",
+    "path": "single_mutant/stability/S4346_1LNI_dTm.csv",
+    "size": 7017,
+    "type": "file"
+  },
+  {
+    "oid": "2c94d7dacffe56c1a142cd58fae927156bada118",
+    "path": "single_mutant/stability/S4346_1LZ1_dTm.csv",
+    "size": 18658,
+    "type": "file"
+  },
+  {
+    "oid": "275c6be1334c73722c54a2f3f723262d80df97fa",
+    "path": "single_mutant/stability/S4346_1MGR_dTm.csv",
+    "size": 931,
+    "type": "file"
+  },
+  {
+    "oid": "7afff7402aaf021c4df1b75e66b600ade337050c",
+    "path": "single_mutant/stability/S4346_1MJ5_dTm.csv",
+    "size": 38551,
+    "type": "file"
+  },
+  {
+    "oid": "48a52c7ed546fa5cc034c64a826f13bcf0f130c3",
+    "path": "single_mutant/stability/S4346_1NMV_dTm.csv",
+    "size": 10336,
+    "type": "file"
+  },
+  {
+    "oid": "84dae70ca9808e25aedbcd84a946ada6d01d1948",
+    "path": "single_mutant/stability/S4346_1NWW_dTm.csv",
+    "size": 7548,
+    "type": "file"
+  },
+  {
+    "oid": "7c8b59738be6e0b205fedf540a4393d7337eeed6",
+    "path": "single_mutant/stability/S4346_1OLR_dTm.csv",
+    "size": 1451,
+    "type": "file"
+  },
+  {
+    "oid": "15a4bc442ae9cd144989a5077211692ac18040b0",
+    "path": "single_mutant/stability/S4346_1OWA_dTm.csv",
+    "size": 2371,
+    "type": "file"
+  },
+  {
+    "oid": "0870b001f72dec3517913cb1912d7f6fef08c542",
+    "path": "single_mutant/stability/S4346_1PGA_dTm.csv",
+    "size": 3001,
+    "type": "file"
+  },
+  {
+    "oid": "706bd3e5df02ebb29f2cb348ad6ab0afc8704601",
+    "path": "single_mutant/stability/S4346_1POH_dTm.csv",
+    "size": 1291,
+    "type": "file"
+  },
+  {
+    "oid": "605b86140f94eb83d60106923cfaaf0e0d316c55",
+    "path": "single_mutant/stability/S4346_1QLP_dTm.csv",
+    "size": 3688,
+    "type": "file"
+  },
+  {
+    "oid": "430ec846f44e3056fe9c25ee57b50cb802b576d0",
+    "path": "single_mutant/stability/S4346_1RBP_dTm.csv",
+    "size": 1202,
+    "type": "file"
+  },
+  {
+    "oid": "5992a944064c1b1f9335740ce262b6d66a5312e8",
+    "path": "single_mutant/stability/S4346_1RN1_dTm.csv",
+    "size": 4781,
+    "type": "file"
+  },
+  {
+    "oid": "261345f5c072885ac066521bd5e53cb0fd1dbb47",
+    "path": "single_mutant/stability/S4346_1ROP_dTm.csv",
+    "size": 1598,
+    "type": "file"
+  },
+  {
+    "oid": "49c177df2a6819472fcb31472aa521bed0a6b51c",
+    "path": "single_mutant/stability/S4346_1SHG_dTm.csv",
+    "size": 430,
+    "type": "file"
+  },
+  {
+    "oid": "34641352f80b37eebf670a60121da178c4288180",
+    "path": "single_mutant/stability/S4346_1SUP_dTm.csv",
+    "size": 2611,
+    "type": "file"
+  },
+  {
+    "oid": "354acc5ca48aed656d4af3d0162a131332c0e8b1",
+    "path": "single_mutant/stability/S4346_1TIN_dTm.csv",
+    "size": 511,
+    "type": "file"
+  },
+  {
+    "oid": "0417f27629f229e1fecacc691d381c3f47357454",
+    "path": "single_mutant/stability/S4346_1URP_dTm.csv",
+    "size": 4290,
+    "type": "file"
+  },
+  {
+    "oid": "98b26c24d970c55cd6d646bf02f3b1bce260f291",
+    "path": "single_mutant/stability/S4346_1WQ5_dTm.csv",
+    "size": 13454,
+    "type": "file"
+  },
+  {
+    "oid": "94cda7915f061aad549211e31937283a5f1da80a",
+    "path": "single_mutant/stability/S4346_2CI2_dTm.csv",
+    "size": 2495,
+    "type": "file"
+  },
+  {
+    "oid": "d6bb44a0388f207d2f77f8edc28c683b47325c0e",
+    "path": "single_mutant/stability/S4346_2G3P_dTm.csv",
+    "size": 2904,
+    "type": "file"
+  },
+  {
+    "oid": "6d64b25e8b8f1710a82731ee766a621ff448b05f",
+    "path": "single_mutant/stability/S4346_2J1N_dTm.csv",
+    "size": 2229,
+    "type": "file"
+  },
+  {
+    "oid": "8beaed33a6ae9a76ced17ec235181100c1141968",
+    "path": "single_mutant/stability/S4346_2LZM_dTm.csv",
+    "size": 53345,
+    "type": "file"
+  },
+  {
+    "oid": "8cc52d4a8730eae2838809cfc84d65bf0564b0c1",
+    "path": "single_mutant/stability/S4346_2RN2_dTm.csv",
+    "size": 12226,
+    "type": "file"
+  },
+  {
+    "oid": "c8e244fb3adcf9464f1db49c780c1da877006b69",
+    "path": "single_mutant/stability/S4346_2TRX_dTm.csv",
+    "size": 994,
+    "type": "file"
+  },
+  {
+    "oid": "ecbb760d692e077df5b2e887cd424925f003ac21",
+    "path": "single_mutant/stability/S4346_3B9V_dTm.csv",
+    "size": 1212,
+    "type": "file"
+  },
+  {
+    "oid": "2d0be3c1d5e0db3c25b44c2b5053a67023064418",
+    "path": "single_mutant/stability/S4346_3DV0_dTm.csv",
+    "size": 11492,
+    "type": "file"
+  },
+  {
+    "oid": "332ece0181e52e7e75100754de4c12214295ea0f",
+    "path": "single_mutant/stability/S4346_3MBP_dTm.csv",
+    "size": 2375,
+    "type": "file"
+  },
+  {
+    "oid": "0e7ae1231c552d7773c88257288eba7487ec649f",
+    "path": "single_mutant/stability/S4346_3SSI_dTm.csv",
+    "size": 2816,
+    "type": "file"
+  },
+  {
+    "oid": "819272d0658ff2f9b6fa2b6d22b0674ae8f3762f",
+    "path": "single_mutant/stability/S4346_3UMR_dTm.csv",
+    "size": 122183,
+    "type": "file"
+  },
+  {
+    "oid": "1613ce2b4597eca8b101c0142c24dff38460b827",
+    "path": "single_mutant/stability/S4346_3X3U_dTm.csv",
+    "size": 2892,
+    "type": "file"
+  },
+  {
+    "oid": "eb233905ffaec7cbb8bafa569b5c56416f6b891b",
+    "path": "single_mutant/stability/S4346_451C_dTm.csv",
+    "size": 696,
+    "type": "file"
+  },
+  {
+    "oid": "4431922311e2c1e889434f73beb9e2b7e4cf1cff",
+    "path": "single_mutant/stability/S4346_4EYB_dTm.csv",
+    "size": 1723,
+    "type": "file"
+  },
+  {
+    "oid": "9a405e274130f5cefad2aab7dcfd90ef814cf064",
+    "path": "single_mutant/stability/S4346_4G3H_dTm.csv",
+    "size": 4612,
+    "type": "file"
+  },
+  {
+    "oid": "be4bf8942767e0e1aea3c5008ee1e2e9ee17cf21",
+    "path": "single_mutant/stability/S4346_4LYZ_dTm.csv",
+    "size": 6195,
+    "type": "file"
+  },
+  {
+    "oid": "1ec8266eed00d22a0fc2fe8a81422b4729d02d50",
+    "path": "single_mutant/stability/S4346_4NC0_dTm.csv",
+    "size": 2629,
+    "type": "file"
+  },
+  {
+    "oid": "5fc068ab1227c2d7a1058077773b751a2ad62bce",
+    "path": "single_mutant/stability/S4346_5DFR_dTm.csv",
+    "size": 7923,
+    "type": "file"
+  },
+  {
+    "oid": "27649bbc9785eeb1c04639a5c49daadedc797286",
+    "path": "single_mutant/stability/S4346_5PTI_dTm.csv",
+    "size": 5190,
+    "type": "file"
+  },
+  {
+    "oid": "c09064a269af53eafffb99668ab306aef7b1b701",
+    "path": "single_mutant/stability/S4346_6CMO_dTm.csv",
+    "size": 3393,
+    "type": "file"
+  },
+  {
+    "oid": "2b17ac9af30afb635b2112966b109595d0883482",
+    "path": "single_mutant/stability/S4346_6TQ3_dTm.csv",
+    "size": 2610,
+    "type": "file"
+  },
+  {
+    "oid": "941a71cff5a37f791b5da84a9726ecf5226776d9",
+    "path": "single_mutant/stability/S4346_P01857_dTm.csv",
+    "size": 4529,
+    "type": "file"
+  },
+  {
+    "oid": "a0bc273e660c84a031125311b04795643e5f0a28",
+    "path": "single_mutant/stability/S4346_P03040_dTm.csv",
+    "size": 880,
+    "type": "file"
+  },
+  {
+    "oid": "983fac07e584147cd5422194b0944dd45e4dd994",
+    "path": "single_mutant/stability/S4346_P06241_dTm.csv",
+    "size": 7714,
+    "type": "file"
+  },
+  {
+    "oid": "6fbd83fb81f2a5e0ca12f15ae3a7da1529bbc8c2",
+    "path": "single_mutant/stability/S4346_P0ABE7_dTm.csv",
+    "size": 1842,
+    "type": "file"
+  },
+  {
+    "oid": "9c6768f00ac0fa6b12affe20199bc8a4c0d8ac5b",
+    "path": "single_mutant/stability/S4346_P0CG48_dTm.csv",
+    "size": 7857,
+    "type": "file"
+  },
+  {
+    "oid": "fe335719fd337f6d732554e6696e106c6ae25a2f",
+    "path": "single_mutant/stability/S4346_P18012_dTm.csv",
+    "size": 3040,
+    "type": "file"
+  },
+  {
+    "oid": "39eb684f65512d9603b2d5072c6b04efeaebc559",
+    "path": "single_mutant/stability/S4346_P19515_dTm.csv",
+    "size": 13526,
+    "type": "file"
+  },
+  {
+    "oid": "fcb96930e664f39f4adb8d984090cc0cdbe31e34",
+    "path": "single_mutant/stability/S4346_P26747_dTm.csv",
+    "size": 4473,
+    "type": "file"
+  },
+  {
+    "oid": "05ec867fed9e988f569ca84fb42c7856214f0928",
+    "path": "single_mutant/stability/S4346_P32851_dTm.csv",
+    "size": 2452,
+    "type": "file"
+  },
+  {
+    "oid": "469eeb20ac22751c2b0b9af4b6910e9b0000290c",
+    "path": "single_mutant/stability/S4346_P60484_dTm.csv",
+    "size": 2525,
+    "type": "file"
+  },
+  {
+    "oid": "40677aa3718a54291494e2bf3422d41c76974a45",
+    "path": "single_mutant/stability/S4346_P62593_dTm.csv",
+    "size": 1841,
+    "type": "file"
+  },
+  {
+    "oid": "8869fbfce9ef747016afb04ee4e8b496c8a9e3ce",
+    "path": "single_mutant/stability/S4346_Q9NZN9_dTm.csv",
+    "size": 2809,
+    "type": "file"
+  },
+  {
+    "oid": "5a0b5736e09016c4508ff991842f846682ddcd61",
+    "path": "single_mutant/stability/S4346_Q9ZEU2_dTm.csv",
+    "size": 34377,
+    "type": "file"
+  },
+  {
+    "oid": "6d2e7aed25161e6316537a3862863d9b18151cd9",
+    "path": "single_mutant/stability/S571_1ARR_dTm.csv",
+    "size": 2479,
+    "type": "file"
+  },
+  {
+    "oid": "1a872ea4ac777f04bd5e393438005c5339439b1b",
+    "path": "single_mutant/stability/S571_1CTS_dTm.csv",
+    "size": 2730,
+    "type": "file"
+  },
+  {
+    "oid": "4dd8b7460ce4e92c1a721b227276b2cd7edf68a1",
+    "path": "single_mutant/stability/S571_1GWY_dTm.csv",
+    "size": 1531,
+    "type": "file"
+  },
+  {
+    "oid": "4e84ead30c5d727fd68b2dce5b7492ac1c5586e2",
+    "path": "single_mutant/stability/S571_1KA6_dTm.csv",
+    "size": 874,
+    "type": "file"
+  },
+  {
+    "oid": "9ddcf96571aa2f27ad0a548ecef1a051f05a39a2",
+    "path": "single_mutant/stability/S571_1KEV_dTm.csv",
+    "size": 4024,
+    "type": "file"
+  },
+  {
+    "oid": "b35395242a816340ace0cf95656e2117cf1cae14",
+    "path": "single_mutant/stability/S571_1LRP_dTm.csv",
+    "size": 2713,
+    "type": "file"
+  },
+  {
+    "oid": "34e3209f6ab0f6d74595d68e2771cc8e8861dccc",
+    "path": "single_mutant/stability/S571_1OSI_dTm.csv",
+    "size": 8269,
+    "type": "file"
+  },
+  {
+    "oid": "9da9fc9e91c6ded4c3f8f6e1a345a2bfa85cd3d5",
+    "path": "single_mutant/stability/S571_1PWX_dTm.csv",
+    "size": 41122,
+    "type": "file"
+  },
+  {
+    "oid": "a976fa27656f95a9bf7ab90878fa60e3cae489d0",
+    "path": "single_mutant/stability/S571_1RW5_dTm.csv",
+    "size": 1725,
+    "type": "file"
+  },
+  {
+    "oid": "bbb017ea91d48926b4cfa991ced94dc260edfa5e",
+    "path": "single_mutant/stability/S571_1XAS_dTm.csv",
+    "size": 3762,
+    "type": "file"
+  },
+  {
+    "oid": "1c3067f9eb54da53f3f1b74337c9c72d548affed",
+    "path": "single_mutant/stability/S571_2A36_dTm.csv",
+    "size": 607,
+    "type": "file"
+  },
+  {
+    "oid": "46a35670689bb6229a54204cf142fdc5cb3bb041",
+    "path": "single_mutant/stability/S571_2AFG_dTm.csv",
+    "size": 2673,
+    "type": "file"
+  },
+  {
+    "oid": "88f239da82435d4098e29d89b164a7a41bd47997",
+    "path": "single_mutant/stability/S571_3VUB_dTm.csv",
+    "size": 712,
+    "type": "file"
+  },
+  {
+    "oid": "fb1d289c6cef461f3949fa67517ae74662034d71",
+    "path": "single_mutant/stability/S669_1A7V_ddG.csv",
+    "size": 1817,
+    "type": "file"
+  },
+  {
+    "oid": "6ebf334e05cf4ada9e1a7ff56072bda68094d1db",
+    "path": "single_mutant/stability/S669_1DIV_ddG.csv",
+    "size": 8084,
+    "type": "file"
+  },
+  {
+    "oid": "54f6089a4ffb9d7fe5643ce72fe8386dbf5680b9",
+    "path": "single_mutant/stability/S669_1FXA_ddG.csv",
+    "size": 1234,
+    "type": "file"
+  },
+  {
+    "oid": "3d4e3e7c11e4f564459a6e6d178401cc297c50fa",
+    "path": "single_mutant/stability/S669_1G3P_ddG.csv",
+    "size": 6281,
+    "type": "file"
+  },
+  {
+    "oid": "1461be416974237cb3064f144435cba7157fce82",
+    "path": "single_mutant/stability/S669_1J8I_ddG.csv",
+    "size": 657,
+    "type": "file"
+  },
+  {
+    "oid": "77c52b98dbab4c923b15951b46d6cc94df92bd01",
+    "path": "single_mutant/stability/S669_1N88_ddG.csv",
+    "size": 1871,
+    "type": "file"
+  },
+  {
+    "oid": "9ff8ef5eba841ec3eb4b1a1774670268cea0626f",
+    "path": "single_mutant/stability/S669_1O1U_ddG.csv",
+    "size": 866,
+    "type": "file"
+  },
+  {
+    "oid": "60f3510abf6c45e8fdc5b015b72eae26f9e011eb",
+    "path": "single_mutant/stability/S669_1O6X_ddG.csv",
+    "size": 1891,
+    "type": "file"
+  },
+  {
+    "oid": "5443dda9fcad73ec65a6699b9c9ead27b2175d3f",
+    "path": "single_mutant/stability/S669_2HBB_ddG.csv",
+    "size": 2913,
+    "type": "file"
+  },
+  {
+    "oid": "21390cc3834c0d02cb1eb14865ae97a6f706eeab",
+    "path": "single_mutant/stability/S669_2PTL_ddG.csv",
+    "size": 6146,
+    "type": "file"
+  },
+  {
+    "oid": "07c978480a9be4528b1511bd3d63f5032fea378e",
+    "path": "single_mutant/stability/S669_2WQG_ddG.csv",
+    "size": 1824,
+    "type": "file"
+  },
+  {
+    "oid": "0c14df1b4b58ffa0c050cba79f5a1d67832ae5f3",
+    "path": "single_mutant/stability/S669_2ZTA_ddG.csv",
+    "size": 395,
+    "type": "file"
+  },
+  {
+    "oid": "417aa99716c5134ca88ccca2fc8160b0c25878f8",
+    "path": "single_mutant/stability/S669_3DV0_ddG.csv",
+    "size": 13678,
+    "type": "file"
+  },
+  {
+    "oid": "18baaee26b06c3e9e4c6d76f4eb27e37707edd20",
+    "path": "single_mutant/stability/S8754_1ACB_ddG.csv",
+    "size": 473,
+    "type": "file"
+  },
+  {
+    "oid": "601a20349f4782aec9bb89f1a03913d42f5d441b",
+    "path": "single_mutant/stability/S8754_1AJ3_ddG.csv",
+    "size": 8868,
+    "type": "file"
+  },
+  {
+    "oid": "fe12e4dea6873dc73b29057e10a00dafd16c10d6",
+    "path": "single_mutant/stability/S8754_1AKY_ddG.csv",
+    "size": 1438,
+    "type": "file"
+  },
+  {
+    "oid": "9586004064b9f16a9a4a44096fd13ace221e3b14",
+    "path": "single_mutant/stability/S8754_1APS_ddG.csv",
+    "size": 3003,
+    "type": "file"
+  },
+  {
+    "oid": "2b1211bc5ea4b6862cb04bed5f483afa8b6d995d",
+    "path": "single_mutant/stability/S8754_1ARR_ddG.csv",
+    "size": 4463,
+    "type": "file"
+  },
+  {
+    "oid": "bbbe5926c380349b0e5caf195c4f83dd7b7d2a8a",
+    "path": "single_mutant/stability/S8754_1AYI_ddG.csv",
+    "size": 1219,
+    "type": "file"
+  },
+  {
+    "oid": "bc69b899e9bbc89fe8606bc3dae52c03f0eb1dcf",
+    "path": "single_mutant/stability/S8754_1BKS_ddG.csv",
+    "size": 3398,
+    "type": "file"
+  },
+  {
+    "oid": "21fbe1b97da038e236f9bab9e7ddaffad47456c9",
+    "path": "single_mutant/stability/S8754_1BNI_ddG.csv",
+    "size": 21150,
+    "type": "file"
+  },
+  {
+    "oid": "da1605d98ce0a4911d61af939c61fad2effcdcf2",
+    "path": "single_mutant/stability/S8754_1BNZ_ddG.csv",
+    "size": 1857,
+    "type": "file"
+  },
+  {
+    "oid": "d0e50e26f05d61b7c715fccdc6aeb846dfcfad0e",
+    "path": "single_mutant/stability/S8754_1BTA_ddG.csv",
+    "size": 1657,
+    "type": "file"
+  },
+  {
+    "oid": "f64fc5939d4bb140beac3aaf365511e879e95c20",
+    "path": "single_mutant/stability/S8754_1C2R_ddG.csv",
+    "size": 955,
+    "type": "file"
+  },
+  {
+    "oid": "6bdb5d671f864f46d04857f6b8075349ecfee996",
+    "path": "single_mutant/stability/S8754_1C9O_ddG.csv",
+    "size": 2199,
+    "type": "file"
+  },
+  {
+    "oid": "6ffdc357428a7cc099d4d7e9e563994cf785287c",
+    "path": "single_mutant/stability/S8754_1CDC_ddG.csv",
+    "size": 1035,
+    "type": "file"
+  },
+  {
+    "oid": "a103311c1828a88bc1b19a25eaefac78697f5945",
+    "path": "single_mutant/stability/S8754_1CFD_ddG.csv",
+    "size": 1514,
+    "type": "file"
+  },
+  {
+    "oid": "672a807cf981d8e058bb90c496edd5dd6d027c48",
+    "path": "single_mutant/stability/S8754_1CM2_ddG.csv",
+    "size": 932,
+    "type": "file"
+  },
+  {
+    "oid": "c8b75591b5fc3902d30f937b5e64ab16cdf5453c",
+    "path": "single_mutant/stability/S8754_1CSP_ddG.csv",
+    "size": 4241,
+    "type": "file"
+  },
+  {
+    "oid": "13ff26016044c3540529161dbbebef5bddfb8789",
+    "path": "single_mutant/stability/S8754_1CYO_ddG.csv",
+    "size": 1464,
+    "type": "file"
+  },
+  {
+    "oid": "fb00414b871292897b47067873321e0514987386",
+    "path": "single_mutant/stability/S8754_1DKT_ddG.csv",
+    "size": 1941,
+    "type": "file"
+  },
+  {
+    "oid": "0f78ad91d38dea91918d21489b9bd029b7c021b2",
+    "path": "single_mutant/stability/S8754_1E65_ddG.csv",
+    "size": 4819,
+    "type": "file"
+  },
+  {
+    "oid": "872c4e37256b51021e1e0ac56e99d5dca4b3f377",
+    "path": "single_mutant/stability/S8754_1EY0_ddG.csv",
+    "size": 90596,
+    "type": "file"
+  },
+  {
+    "oid": "0c0add90718ab013ae30464bb00bcad6debf50a9",
+    "path": "single_mutant/stability/S8754_1FKJ_ddG.csv",
+    "size": 6327,
+    "type": "file"
+  },
+  {
+    "oid": "d8c630af0bfb2725e0c3370d62c92a9a9f84220a",
+    "path": "single_mutant/stability/S8754_1FLV_ddG.csv",
+    "size": 2123,
+    "type": "file"
+  },
+  {
+    "oid": "56553c20cdb31748e665cd32c7647e4742691471",
+    "path": "single_mutant/stability/S8754_1FVK_ddG.csv",
+    "size": 1260,
+    "type": "file"
+  },
+  {
+    "oid": "af50d0315edf0a0c146d40ac65a93aa6143267ec",
+    "path": "single_mutant/stability/S8754_1G4I_ddG.csv",
+    "size": 1251,
+    "type": "file"
+  },
+  {
+    "oid": "e570b9d5aa9116c82ad76874da8cc3d6758a85ef",
+    "path": "single_mutant/stability/S8754_1HFY_ddG.csv",
+    "size": 3462,
+    "type": "file"
+  },
+  {
+    "oid": "3528c0c4ead652075d81b92b72b7cb51f67a2cd3",
+    "path": "single_mutant/stability/S8754_1HK0_ddG.csv",
+    "size": 2071,
+    "type": "file"
+  },
+  {
+    "oid": "6ce4abf1713750be273e5cb69491aafef72ccb96",
+    "path": "single_mutant/stability/S8754_1HMS_ddG.csv",
+    "size": 2486,
+    "type": "file"
+  },
+  {
+    "oid": "71fc5a01b894c2b688127fdd29da66e78ecc608d",
+    "path": "single_mutant/stability/S8754_1HNG_ddG.csv",
+    "size": 1916,
+    "type": "file"
+  },
+  {
+    "oid": "965a12a0cb69c85bc587cced997d5fc93e07d9b1",
+    "path": "single_mutant/stability/S8754_1HRC_ddG.csv",
+    "size": 1459,
+    "type": "file"
+  },
+  {
+    "oid": "0628463ef646aaba51f528e7779a10f1b1a4519b",
+    "path": "single_mutant/stability/S8754_1IGV_ddG.csv",
+    "size": 1612,
+    "type": "file"
+  },
+  {
+    "oid": "e48133775dd491266b60b4a7ea056a66c63bdfed",
+    "path": "single_mutant/stability/S8754_1IMQ_ddG.csv",
+    "size": 917,
+    "type": "file"
+  },
+  {
+    "oid": "a2501366b34756538ac0084aab899b9dfb1e55fa",
+    "path": "single_mutant/stability/S8754_1IO2_ddG.csv",
+    "size": 3266,
+    "type": "file"
+  },
+  {
+    "oid": "b727102c6f27a5fc59791ebf4530601f07987cdd",
+    "path": "single_mutant/stability/S8754_1JOK_ddG.csv",
+    "size": 2926,
+    "type": "file"
+  },
+  {
+    "oid": "58f221f4e1b3afc6f8b908c0ce903a840a8a3276",
+    "path": "single_mutant/stability/S8754_1KA6_ddG.csv",
+    "size": 878,
+    "type": "file"
+  },
+  {
+    "oid": "4737fe5b63e353a3bbb6ad06ade7c3d3a023b1b9",
+    "path": "single_mutant/stability/S8754_1L63_ddG.csv",
+    "size": 7581,
+    "type": "file"
+  },
+  {
+    "oid": "c10c4116210cff12b44a81ae927a53fa632bdaea",
+    "path": "single_mutant/stability/S8754_1LNI_ddG.csv",
+    "size": 7366,
+    "type": "file"
+  },
+  {
+    "oid": "c45f6b6654df306a3e49167c8ac9603880526fb9",
+    "path": "single_mutant/stability/S8754_1LRP_ddG.csv",
+    "size": 1586,
+    "type": "file"
+  },
+  {
+    "oid": "4f823d36282ee5f26db0890aa93a51a7408955d0",
+    "path": "single_mutant/stability/S8754_1LZ1_ddG.csv",
+    "size": 18913,
+    "type": "file"
+  },
+  {
+    "oid": "faa327a2a5fa7a4dfdf59b6dddd1a2a66446f267",
+    "path": "single_mutant/stability/S8754_1MGR_ddG.csv",
+    "size": 917,
+    "type": "file"
+  },
+  {
+    "oid": "d26854ec7a5567933643fa695e732eea93957e2b",
+    "path": "single_mutant/stability/S8754_1NMV_ddG.csv",
+    "size": 10355,
+    "type": "file"
+  },
+  {
+    "oid": "438002ab8403587bb93ea441961e97681dc59c0f",
+    "path": "single_mutant/stability/S8754_1OH0_ddG.csv",
+    "size": 1178,
+    "type": "file"
+  },
+  {
+    "oid": "793d15beda27f907887d8665539ec57c0bef0e3d",
+    "path": "single_mutant/stability/S8754_1OIA_ddG.csv",
+    "size": 1533,
+    "type": "file"
+  },
+  {
+    "oid": "030c132933956607bdc29da340a0485d2da33fe7",
+    "path": "single_mutant/stability/S8754_1OTR_ddG.csv",
+    "size": 2227,
+    "type": "file"
+  },
+  {
+    "oid": "152c789fa5866de5fc5a0ccca21d7ae0584fbffd",
+    "path": "single_mutant/stability/S8754_1PGA_ddG.csv",
+    "size": 60993,
+    "type": "file"
+  },
+  {
+    "oid": "e9f65204999feb10fccc9ff095c3a7e02aa84252",
+    "path": "single_mutant/stability/S8754_1POH_ddG.csv",
+    "size": 1597,
+    "type": "file"
+  },
+  {
+    "oid": "d23d382f0be89f5596ddc09a55fac256898841d1",
+    "path": "single_mutant/stability/S8754_1QJP_ddG.csv",
+    "size": 2227,
+    "type": "file"
+  },
+  {
+    "oid": "f3c21bb501fbea1690bb0d52d2788a66d4dbca74",
+    "path": "single_mutant/stability/S8754_1QLP_ddG.csv",
+    "size": 18702,
+    "type": "file"
+  },
+  {
+    "oid": "69c4400be1342de53140e9f6a31264a2bf6a866a",
+    "path": "single_mutant/stability/S8754_1REI_ddG.csv",
+    "size": 1386,
+    "type": "file"
+  },
+  {
+    "oid": "1fab8b93607835f22f0ddc4d56eec024a6f2a74c",
+    "path": "single_mutant/stability/S8754_1RHG_ddG.csv",
+    "size": 1936,
+    "type": "file"
+  },
+  {
+    "oid": "d196096e251eac3304b7e40d462d3b4f55a70116",
+    "path": "single_mutant/stability/S8754_1RN1_ddG.csv",
+    "size": 7279,
+    "type": "file"
+  },
+  {
+    "oid": "7ff3b66c466599509c3372cb1303a939e7faa1dc",
+    "path": "single_mutant/stability/S8754_1ROP_ddG.csv",
+    "size": 1582,
+    "type": "file"
+  },
+  {
+    "oid": "506364c5c4b76bec0d5febf4d6bfdc7341375291",
+    "path": "single_mutant/stability/S8754_1RTB_ddG.csv",
+    "size": 8214,
+    "type": "file"
+  },
+  {
+    "oid": "0ad1384102beb6d2eb1288ef45e8b83b1555e03a",
+    "path": "single_mutant/stability/S8754_1SCE_ddG.csv",
+    "size": 2027,
+    "type": "file"
+  },
+  {
+    "oid": "16148595ea5011b49c32bce14a0de141d829d5e9",
+    "path": "single_mutant/stability/S8754_1SHG_ddG.csv",
+    "size": 582,
+    "type": "file"
+  },
+  {
+    "oid": "bc4875c5e28fe1fab26b5e2eaa303ff532c50b33",
+    "path": "single_mutant/stability/S8754_1SUP_ddG.csv",
+    "size": 1757,
+    "type": "file"
+  },
+  {
+    "oid": "1c318ae7072ed120d815741a64a31a797e2c505f",
+    "path": "single_mutant/stability/S8754_1TIN_ddG.csv",
+    "size": 511,
+    "type": "file"
+  },
+  {
+    "oid": "7f23843ff4d7f4bce9c7f07ca156e39a6b1bd81e",
+    "path": "single_mutant/stability/S8754_1TTG_ddG.csv",
+    "size": 4166,
+    "type": "file"
+  },
+  {
+    "oid": "86d83117cdc67eefef046db879301217a8949a5a",
+    "path": "single_mutant/stability/S8754_1U7S_ddG.csv",
+    "size": 19189,
+    "type": "file"
+  },
+  {
+    "oid": "1829f50e5de6692ce744efd53320276d6f69f542",
+    "path": "single_mutant/stability/S8754_1UBQ_ddG.csv",
+    "size": 4103,
+    "type": "file"
+  },
+  {
+    "oid": "c6c0a32dbd5957245f887b5a6c0256c66328852d",
+    "path": "single_mutant/stability/S8754_1UZC_ddG.csv",
+    "size": 3996,
+    "type": "file"
+  },
+  {
+    "oid": "373da12b2342792649fcbf513a8196a631c657c0",
+    "path": "single_mutant/stability/S8754_1VQB_ddG.csv",
+    "size": 9093,
+    "type": "file"
+  },
+  {
+    "oid": "b4d21351bddaef56e406ce38f4b3bd6248635c58",
+    "path": "single_mutant/stability/S8754_1WPQ_ddG.csv",
+    "size": 2232,
+    "type": "file"
+  },
+  {
+    "oid": "8766c53489cf6ba5ff1f89269cabf94d1599cb61",
+    "path": "single_mutant/stability/S8754_1WQ5_ddG.csv",
+    "size": 16167,
+    "type": "file"
+  },
+  {
+    "oid": "e87f9563c9ffdd5eca21e680757be0b3b3e22775",
+    "path": "single_mutant/stability/S8754_1XAS_ddG.csv",
+    "size": 3878,
+    "type": "file"
+  },
+  {
+    "oid": "c29b6b4b63b7af66cf122b9a84136e1add3a662f",
+    "path": "single_mutant/stability/S8754_1YYJ_ddG.csv",
+    "size": 4394,
+    "type": "file"
+  },
+  {
+    "oid": "577f05360de520526992b6a8861e2cc83b2d138e",
+    "path": "single_mutant/stability/S8754_1ZNJ_ddG.csv",
+    "size": 367,
+    "type": "file"
+  },
+  {
+    "oid": "093eda175e608e4314eeb3c0c346893aa2fd78e2",
+    "path": "single_mutant/stability/S8754_2A36_ddG.csv",
+    "size": 592,
+    "type": "file"
+  },
+  {
+    "oid": "1eadb2d25b0a1dd29de84e943757c29cb340a733",
+    "path": "single_mutant/stability/S8754_2ABD_ddG.csv",
+    "size": 3068,
+    "type": "file"
+  },
+  {
+    "oid": "881caf5c15a92ef4e87cb7c45d833e03b24e902a",
+    "path": "single_mutant/stability/S8754_2AFG_ddG.csv",
+    "size": 5259,
+    "type": "file"
+  },
+  {
+    "oid": "8d463a4fc7557ad0b81a81f96890540d72613349",
+    "path": "single_mutant/stability/S8754_2BRD_ddG.csv",
+    "size": 6247,
+    "type": "file"
+  },
+  {
+    "oid": "baecea718fb4995b05bef042a8dd0077c80870b9",
+    "path": "single_mutant/stability/S8754_2CI2_ddG.csv",
+    "size": 7866,
+    "type": "file"
+  },
+  {
+    "oid": "64be96cdb314a6f8055514a7167d6289e8c73eb8",
+    "path": "single_mutant/stability/S8754_2CK2_ddG.csv",
+    "size": 1105,
+    "type": "file"
+  },
+  {
+    "oid": "e49b927a96f94b031b0729d5d88066e74b4f5b5c",
+    "path": "single_mutant/stability/S8754_2DRI_ddG.csv",
+    "size": 3449,
+    "type": "file"
+  },
+  {
+    "oid": "cee32a250af42d6239d40ed2c4f0bb1250715992",
+    "path": "single_mutant/stability/S8754_2EWN_ddG.csv",
+    "size": 3035,
+    "type": "file"
+  },
+  {
+    "oid": "ffd2b9ea399c70038af569100a615d026ba971ab",
+    "path": "single_mutant/stability/S8754_2H6X_ddG.csv",
+    "size": 6529,
+    "type": "file"
+  },
+  {
+    "oid": "28f842b5d376967eb80f9d158df8f35e141ac34b",
+    "path": "single_mutant/stability/S8754_2IFB_ddG.csv",
+    "size": 1768,
+    "type": "file"
+  },
+  {
+    "oid": "2f126431025e008a7a4f67a0603419dccda0bd21",
+    "path": "single_mutant/stability/S8754_2LZM_ddG.csv",
+    "size": 52123,
+    "type": "file"
+  },
+  {
+    "oid": "04796a079c375fe77220332647939b5a9f93c0b6",
+    "path": "single_mutant/stability/S8754_2MMX_ddG.csv",
+    "size": 1006,
+    "type": "file"
+  },
+  {
+    "oid": "73ad90b57622c5d6fd60bd203f7a18c257f49f3e",
+    "path": "single_mutant/stability/S8754_2NVH_ddG.csv",
+    "size": 2496,
+    "type": "file"
+  },
+  {
+    "oid": "40d3e9c834490b88eb25b76d61ec197a4e93abf6",
+    "path": "single_mutant/stability/S8754_2RN2_ddG.csv",
+    "size": 13248,
+    "type": "file"
+  },
+  {
+    "oid": "342eade1e1ecdba37c8f4056d942f4d8d933e41a",
+    "path": "single_mutant/stability/S8754_3F6R_ddG.csv",
+    "size": 2218,
+    "type": "file"
+  },
+  {
+    "oid": "6b747d0adde8c112c29409198c5401ee2b6b9cf8",
+    "path": "single_mutant/stability/S8754_3HHR_ddG.csv",
+    "size": 2057,
+    "type": "file"
+  },
+  {
+    "oid": "4fd49a872aee7c38dfc2d0c6ccd2082164f1957e",
+    "path": "single_mutant/stability/S8754_3MBP_ddG.csv",
+    "size": 12299,
+    "type": "file"
+  },
+  {
+    "oid": "ae534c69fe75262cdfd10651bfef6f8cdf40a3ca",
+    "path": "single_mutant/stability/S8754_3PGK_ddG.csv",
+    "size": 3922,
+    "type": "file"
+  },
+  {
+    "oid": "e2d821f9db27a9df0811708036fdbdfeeea142ec",
+    "path": "single_mutant/stability/S8754_3SSI_ddG.csv",
+    "size": 2787,
+    "type": "file"
+  },
+  {
+    "oid": "7a642de9d6a5dbd3073394a5d5b985dd32b09b35",
+    "path": "single_mutant/stability/S8754_3X3U_ddG.csv",
+    "size": 1024,
+    "type": "file"
+  },
+  {
+    "oid": "1f57128a62680936c9bf412ec0f5eed558338f8f",
+    "path": "single_mutant/stability/S8754_451C_ddG.csv",
+    "size": 988,
+    "type": "file"
+  },
+  {
+    "oid": "f31c70dc8c4002df7fdc5d7d3549aa89e658f3a9",
+    "path": "single_mutant/stability/S8754_4LYZ_ddG.csv",
+    "size": 8841,
+    "type": "file"
+  },
+  {
+    "oid": "08a4e8d07e5d7c3e422053437122f119d4e53aa6",
+    "path": "single_mutant/stability/S8754_5CRO_ddG.csv",
+    "size": 895,
+    "type": "file"
+  },
+  {
+    "oid": "53f0218cdd36440f69d2c9477c221d0a74c98c10",
+    "path": "single_mutant/stability/S8754_5DFR_ddG.csv",
+    "size": 19384,
+    "type": "file"
+  },
+  {
+    "oid": "ef7d667156fdda7c227ef9075820d850b2f2d9e9",
+    "path": "single_mutant/stability/S8754_5EMZ_ddG.csv",
+    "size": 2421,
+    "type": "file"
+  },
+  {
+    "oid": "579d2af28b245aa5353f95e289e2241f0827b1bf",
+    "path": "single_mutant/stability/S8754_5PTI_ddG.csv",
+    "size": 5574,
+    "type": "file"
+  },
+  {
+    "oid": "a7354d8f127fdb8fed4a87409ed530d742a7cfa7",
+    "path": "single_mutant/stability/S8754_9RNT_ddG.csv",
+    "size": 1960,
+    "type": "file"
+  },
+  {
+    "oid": "64546037dfa99c49c72f4b781b4045474b027e0a",
+    "path": "single_mutant/stability/S8754_P00644_ddG.csv",
+    "size": 55493,
+    "type": "file"
+  },
+  {
+    "oid": "ef00cd6c365f07a12307c32d4538cd31e3351fb7",
+    "path": "single_mutant/stability/S8754_P00648_ddG.csv",
+    "size": 2403,
+    "type": "file"
+  },
+  {
+    "oid": "fc431c371d4caf0b76b841e6433afce9083e96f1",
+    "path": "single_mutant/stability/S8754_P05230_ddG.csv",
+    "size": 2068,
+    "type": "file"
+  },
+  {
+    "oid": "eb3388875e80a5c543b22311889172d24b69b4db",
+    "path": "single_mutant/stability/S8754_P06654_ddG.csv",
+    "size": 64533,
+    "type": "file"
+  },
+  {
+    "oid": "b34d9131e12f712dc85285cccd8f77865793e822",
+    "path": "single_mutant/stability/S8754_P06876_ddG.csv",
+    "size": 10415,
+    "type": "file"
+  },
+  {
+    "oid": "8b3ca18647a77bb409a4185b7b53ab5bc8f86218",
+    "path": "single_mutant/stability/S8754_P0ABE7_ddG.csv",
+    "size": 1987,
+    "type": "file"
+  },
+  {
+    "oid": "1ec110a81ccd771f64a537d974b950ce69ec5418",
+    "path": "single_mutant/stability/S8754_P62593_ddG.csv",
+    "size": 1841,
+    "type": "file"
+  },
+  {
+    "oid": "e21513ccc5f72db30fd322590413f617d9dfc98b",
+    "path": "single_mutant/stability/S8754_P62942_ddG.csv",
+    "size": 3887,
+    "type": "file"
+  },
+  {
+    "oid": "64444c42c34e2079ebbab88e4a5e6e30e00800c5",
+    "path": "single_mutant/stability/T7-RNAP_dTm.csv",
+    "size": 31343,
+    "type": "file"
+  },
+  {
+    "oid": "e395cc5c6ce92ecd2e9b445be6c560b23c4f3967",
+    "path": "single_mutant/stability/fireprotdb_1A5E_dTm.csv",
+    "size": 1703,
+    "type": "file"
+  },
+  {
+    "oid": "b7d5805995743eca04003d9b840f3196576a3797",
+    "path": "single_mutant/stability/fireprotdb_1AAR_ddG.csv",
+    "size": 7090,
+    "type": "file"
+  },
+  {
+    "oid": "d32114867bcee0fe0e460d8243117a05ba469ec2",
+    "path": "single_mutant/stability/fireprotdb_1AG2_ddG.csv",
+    "size": 2723,
+    "type": "file"
+  },
+  {
+    "oid": "03d4cc20150f991df8b94c7b40501f7c17211257",
+    "path": "single_mutant/stability/fireprotdb_1AKK_ddG.csv",
+    "size": 1239,
+    "type": "file"
+  },
+  {
+    "oid": "84427b5583e26085218db0d00b56d7816ff186e9",
+    "path": "single_mutant/stability/fireprotdb_1AMQ_ddG.csv",
+    "size": 11679,
+    "type": "file"
+  },
+  {
+    "oid": "6820d48be2fcf9c0a0481285bc39fe1f944a8564",
+    "path": "single_mutant/stability/fireprotdb_1APS_ddG.csv",
+    "size": 3024,
+    "type": "file"
+  },
+  {
+    "oid": "f18751bd8f11d2ef942e8e8edd0e35f2c844679d",
+    "path": "single_mutant/stability/fireprotdb_1ARR_dTm.csv",
+    "size": 3188,
+    "type": "file"
+  },
+  {
+    "oid": "5810070519cb921aecb77d48a2bdf3220ca39ebc",
+    "path": "single_mutant/stability/fireprotdb_1ARR_ddG.csv",
+    "size": 4544,
+    "type": "file"
+  },
+  {
+    "oid": "124adef92b99fc9e2706c11183652e39ae27eede",
+    "path": "single_mutant/stability/fireprotdb_1AXB_dTm.csv",
+    "size": 2408,
+    "type": "file"
+  },
+  {
+    "oid": "1f826d3eba80a08b1631a0624760bb857ecb2e61",
+    "path": "single_mutant/stability/fireprotdb_1AXB_ddG.csv",
+    "size": 1824,
+    "type": "file"
+  },
+  {
+    "oid": "1677d4d6ce7063829f24d2649c8297ebb7d64322",
+    "path": "single_mutant/stability/fireprotdb_1AYF_dTm.csv",
+    "size": 3029,
+    "type": "file"
+  },
+  {
+    "oid": "b8a361f4235482dbae0252f293fb958b0c7ddc66",
+    "path": "single_mutant/stability/fireprotdb_1AYF_ddG.csv",
+    "size": 2521,
+    "type": "file"
+  },
+  {
+    "oid": "1bf8b8d64330b7a574c68739da8b025483b3692e",
+    "path": "single_mutant/stability/fireprotdb_1AZP_ddG.csv",
+    "size": 1910,
+    "type": "file"
+  },
+  {
+    "oid": "a69ca26351c6c2a70ff728ab4d9053b03e9bdccc",
+    "path": "single_mutant/stability/fireprotdb_1BFG_dTm.csv",
+    "size": 3035,
+    "type": "file"
+  },
+  {
+    "oid": "3393cfc2bdc95b344b3e035a6747bd669a62a413",
+    "path": "single_mutant/stability/fireprotdb_1BNI_dTm.csv",
+    "size": 5797,
+    "type": "file"
+  },
+  {
+    "oid": "4f0abb6436cd3476bb57d550167b743922467b58",
+    "path": "single_mutant/stability/fireprotdb_1BNI_ddG.csv",
+    "size": 30579,
+    "type": "file"
+  },
+  {
+    "oid": "d5ab549db3019feebe78a4fc5a80cfa8924c0dd4",
+    "path": "single_mutant/stability/fireprotdb_1BP2_ddG.csv",
+    "size": 1445,
+    "type": "file"
+  },
+  {
+    "oid": "391e5cdd858fc29fea486fde94628fa77827317d",
+    "path": "single_mutant/stability/fireprotdb_1BPI_dTm.csv",
+    "size": 5319,
+    "type": "file"
+  },
+  {
+    "oid": "f1af92e8383ba5ce483869f31019cc816c4c49ae",
+    "path": "single_mutant/stability/fireprotdb_1BPI_ddG.csv",
+    "size": 7755,
+    "type": "file"
+  },
+  {
+    "oid": "67a3193d7cf957610326024ee3b69dc203eaf3ba",
+    "path": "single_mutant/stability/fireprotdb_1BTA_ddG.csv",
+    "size": 1726,
+    "type": "file"
+  },
+  {
+    "oid": "d78b82e09d4532e54ab7686f33f49d72c99c5e5f",
+    "path": "single_mutant/stability/fireprotdb_1BVC_dTm.csv",
+    "size": 5987,
+    "type": "file"
+  },
+  {
+    "oid": "b6e479e98497913d68cf91f6204968ccdb9ac5e4",
+    "path": "single_mutant/stability/fireprotdb_1BVC_ddG.csv",
+    "size": 12830,
+    "type": "file"
+  },
+  {
+    "oid": "cdc803cb42847a3a896dc4dd76f4cc846b08d9ef",
+    "path": "single_mutant/stability/fireprotdb_1C2R_ddG.csv",
+    "size": 1104,
+    "type": "file"
+  },
+  {
+    "oid": "bf06a4e1071841a73821fcd939cb5d212dc918b3",
+    "path": "single_mutant/stability/fireprotdb_1C9O_dTm.csv",
+    "size": 1890,
+    "type": "file"
+  },
+  {
+    "oid": "9e74cdb8355860682de589bd527634cb973e3724",
+    "path": "single_mutant/stability/fireprotdb_1C9O_ddG.csv",
+    "size": 2273,
+    "type": "file"
+  },
+  {
+    "oid": "a460bf8ad84a88cbd761faff574246702887149b",
+    "path": "single_mutant/stability/fireprotdb_1CAH_ddG.csv",
+    "size": 3653,
+    "type": "file"
+  },
+  {
+    "oid": "cd7fc890eee9973673c9f6f04f2005d46c657438",
+    "path": "single_mutant/stability/fireprotdb_1CEY_ddG.csv",
+    "size": 2011,
+    "type": "file"
+  },
+  {
+    "oid": "e1d98c00576fff33e037b02f46a753970de5c409",
+    "path": "single_mutant/stability/fireprotdb_1CF3_dTm.csv",
+    "size": 9892,
+    "type": "file"
+  },
+  {
+    "oid": "4864eb3fdcd855cb8498cd2df1b4960e366d8e1a",
+    "path": "single_mutant/stability/fireprotdb_1CLW_dTm.csv",
+    "size": 4790,
+    "type": "file"
+  },
+  {
+    "oid": "3d610b1a9bf07310ec050cef1ce29729bc4ac4f3",
+    "path": "single_mutant/stability/fireprotdb_1CLW_ddG.csv",
+    "size": 5503,
+    "type": "file"
+  },
+  {
+    "oid": "e1c0869dbd5c23c8a68ad148ce41d5d7ece576ca",
+    "path": "single_mutant/stability/fireprotdb_1CQW_dTm.csv",
+    "size": 3699,
+    "type": "file"
+  },
+  {
+    "oid": "fddcf23882588bc59e0a03a402ec10f5e0030bbf",
+    "path": "single_mutant/stability/fireprotdb_1CSP_dTm.csv",
+    "size": 1200,
+    "type": "file"
+  },
+  {
+    "oid": "0abf6939fa4542611237763d3c5f7cb9d6c32e08",
+    "path": "single_mutant/stability/fireprotdb_1CSP_ddG.csv",
+    "size": 5218,
+    "type": "file"
+  },
+  {
+    "oid": "ccc4af2da5ac9235be7f78c08282ff51b1eddb17",
+    "path": "single_mutant/stability/fireprotdb_1CTS_dTm.csv",
+    "size": 2892,
+    "type": "file"
+  },
+  {
+    "oid": "f0443bd10bfe8dcfcc5f0d5319080396c8e38923",
+    "path": "single_mutant/stability/fireprotdb_1CYO_dTm.csv",
+    "size": 1053,
+    "type": "file"
+  },
+  {
+    "oid": "89095094175b0ae711e63179cf9ca02f6102d530",
+    "path": "single_mutant/stability/fireprotdb_1CYO_ddG.csv",
+    "size": 1964,
+    "type": "file"
+  },
+  {
+    "oid": "ef18255e8f9ed839de09af4a3114612871933aa6",
+    "path": "single_mutant/stability/fireprotdb_1DIV_ddG.csv",
+    "size": 5080,
+    "type": "file"
+  },
+  {
+    "oid": "36ce9bc82e3df89de832f01b34a5a5d75dd81c0d",
+    "path": "single_mutant/stability/fireprotdb_1DKT_ddG.csv",
+    "size": 1820,
+    "type": "file"
+  },
+  {
+    "oid": "085184b17f258637a8dd1deb2f0e3d2a01462cee",
+    "path": "single_mutant/stability/fireprotdb_1FC1_ddG.csv",
+    "size": 5510,
+    "type": "file"
+  },
+  {
+    "oid": "054b7604512684d0c477866ec357b02db5c7a38d",
+    "path": "single_mutant/stability/fireprotdb_1FEP_ddG.csv",
+    "size": 5344,
+    "type": "file"
+  },
+  {
+    "oid": "fada495fd2d4e3696ebda9a0494a561d1a487f97",
+    "path": "single_mutant/stability/fireprotdb_1FKJ_ddG.csv",
+    "size": 4839,
+    "type": "file"
+  },
+  {
+    "oid": "b249210871a4a1705636adc2606d597f6ac462e4",
+    "path": "single_mutant/stability/fireprotdb_1FMK_ddG.csv",
+    "size": 26340,
+    "type": "file"
+  },
+  {
+    "oid": "d208c0e7d5fd7d5bfb3728ddd5cee457c46414d7",
+    "path": "single_mutant/stability/fireprotdb_1FTG_dTm.csv",
+    "size": 7402,
+    "type": "file"
+  },
+  {
+    "oid": "4a4e4bcbecdab6c57fa5cb9d85e1f22f8f05a506",
+    "path": "single_mutant/stability/fireprotdb_1FTG_ddG.csv",
+    "size": 9693,
+    "type": "file"
+  },
+  {
+    "oid": "34b69cdcc873076acc7addb7e014d6e462bebe8c",
+    "path": "single_mutant/stability/fireprotdb_1FXA_ddG.csv",
+    "size": 1135,
+    "type": "file"
+  },
+  {
+    "oid": "e49828c2cac5f8153f551e44b615dca0d1a66b2a",
+    "path": "single_mutant/stability/fireprotdb_1H0C_dTm.csv",
+    "size": 3737,
+    "type": "file"
+  },
+  {
+    "oid": "7f163d99d7033989e7e225cf114309a3f1b61096",
+    "path": "single_mutant/stability/fireprotdb_1H7M_dTm.csv",
+    "size": 3194,
+    "type": "file"
+  },
+  {
+    "oid": "066ba43ef931b3dd5b0e6cac3a234ed5b5b1a80f",
+    "path": "single_mutant/stability/fireprotdb_1H7M_ddG.csv",
+    "size": 3307,
+    "type": "file"
+  },
+  {
+    "oid": "5e3739217e8fcea913e39183c055239798a05e63",
+    "path": "single_mutant/stability/fireprotdb_1H8V_dTm.csv",
+    "size": 3953,
+    "type": "file"
+  },
+  {
+    "oid": "4173023ea0f41705798acda03d280b81661cf771",
+    "path": "single_mutant/stability/fireprotdb_1HFY_ddG.csv",
+    "size": 3783,
+    "type": "file"
+  },
+  {
+    "oid": "7f7817ec61ca40ee8de62b8506c447ee99eaaa58",
+    "path": "single_mutant/stability/fireprotdb_1HFZ_dTm.csv",
+    "size": 4489,
+    "type": "file"
+  },
+  {
+    "oid": "261c794562c65077e9c66be3a154f92e1eacef26",
+    "path": "single_mutant/stability/fireprotdb_1HFZ_ddG.csv",
+    "size": 3645,
+    "type": "file"
+  },
+  {
+    "oid": "708e07f31cb19387d8146d6dd256dcf35370efe6",
+    "path": "single_mutant/stability/fireprotdb_1HK0_ddG.csv",
+    "size": 2001,
+    "type": "file"
+  },
+  {
+    "oid": "8e7e46e77c05247865730b3783f480c404d37c11",
+    "path": "single_mutant/stability/fireprotdb_1HNG_ddG.csv",
+    "size": 3663,
+    "type": "file"
+  },
+  {
+    "oid": "cf9da3e296a1df1f8fe5f1da2f396332166e786d",
+    "path": "single_mutant/stability/fireprotdb_1HTI_ddG.csv",
+    "size": 1822,
+    "type": "file"
+  },
+  {
+    "oid": "73103928fdaeb6b3d146a1b504c125ce891a5dd9",
+    "path": "single_mutant/stability/fireprotdb_1HUE_dTm.csv",
+    "size": 776,
+    "type": "file"
+  },
+  {
+    "oid": "96cb8e8807fe0df325ae1aa050237638747f8118",
+    "path": "single_mutant/stability/fireprotdb_1HZ6_ddG.csv",
+    "size": 49817,
+    "type": "file"
+  },
+  {
+    "oid": "19a91275e3bf6a776b22610d3ce269e655f0a50a",
+    "path": "single_mutant/stability/fireprotdb_1IFB_ddG.csv",
+    "size": 2132,
+    "type": "file"
+  },
+  {
+    "oid": "3b3cad30296bee6cbdd59e77bcc2cbd54d3ab71c",
+    "path": "single_mutant/stability/fireprotdb_1IGV_ddG.csv",
+    "size": 1526,
+    "type": "file"
+  },
+  {
+    "oid": "57eb3e21a7a95a71acb9aa90c7737836510e2de7",
+    "path": "single_mutant/stability/fireprotdb_1IMQ_ddG.csv",
+    "size": 947,
+    "type": "file"
+  },
+  {
+    "oid": "49e756146797842cf635a0526d2923b9a2af1079",
+    "path": "single_mutant/stability/fireprotdb_1IO2_dTm.csv",
+    "size": 3383,
+    "type": "file"
+  },
+  {
+    "oid": "2de969c7f70edcc62ce9f53e1a125f0fad4b6874",
+    "path": "single_mutant/stability/fireprotdb_1IO2_ddG.csv",
+    "size": 3466,
+    "type": "file"
+  },
+  {
+    "oid": "8984b3421c0557211b6466cd418219c823fccbcd",
+    "path": "single_mutant/stability/fireprotdb_1IOB_ddG.csv",
+    "size": 4346,
+    "type": "file"
+  },
+  {
+    "oid": "097f2bec070dfd24b95e97e4bbe01113dee0ad40",
+    "path": "single_mutant/stability/fireprotdb_1KA6_dTm.csv",
+    "size": 874,
+    "type": "file"
+  },
+  {
+    "oid": "1d25ef67d55223da30f45abc9ccac80dc2130afe",
+    "path": "single_mutant/stability/fireprotdb_1KEV_dTm.csv",
+    "size": 2994,
+    "type": "file"
+  },
+  {
+    "oid": "904f09edccb25538c86b0afd6a55d58a0e91f282",
+    "path": "single_mutant/stability/fireprotdb_1LRP_dTm.csv",
+    "size": 6729,
+    "type": "file"
+  },
+  {
+    "oid": "6163f8511b92277232eae94051851c90bc5dfb3c",
+    "path": "single_mutant/stability/fireprotdb_1LRP_ddG.csv",
+    "size": 5505,
+    "type": "file"
+  },
+  {
+    "oid": "1aed967ded451992c27496f9701b86e1607fbf84",
+    "path": "single_mutant/stability/fireprotdb_1LVE_ddG.csv",
+    "size": 1921,
+    "type": "file"
+  },
+  {
+    "oid": "cc3cbf7af1b8893237af681da51448e129fd31a3",
+    "path": "single_mutant/stability/fireprotdb_1LZ1_dTm.csv",
+    "size": 19220,
+    "type": "file"
+  },
+  {
+    "oid": "65804191df20012e9c756a5f32c9c14e6fdcfdfe",
+    "path": "single_mutant/stability/fireprotdb_1LZ1_ddG.csv",
+    "size": 21848,
+    "type": "file"
+  },
+  {
+    "oid": "e7300818cb40fa70ad488874fe16639a4cd9a0e4",
+    "path": "single_mutant/stability/fireprotdb_1M21_dTm.csv",
+    "size": 6649,
+    "type": "file"
+  },
+  {
+    "oid": "6d8ce65d933b8a1d67fd761d19aa0480ca293fa1",
+    "path": "single_mutant/stability/fireprotdb_1MGR_ddG.csv",
+    "size": 1257,
+    "type": "file"
+  },
+  {
+    "oid": "98b14fe1aa1b66407588759c155d0e322d8f9055",
+    "path": "single_mutant/stability/fireprotdb_1MJC_ddG.csv",
+    "size": 845,
+    "type": "file"
+  },
+  {
+    "oid": "fd8c356a1f375d899c600b01578cbe3f4b42eb61",
+    "path": "single_mutant/stability/fireprotdb_1MSI_ddG.csv",
+    "size": 550,
+    "type": "file"
+  },
+  {
+    "oid": "b8bb309ca88131648ee02cfda6977a8c176410bd",
+    "path": "single_mutant/stability/fireprotdb_1N0J_dTm.csv",
+    "size": 1745,
+    "type": "file"
+  },
+  {
+    "oid": "6777a0f7384e9fd6fb0c562df58a3683422ce4b2",
+    "path": "single_mutant/stability/fireprotdb_1OH0_ddG.csv",
+    "size": 1031,
+    "type": "file"
+  },
+  {
+    "oid": "597f6ded4180abf1bf6c0864309e643532274036",
+    "path": "single_mutant/stability/fireprotdb_1OIA_ddG.csv",
+    "size": 2442,
+    "type": "file"
+  },
+  {
+    "oid": "fe0ead281ac0249fdb93cee6cd159af304a37377",
+    "path": "single_mutant/stability/fireprotdb_1OLR_dTm.csv",
+    "size": 1631,
+    "type": "file"
+  },
+  {
+    "oid": "d066655d9d347f0a00e6c875da37245aea827ce2",
+    "path": "single_mutant/stability/fireprotdb_1OTR_ddG.csv",
+    "size": 20447,
+    "type": "file"
+  },
+  {
+    "oid": "e69d21518775c683e0c58f5ba18e02d33fe0a279",
+    "path": "single_mutant/stability/fireprotdb_1PGA_dTm.csv",
+    "size": 13849,
+    "type": "file"
+  },
+  {
+    "oid": "a3816c2f3f2e7e4d2daa73d0f8da1d3d87ba4130",
+    "path": "single_mutant/stability/fireprotdb_1PGA_ddG.csv",
+    "size": 433520,
+    "type": "file"
+  },
+  {
+    "oid": "7b2be40d323d4acf4e3a03fd2286c2e26a62c6d4",
+    "path": "single_mutant/stability/fireprotdb_1PIN_dTm.csv",
+    "size": 9784,
+    "type": "file"
+  },
+  {
+    "oid": "c5d6a9f3e0b65fa6335b4b3b6140bb5a7389c3b9",
+    "path": "single_mutant/stability/fireprotdb_1PIN_ddG.csv",
+    "size": 9835,
+    "type": "file"
+  },
+  {
+    "oid": "58620500eaab547e53bf14e74fdc0987e72ef5d4",
+    "path": "single_mutant/stability/fireprotdb_1POH_ddG.csv",
+    "size": 1327,
+    "type": "file"
+  },
+  {
+    "oid": "1e51751a1de20592ecb9782598a5d2b70a27054f",
+    "path": "single_mutant/stability/fireprotdb_1PX0_dTm.csv",
+    "size": 41122,
+    "type": "file"
+  },
+  {
+    "oid": "06e430af10ee83bc63edbb5ff14d5578ec8b35d7",
+    "path": "single_mutant/stability/fireprotdb_1QGD_dTm.csv",
+    "size": 4084,
+    "type": "file"
+  },
+  {
+    "oid": "e0bff0a84128a6440af5a481ea4b20e09f756c34",
+    "path": "single_mutant/stability/fireprotdb_1QJP_ddG.csv",
+    "size": 4328,
+    "type": "file"
+  },
+  {
+    "oid": "aa49bcd66a7ce8e062239ff7c1de523b8f71ff4d",
+    "path": "single_mutant/stability/fireprotdb_1QLP_dTm.csv",
+    "size": 3045,
+    "type": "file"
+  },
+  {
+    "oid": "ed862a5198b7868258cf1cedd6a40ec35edeceb7",
+    "path": "single_mutant/stability/fireprotdb_1QLP_ddG.csv",
+    "size": 21173,
+    "type": "file"
+  },
+  {
+    "oid": "e5ee48879e1a68ede1c1ab1d0ac8d701d494612e",
+    "path": "single_mutant/stability/fireprotdb_1RBP_dTm.csv",
+    "size": 1317,
+    "type": "file"
+  },
+  {
+    "oid": "b94cd9e6315fa6f227fbca7c0cfdb85843694902",
+    "path": "single_mutant/stability/fireprotdb_1RBP_ddG.csv",
+    "size": 1313,
+    "type": "file"
+  },
+  {
+    "oid": "a22b962962502632c361ddeba1ce221f932dc545",
+    "path": "single_mutant/stability/fireprotdb_1RGG_dTm.csv",
+    "size": 3675,
+    "type": "file"
+  },
+  {
+    "oid": "8ac6398acb8c2d8cf7a62a38e149a40fa7e1d25a",
+    "path": "single_mutant/stability/fireprotdb_1RGG_ddG.csv",
+    "size": 5306,
+    "type": "file"
+  },
+  {
+    "oid": "3e552d8b9e4705b141f01d8f7e20020bc7a50c8c",
+    "path": "single_mutant/stability/fireprotdb_1RHG_ddG.csv",
+    "size": 2252,
+    "type": "file"
+  },
+  {
+    "oid": "71177ad8b3363e9320784140d81a3d35bcc7eab7",
+    "path": "single_mutant/stability/fireprotdb_1RIS_ddG.csv",
+    "size": 2049,
+    "type": "file"
+  },
+  {
+    "oid": "7bfe0a0effa9af23532ca8851a1fa9f886f51107",
+    "path": "single_mutant/stability/fireprotdb_1RN1_dTm.csv",
+    "size": 4879,
+    "type": "file"
+  },
+  {
+    "oid": "9d1279a68180bb3f3a902d94dea454099eaacc78",
+    "path": "single_mutant/stability/fireprotdb_1RN1_ddG.csv",
+    "size": 9193,
+    "type": "file"
+  },
+  {
+    "oid": "8cff1c4309197c1749c4fae1ffe33883b19a4e22",
+    "path": "single_mutant/stability/fireprotdb_1ROP_dTm.csv",
+    "size": 1583,
+    "type": "file"
+  },
+  {
+    "oid": "4eb5d082f4cf928fbca774a3fc2b9f86508c4ee9",
+    "path": "single_mutant/stability/fireprotdb_1ROP_ddG.csv",
+    "size": 1596,
+    "type": "file"
+  },
+  {
+    "oid": "c00a2553582618a469d3e80771c8adb84f9c8fe6",
+    "path": "single_mutant/stability/fireprotdb_1RTB_dTm.csv",
+    "size": 9949,
+    "type": "file"
+  },
+  {
+    "oid": "7a2f7bdb7af77062aa0fda95423454ef77d81041",
+    "path": "single_mutant/stability/fireprotdb_1RTB_ddG.csv",
+    "size": 8561,
+    "type": "file"
+  },
+  {
+    "oid": "369a648edbad373990769584e4691bcac5a830da",
+    "path": "single_mutant/stability/fireprotdb_1RX4_dTm.csv",
+    "size": 4257,
+    "type": "file"
+  },
+  {
+    "oid": "9aa203bed229cdc5fc1a4d1c045686270f255f57",
+    "path": "single_mutant/stability/fireprotdb_1RX4_ddG.csv",
+    "size": 19323,
+    "type": "file"
+  },
+  {
+    "oid": "84d22318cb8915da9790bb78450a97b4948a86a1",
+    "path": "single_mutant/stability/fireprotdb_1SCE_ddG.csv",
+    "size": 1877,
+    "type": "file"
+  },
+  {
+    "oid": "cb720b0af0132b6b1c4fd88a094f7597cf541f90",
+    "path": "single_mutant/stability/fireprotdb_1SHF_dTm.csv",
+    "size": 40153,
+    "type": "file"
+  },
+  {
+    "oid": "1e2e2462005615f52a878ea19ff950eff432e734",
+    "path": "single_mutant/stability/fireprotdb_1SHF_ddG.csv",
+    "size": 33542,
+    "type": "file"
+  },
+  {
+    "oid": "d959d7a8c147d5c9f774994223fc9d20c599390c",
+    "path": "single_mutant/stability/fireprotdb_1STN_dTm.csv",
+    "size": 34599,
+    "type": "file"
+  },
+  {
+    "oid": "1e0ad027b27ec6e6c81566e1214fb93e6ce31f98",
+    "path": "single_mutant/stability/fireprotdb_1STN_ddG.csv",
+    "size": 144433,
+    "type": "file"
+  },
+  {
+    "oid": "8448d607985f5924b3f10a6df617f04b0d202471",
+    "path": "single_mutant/stability/fireprotdb_1SUP_dTm.csv",
+    "size": 3578,
+    "type": "file"
+  },
+  {
+    "oid": "dc15ff8acb69af41098ec8036fe5a9cdfb8c4dab",
+    "path": "single_mutant/stability/fireprotdb_1SUP_ddG.csv",
+    "size": 2401,
+    "type": "file"
+  },
+  {
+    "oid": "3c87f5f79fc35323a2c3dc6b06ad8d63f898fa6d",
+    "path": "single_mutant/stability/fireprotdb_1SVX_dTm.csv",
+    "size": 2200,
+    "type": "file"
+  },
+  {
+    "oid": "e540452de9cd28951497cd2786e494d7fa09dd99",
+    "path": "single_mutant/stability/fireprotdb_1THQ_ddG.csv",
+    "size": 3824,
+    "type": "file"
+  },
+  {
+    "oid": "3858717b4aa790cc540f066c4e9c598fde867391",
+    "path": "single_mutant/stability/fireprotdb_1TIN_dTm.csv",
+    "size": 511,
+    "type": "file"
+  },
+  {
+    "oid": "512e01a5e72ffb754aabe44e86120c0ce526dcdd",
+    "path": "single_mutant/stability/fireprotdb_1TPK_dTm.csv",
+    "size": 3482,
+    "type": "file"
+  },
+  {
+    "oid": "801673db195410776fefd2f1426521ba591e0209",
+    "path": "single_mutant/stability/fireprotdb_1TPK_ddG.csv",
+    "size": 3481,
+    "type": "file"
+  },
+  {
+    "oid": "87af839707b4b1d95a42ee12772d6b66031a0014",
+    "path": "single_mutant/stability/fireprotdb_1TUP_ddG.csv",
+    "size": 29872,
+    "type": "file"
+  },
+  {
+    "oid": "132e0cabdfb19a2c401441110bd7ff1a20c68bc7",
+    "path": "single_mutant/stability/fireprotdb_1UBQ_ddG.csv",
+    "size": 12603,
+    "type": "file"
+  },
+  {
+    "oid": "cce47a6742b0c0a4afcf1d428dbf5d50e87c41e1",
+    "path": "single_mutant/stability/fireprotdb_1UZC_ddG.csv",
+    "size": 45638,
+    "type": "file"
+  },
+  {
+    "oid": "90ad8ef4cf6f9a7504248ccc44a6cc16ab176c4e",
+    "path": "single_mutant/stability/fireprotdb_1VQB_ddG.csv",
+    "size": 9815,
+    "type": "file"
+  },
+  {
+    "oid": "4329fab16ccfc65860d06dd57cc8248d47aaacc7",
+    "path": "single_mutant/stability/fireprotdb_1W4E_ddG.csv",
+    "size": 13678,
+    "type": "file"
+  },
+  {
+    "oid": "f64cd8f88d5abafa53a11c65e4301423772616e9",
+    "path": "single_mutant/stability/fireprotdb_1WQ5_dTm.csv",
+    "size": 13161,
+    "type": "file"
+  },
+  {
+    "oid": "7e443a5ee332cc181fcd759a3ef582df9fec5fd7",
+    "path": "single_mutant/stability/fireprotdb_1WQ5_ddG.csv",
+    "size": 15481,
+    "type": "file"
+  },
+  {
+    "oid": "9ee2afa76b466ae70539c5b14883e373cd278ca4",
+    "path": "single_mutant/stability/fireprotdb_1XAS_dTm.csv",
+    "size": 5901,
+    "type": "file"
+  },
+  {
+    "oid": "475c4e716e21ea7297e99ef080de44c126d8ec4c",
+    "path": "single_mutant/stability/fireprotdb_1XAS_ddG.csv",
+    "size": 5901,
+    "type": "file"
+  },
+  {
+    "oid": "a51ffed6c504788848c4d8ec17e1c61b081fa1cd",
+    "path": "single_mutant/stability/fireprotdb_1YCC_dTm.csv",
+    "size": 4352,
+    "type": "file"
+  },
+  {
+    "oid": "9cfee87673b092c96831663c4eec8ff1aca6b0e5",
+    "path": "single_mutant/stability/fireprotdb_1YCC_ddG.csv",
+    "size": 5857,
+    "type": "file"
+  },
+  {
+    "oid": "c6cb098557d514d2248e360608cd3ed0f9f2457a",
+    "path": "single_mutant/stability/fireprotdb_1YYX_ddG.csv",
+    "size": 1676,
+    "type": "file"
+  },
+  {
+    "oid": "8a91bd3076ebec7a18d7decdc96c68e24d7effb3",
+    "path": "single_mutant/stability/fireprotdb_1ZNJ_ddG.csv",
+    "size": 1361,
+    "type": "file"
+  },
+  {
+    "oid": "48d562331035afdab365fc7817f9b097136376a3",
+    "path": "single_mutant/stability/fireprotdb_2A36_dTm.csv",
+    "size": 1810,
+    "type": "file"
+  },
+  {
+    "oid": "0534b6dfa2970c202ea8ed91221e4c3da577ecb7",
+    "path": "single_mutant/stability/fireprotdb_2A36_ddG.csv",
+    "size": 1807,
+    "type": "file"
+  },
+  {
+    "oid": "de7c983d88f622b8936e68a97376a4054d9a7168",
+    "path": "single_mutant/stability/fireprotdb_2ABD_ddG.csv",
+    "size": 3447,
+    "type": "file"
+  },
+  {
+    "oid": "ca3bc694c6e70af5354d188db75425e877ae9f18",
+    "path": "single_mutant/stability/fireprotdb_2AFG_dTm.csv",
+    "size": 2213,
+    "type": "file"
+  },
+  {
+    "oid": "10a75e8595ae9f0b70148a97bc851cc89e84626b",
+    "path": "single_mutant/stability/fireprotdb_2AFG_ddG.csv",
+    "size": 4336,
+    "type": "file"
+  },
+  {
+    "oid": "01713a28698b3397f80cffc036262a96f1ce2cf9",
+    "path": "single_mutant/stability/fireprotdb_2AKY_ddG.csv",
+    "size": 1489,
+    "type": "file"
+  },
+  {
+    "oid": "430b2b521663befbfb68774233e7537132552421",
+    "path": "single_mutant/stability/fireprotdb_2BRD_ddG.csv",
+    "size": 6718,
+    "type": "file"
+  },
+  {
+    "oid": "caa704516bf4fc8de8e0273ef3d4fcda13bbb743",
+    "path": "single_mutant/stability/fireprotdb_2CHF_ddG.csv",
+    "size": 4382,
+    "type": "file"
+  },
+  {
+    "oid": "40563350968cece09b28f702e0d5ac0daa3e23b8",
+    "path": "single_mutant/stability/fireprotdb_2CI2_dTm.csv",
+    "size": 2483,
+    "type": "file"
+  },
+  {
+    "oid": "2f8b79c0c2e59528184d4e965fe72c85368b8df7",
+    "path": "single_mutant/stability/fireprotdb_2CI2_ddG.csv",
+    "size": 9322,
+    "type": "file"
+  },
+  {
+    "oid": "545adb5a103e8b407a8fb1193d4451082138c091",
+    "path": "single_mutant/stability/fireprotdb_2DRI_dTm.csv",
+    "size": 4676,
+    "type": "file"
+  },
+  {
+    "oid": "48551a4d7981120eba67fef9023f874172eca46b",
+    "path": "single_mutant/stability/fireprotdb_2HMB_ddG.csv",
+    "size": 2944,
+    "type": "file"
+  },
+  {
+    "oid": "9c04be704c56c5e1e4f32d8bb697c3d5c98918da",
+    "path": "single_mutant/stability/fireprotdb_2IMM_ddG.csv",
+    "size": 1409,
+    "type": "file"
+  },
+  {
+    "oid": "8ea1166ff2a3ed5a848f0b94fde50bfb31f9c332",
+    "path": "single_mutant/stability/fireprotdb_2LZM_dTm.csv",
+    "size": 54756,
+    "type": "file"
+  },
+  {
+    "oid": "55484f98afecd3522b32095c0bf3fb939b242bce",
+    "path": "single_mutant/stability/fireprotdb_2LZM_ddG.csv",
+    "size": 55254,
+    "type": "file"
+  },
+  {
+    "oid": "e365bcaf4684869fc31486791cc393058e4ab925",
+    "path": "single_mutant/stability/fireprotdb_2O9P_dTm.csv",
+    "size": 36923,
+    "type": "file"
+  },
+  {
+    "oid": "bc0070657ec71e188eaeee3766ee7ddc7b75b3b3",
+    "path": "single_mutant/stability/fireprotdb_2Q98_ddG.csv",
+    "size": 2219,
+    "type": "file"
+  },
+  {
+    "oid": "7a460a026f6afe0f9e68664c9727472d1f8bb9a8",
+    "path": "single_mutant/stability/fireprotdb_2RN2_dTm.csv",
+    "size": 12214,
+    "type": "file"
+  },
+  {
+    "oid": "1f5db279bec9530a3fc7d30da815e87d2e43a36d",
+    "path": "single_mutant/stability/fireprotdb_2RN2_ddG.csv",
+    "size": 13590,
+    "type": "file"
+  },
+  {
+    "oid": "0e89143ee004fa71b096e39ae06955babd99f183",
+    "path": "single_mutant/stability/fireprotdb_2TRX_ddG.csv",
+    "size": 1633,
+    "type": "file"
+  },
+  {
+    "oid": "158a0a5801c7801809aff1198060ee1fcaf86248",
+    "path": "single_mutant/stability/fireprotdb_2UXY_dTm.csv",
+    "size": 3684,
+    "type": "file"
+  },
+  {
+    "oid": "5cb6bfa9b72e4521a45b316f54188bfe71a08fe7",
+    "path": "single_mutant/stability/fireprotdb_2WSY_ddG.csv",
+    "size": 12833,
+    "type": "file"
+  },
+  {
+    "oid": "7a4397d8e9a755629ad55f8bb54cf3c5fdbf16cc",
+    "path": "single_mutant/stability/fireprotdb_2ZTA_ddG.csv",
+    "size": 2388,
+    "type": "file"
+  },
+  {
+    "oid": "c9d8db2dabc54cdd917a94f17e987165f0e6ee8a",
+    "path": "single_mutant/stability/fireprotdb_3D2A_dTm.csv",
+    "size": 3915,
+    "type": "file"
+  },
+  {
+    "oid": "ac8afb40070064767176eeeb3ca52137067f434c",
+    "path": "single_mutant/stability/fireprotdb_3D2A_ddG.csv",
+    "size": 3934,
+    "type": "file"
+  },
+  {
+    "oid": "d842f5f0028f74a8bd4a98f2b71ffb3da2d022c1",
+    "path": "single_mutant/stability/fireprotdb_3HHR_ddG.csv",
+    "size": 2400,
+    "type": "file"
+  },
+  {
+    "oid": "5df9d61c11fa7d2a0529b65a7a1ee07087b7756b",
+    "path": "single_mutant/stability/fireprotdb_3MBP_dTm.csv",
+    "size": 5822,
+    "type": "file"
+  },
+  {
+    "oid": "0865ffac1d578c3b42535947204ed5c6e3311a66",
+    "path": "single_mutant/stability/fireprotdb_3MBP_ddG.csv",
+    "size": 11548,
+    "type": "file"
+  },
+  {
+    "oid": "5dc31303bc8756058a691d76756f29aafd81218b",
+    "path": "single_mutant/stability/fireprotdb_3PG0_ddG.csv",
+    "size": 1798,
+    "type": "file"
+  },
+  {
+    "oid": "6229ea679b08868e71a7ff7d4ce26d690c5b4abd",
+    "path": "single_mutant/stability/fireprotdb_3PGK_ddG.csv",
+    "size": 3959,
+    "type": "file"
+  },
+  {
+    "oid": "d43cc74f3c0b53a49fb2410f436d12639c607ada",
+    "path": "single_mutant/stability/fireprotdb_3SSI_dTm.csv",
+    "size": 3529,
+    "type": "file"
+  },
+  {
+    "oid": "17d6642eb00d93247303087ad374700a7d6b86ce",
+    "path": "single_mutant/stability/fireprotdb_3SSI_ddG.csv",
+    "size": 3256,
+    "type": "file"
+  },
+  {
+    "oid": "fb32827231c4021dbbe0c83d314ebb2b41d4add6",
+    "path": "single_mutant/stability/fireprotdb_3TGL_dTm.csv",
+    "size": 13509,
+    "type": "file"
+  },
+  {
+    "oid": "53ea4b457d0561c50746b4ea1cb9b8ed441e9bd4",
+    "path": "single_mutant/stability/fireprotdb_3VUB_dTm.csv",
+    "size": 8708,
+    "type": "file"
+  },
+  {
+    "oid": "2e215b02131c6cf465d861a9e9c0f84ca3d93794",
+    "path": "single_mutant/stability/fireprotdb_3WP4_dTm.csv",
+    "size": 41716,
+    "type": "file"
+  },
+  {
+    "oid": "d2e9dfedc40660550e8065586cdc22bb67a58202",
+    "path": "single_mutant/stability/fireprotdb_451C_dTm.csv",
+    "size": 852,
+    "type": "file"
+  },
+  {
+    "oid": "c95901cff4f6ebd9169e68c8edff95081138b573",
+    "path": "single_mutant/stability/fireprotdb_451C_ddG.csv",
+    "size": 1217,
+    "type": "file"
+  },
+  {
+    "oid": "a235dc9b5c863a3563f44de4c54813f4b00c17f5",
+    "path": "single_mutant/stability/fireprotdb_4E5K_dTm.csv",
+    "size": 8715,
+    "type": "file"
+  },
+  {
+    "oid": "867e8b9b156ab9c7b050e57da8b9df6a7ea8513b",
+    "path": "single_mutant/stability/fireprotdb_4LYZ_dTm.csv",
+    "size": 6677,
+    "type": "file"
+  },
+  {
+    "oid": "47923ef2e20e391518674cb095705f4035ede309",
+    "path": "single_mutant/stability/fireprotdb_4LYZ_ddG.csv",
+    "size": 10052,
+    "type": "file"
+  },
+  {
+    "oid": "80b563e7783ac0c31fb6b9b88aab866a84d30723",
+    "path": "single_mutant/stability/fireprotdb_4ZLU_dTm.csv",
+    "size": 8588,
+    "type": "file"
+  },
+  {
+    "oid": "fdd44fcf7ca75efa3e19b99faed4faf9ff5e1fd7",
+    "path": "single_mutant/stability/fireprotdb_5AZU_ddG.csv",
+    "size": 5356,
+    "type": "file"
+  },
+  {
+    "oid": "16ae1059c874d92cb93a9e85706ff1406cec4db9",
+    "path": "single_mutant/stability/fireprotdb_5CRO_dTm.csv",
+    "size": 803,
+    "type": "file"
+  },
+  {
+    "oid": "ee407cdfd922aa4f97cc720f1715465c414cddd9",
+    "path": "single_mutant/stability/fireprotdb_5CRO_ddG.csv",
+    "size": 845,
+    "type": "file"
+  },
+  {
+    "oid": "af1a02e0b62bb2527161800b0a56392c49d77f11",
+    "path": "single_mutant/stability/fireprotdb_5ZYR_dTm.csv",
+    "size": 3296,
+    "type": "file"
+  },
+  {
+    "oid": "7ffe3cdf6b8b3659c38252fdff1c159fc3779c26",
+    "path": "single_mutant/stability/fireprotdb_6BQG_dTm.csv",
+    "size": 14119,
+    "type": "file"
+  },
+  {
+    "oid": "6062c94a6a70d24dce845f33ecf0bc707c13cfe6",
+    "path": "single_mutant/stability/fireprotdb_6G4B_dTm.csv",
+    "size": 98409,
+    "type": "file"
+  },
+  {
+    "oid": "07f15e7150ee6fc21b1398443aaf4da95610b600",
+    "path": "single_mutant/stability/fireprotdb_6TQ3_dTm.csv",
+    "size": 39213,
+    "type": "file"
+  },
+  {
+    "oid": "9106be6c4e297447b4b313429a6bcbc351a8f2f6",
+    "path": "single_mutant/stability/s2648_1C9O_ddG.csv",
+    "size": 1973,
+    "type": "file"
+  },
+  {
+    "oid": "c88d00056509ec0d719131368ce40e5ec00bad38",
+    "path": "single_mutant/stability/s2648_1CEY_ddG.csv",
+    "size": 2003,
+    "type": "file"
+  },
+  {
+    "oid": "fee98271b116536a3c83cf7e7966e346ca35888a",
+    "path": "single_mutant/stability/s2648_1DKT_ddG.csv",
+    "size": 1579,
+    "type": "file"
+  },
+  {
+    "oid": "6df963fc73b218ac251f7f609e03b81f2cd97fb5",
+    "path": "single_mutant/stability/s2648_1EY0_ddG.csv",
+    "size": 7571,
+    "type": "file"
+  },
+  {
+    "oid": "e4e6aaed3006a3eba82379b36756544069667536",
+    "path": "single_mutant/stability/s2648_1IMQ_ddG.csv",
+    "size": 819,
+    "type": "file"
+  },
+  {
+    "oid": "d2a6889da55ecba1575a45d1b85767adc7e2553a",
+    "path": "single_mutant/stability/s2648_1LNI_ddG.csv",
+    "size": 4631,
+    "type": "file"
+  },
+  {
+    "oid": "78c342aff73c827ea49ab2bbf34f40a1bab72ec5",
+    "path": "single_mutant/stability/s2648_1LZ1_ddG.csv",
+    "size": 1478,
+    "type": "file"
+  },
+  {
+    "oid": "c636b02d7e42d3b8821f41475b26c161115bff78",
+    "path": "single_mutant/stability/s2648_1MJC_ddG.csv",
+    "size": 771,
+    "type": "file"
+  },
+  {
+    "oid": "0a828b85391f095a8e18f0a3cd631f3f76e75d4e",
+    "path": "single_mutant/stability/s2648_1OIA_ddG.csv",
+    "size": 2087,
+    "type": "file"
+  },
+  {
+    "oid": "90ba8df84d5e8780e38c02a264d4f1c94441054a",
+    "path": "single_mutant/stability/s2648_1POH_ddG.csv",
+    "size": 1288,
+    "type": "file"
+  },
+  {
+    "oid": "97e95a06b5e32ed2525bb9db4fbd399c0bee0b81",
+    "path": "single_mutant/stability/s2648_1RIS_ddG.csv",
+    "size": 1843,
+    "type": "file"
+  },
+  {
+    "oid": "76a7605d96b370364ce9699d48b4ef91a0131b02",
+    "path": "single_mutant/stability/s2648_1SAK_ddG.csv",
+    "size": 11399,
+    "type": "file"
+  },
+  {
+    "oid": "c025f3e1a29a128f176819e00b1b34399edb489c",
+    "path": "single_mutant/stability/s2648_1SHF_ddG.csv",
+    "size": 19830,
+    "type": "file"
+  },
+  {
+    "oid": "f1d44ae2a8da5f8ebe9c194641b87fbb46304490",
+    "path": "single_mutant/stability/s2648_1VQB_ddG.csv",
+    "size": 8894,
+    "type": "file"
+  },
+  {
+    "oid": "677f6e7c79327bea08459b5426a9d08461affc3e",
+    "path": "single_mutant/stability/s2648_1WQ5_ddG.csv",
+    "size": 12354,
+    "type": "file"
+  },
+  {
+    "oid": "913c6ef5aeac103309c0377586c6a1b97476bcf0",
+    "path": "single_mutant/stability/s2648_2A36_ddG.csv",
+    "size": 1807,
+    "type": "file"
+  },
+  {
+    "oid": "6c41dc4c94fa360cda6b36ee5aa245efb0eabd2d",
+    "path": "single_mutant/stability/s2648_2CI2_ddG.csv",
+    "size": 5558,
+    "type": "file"
+  },
+  {
+    "oid": "f541fe1efabd18256c0d2310578cffffa36a5f33",
+    "path": "single_mutant/stability/s2648_2LZM_ddG.csv",
+    "size": 17275,
+    "type": "file"
+  },
+  {
+    "oid": "0dd5629572734bef31be7c2c23a319513e8ba973",
+    "path": "single_mutant/stability/s2648_5CRO_ddG.csv",
+    "size": 804,
+    "type": "file"
+  },
+  {
+    "oid": "a8334f52c3b2e7a4b148eb3342752c36e57d9d5f",
+    "path": "single_mutant/stability/s2648_5DFR_ddG.csv",
+    "size": 17494,
+    "type": "file"
+  },
+  {
+    "oid": "75e2c23f1bde48b427f4b6cf43ff7f0cefb6c6ae",
+    "path": "single_mutant/stability/thermomutdb_1AAR_ddG.csv",
+    "size": 7120,
+    "type": "file"
+  },
+  {
+    "oid": "643fda26359a255410f308449b6286436f9d433d",
+    "path": "single_mutant/stability/thermomutdb_1ARR_ddG.csv",
+    "size": 5644,
+    "type": "file"
+  },
+  {
+    "oid": "65ed2eabfeebb28ad355acff0b10e8abfc2889d8",
+    "path": "single_mutant/stability/thermomutdb_1BNZ_ddG.csv",
+    "size": 1857,
+    "type": "file"
+  },
+  {
+    "oid": "7a0cb62714a4d35484edf8dcbad6815445ee62b1",
+    "path": "single_mutant/stability/thermomutdb_1C9O_ddG.csv",
+    "size": 2351,
+    "type": "file"
+  },
+  {
+    "oid": "b009ae4de43386ec6582b458581ef033bfe5c68f",
+    "path": "single_mutant/stability/thermomutdb_1CEY_ddG.csv",
+    "size": 5640,
+    "type": "file"
+  },
+  {
+    "oid": "284c91a9408f0a67c61937087ed24e236ce6d6c8",
+    "path": "single_mutant/stability/thermomutdb_1CM2_ddG.csv",
+    "size": 898,
+    "type": "file"
+  },
+  {
+    "oid": "275bc5be6c5a0a754877b21991a8cacb01fa4e2f",
+    "path": "single_mutant/stability/thermomutdb_1DFO_ddG.csv",
+    "size": 2184,
+    "type": "file"
+  },
+  {
+    "oid": "21a58aaa3434ab63a862ce425ccb0bfda8aa36f6",
+    "path": "single_mutant/stability/thermomutdb_1DIV_ddG.csv",
+    "size": 8460,
+    "type": "file"
+  },
+  {
+    "oid": "ad3efb6338a67651c1f55416884a023b2c67befe",
+    "path": "single_mutant/stability/thermomutdb_1DKT_ddG.csv",
+    "size": 1940,
+    "type": "file"
+  },
+  {
+    "oid": "5bd2c167ea94373900b15836479742d40e350372",
+    "path": "single_mutant/stability/thermomutdb_1EKG_ddG.csv",
+    "size": 2258,
+    "type": "file"
+  },
+  {
+    "oid": "f225b982beb9372eb867a1e10165888550a3d70b",
+    "path": "single_mutant/stability/thermomutdb_1FKJ_ddG.csv",
+    "size": 4486,
+    "type": "file"
+  },
+  {
+    "oid": "49a91d42e9885f34c36a9a14311d424db7cc5ee5",
+    "path": "single_mutant/stability/thermomutdb_1FT8_ddG.csv",
+    "size": 8250,
+    "type": "file"
+  },
+  {
+    "oid": "003b4230d6992bafaffab69ac4ea4a3d2818b2bd",
+    "path": "single_mutant/stability/thermomutdb_1FTG_ddG.csv",
+    "size": 1150,
+    "type": "file"
+  },
+  {
+    "oid": "a04cc39e2ed0332e2285c31bbd2e34fee3b52b30",
+    "path": "single_mutant/stability/thermomutdb_1H0C_ddG.csv",
+    "size": 6916,
+    "type": "file"
+  },
+  {
+    "oid": "62fd607a41690cbe64beabb6e219c198d08842a9",
+    "path": "single_mutant/stability/thermomutdb_1HK0_ddG.csv",
+    "size": 1526,
+    "type": "file"
+  },
+  {
+    "oid": "2ee69145ee620582ed4d4a7cdd29f133a702acf9",
+    "path": "single_mutant/stability/thermomutdb_1HUE_ddG.csv",
+    "size": 851,
+    "type": "file"
+  },
+  {
+    "oid": "dcc9944b20726a0c2e1b9fd86a769b036702d3ce",
+    "path": "single_mutant/stability/thermomutdb_1IHB_ddG.csv",
+    "size": 1477,
+    "type": "file"
+  },
+  {
+    "oid": "b2ed4f8c1787a847d1440d6f169203ead16d1906",
+    "path": "single_mutant/stability/thermomutdb_1IMQ_ddG.csv",
+    "size": 975,
+    "type": "file"
+  },
+  {
+    "oid": "c2e5c3aced56b2274e4bf2259b28232e3c154dd8",
+    "path": "single_mutant/stability/thermomutdb_1IO2_ddG.csv",
+    "size": 3506,
+    "type": "file"
+  },
+  {
+    "oid": "d34a4b17e99849eb8d0e86c482d1d00b49c0f956",
+    "path": "single_mutant/stability/thermomutdb_1JQZ_ddG.csv",
+    "size": 2038,
+    "type": "file"
+  },
+  {
+    "oid": "da0c44cc5a3eed8cd22f3837363f653f4aad3b65",
+    "path": "single_mutant/stability/thermomutdb_1K23_ddG.csv",
+    "size": 2277,
+    "type": "file"
+  },
+  {
+    "oid": "e3ce136f986be0ef63411c3bb1d387d78304c8de",
+    "path": "single_mutant/stability/thermomutdb_1KEV_ddG.csv",
+    "size": 4385,
+    "type": "file"
+  },
+  {
+    "oid": "3cc7a40fe03397bc54d605eac8cbbe95666a0190",
+    "path": "single_mutant/stability/thermomutdb_1KJY_ddG.csv",
+    "size": 5893,
+    "type": "file"
+  },
+  {
+    "oid": "715a4a325d0895457fc82e2d25ec81d81eea136c",
+    "path": "single_mutant/stability/thermomutdb_1L63_ddG.csv",
+    "size": 5651,
+    "type": "file"
+  },
+  {
+    "oid": "142b6031f3ee74bb6ab7574e46e86fb43e259b7c",
+    "path": "single_mutant/stability/thermomutdb_1LZ1_ddG.csv",
+    "size": 1850,
+    "type": "file"
+  },
+  {
+    "oid": "1df74a928fda7e593667ea22652b631c721f6e00",
+    "path": "single_mutant/stability/thermomutdb_1MJC_ddG.csv",
+    "size": 771,
+    "type": "file"
+  },
+  {
+    "oid": "45a206147a0d7d0e44656fe0724d33a725b8224a",
+    "path": "single_mutant/stability/thermomutdb_1N0J_ddG.csv",
+    "size": 1441,
+    "type": "file"
+  },
+  {
+    "oid": "539bdf3bed7a22b5c1774b87309d8aab16744b46",
+    "path": "single_mutant/stability/thermomutdb_1N88_ddG.csv",
+    "size": 1871,
+    "type": "file"
+  },
+  {
+    "oid": "1f63e0883a3037eb8ecf3dbb0a62389e752e484c",
+    "path": "single_mutant/stability/thermomutdb_1NAQ_ddG.csv",
+    "size": 1392,
+    "type": "file"
+  },
+  {
+    "oid": "c2e9a7e3995ed710a186c9a93726a9534912636e",
+    "path": "single_mutant/stability/thermomutdb_1NEY_ddG.csv",
+    "size": 1591,
+    "type": "file"
+  },
+  {
+    "oid": "2a251c837368e8d3e7aeaaa0f944c4caba601e13",
+    "path": "single_mutant/stability/thermomutdb_1NWW_ddG.csv",
+    "size": 7548,
+    "type": "file"
+  },
+  {
+    "oid": "4bfcce291ea57bac493ccaecf2aead9718c8759b",
+    "path": "single_mutant/stability/thermomutdb_1OH0_ddG.csv",
+    "size": 748,
+    "type": "file"
+  },
+  {
+    "oid": "c252ff48240859a6907b17bc609e3f87da67276b",
+    "path": "single_mutant/stability/thermomutdb_1OIA_ddG.csv",
+    "size": 4134,
+    "type": "file"
+  },
+  {
+    "oid": "c121780d1da77079409851e4bb9d064ae8b2d788",
+    "path": "single_mutant/stability/thermomutdb_1OQO_ddG.csv",
+    "size": 5381,
+    "type": "file"
+  },
+  {
+    "oid": "31c487d61ccb9612c561c451dfd53cab0efda1cb",
+    "path": "single_mutant/stability/thermomutdb_1OSI_ddG.csv",
+    "size": 8247,
+    "type": "file"
+  },
+  {
+    "oid": "fa51ae255f81e4d1bfa2f7b6b05ebeaa9f50fed7",
+    "path": "single_mutant/stability/thermomutdb_1OTR_ddG.csv",
+    "size": 7918,
+    "type": "file"
+  },
+  {
+    "oid": "28634ad4ad414cc1f065c792b2829fcaa03ceb83",
+    "path": "single_mutant/stability/thermomutdb_1PGA_ddG.csv",
+    "size": 106743,
+    "type": "file"
+  },
+  {
+    "oid": "b371b30202edb17fbe6208ff1aa268bf41d520b0",
+    "path": "single_mutant/stability/thermomutdb_1PIN_ddG.csv",
+    "size": 9817,
+    "type": "file"
+  },
+  {
+    "oid": "1eceb6d87a85cd5c66df347e136431093814520c",
+    "path": "single_mutant/stability/thermomutdb_1POH_ddG.csv",
+    "size": 928,
+    "type": "file"
+  },
+  {
+    "oid": "f0272f8e5dc76ac93290bb37fa6b728b38b4ad0b",
+    "path": "single_mutant/stability/thermomutdb_1QU7_ddG.csv",
+    "size": 3974,
+    "type": "file"
+  },
+  {
+    "oid": "3d62a27acb43c84feb39139084f87c112bd19496",
+    "path": "single_mutant/stability/thermomutdb_1RGG_ddG.csv",
+    "size": 7380,
+    "type": "file"
+  },
+  {
+    "oid": "d4fe329318c634ffdcb85a59cfda90b78f113b00",
+    "path": "single_mutant/stability/thermomutdb_1RIS_ddG.csv",
+    "size": 1825,
+    "type": "file"
+  },
+  {
+    "oid": "2d0383a17adfd12417be1186043e2e252577afd5",
+    "path": "single_mutant/stability/thermomutdb_1RX4_ddG.csv",
+    "size": 19566,
+    "type": "file"
+  },
+  {
+    "oid": "780228444f38518eee158a3b5e3d6ca589c3ee36",
+    "path": "single_mutant/stability/thermomutdb_1SAK_ddG.csv",
+    "size": 11781,
+    "type": "file"
+  },
+  {
+    "oid": "759b478756eb32e6e27aae69e1731ca5dfebd0df",
+    "path": "single_mutant/stability/thermomutdb_1SHF_ddG.csv",
+    "size": 12300,
+    "type": "file"
+  },
+  {
+    "oid": "711bd515235af8a5f60d8183c963b0e12f0dc619",
+    "path": "single_mutant/stability/thermomutdb_1STN_ddG.csv",
+    "size": 14653,
+    "type": "file"
+  },
+  {
+    "oid": "8beb28e54c0778a830df945277d7d4c5cf03aa67",
+    "path": "single_mutant/stability/thermomutdb_1TIN_ddG.csv",
+    "size": 511,
+    "type": "file"
+  },
+  {
+    "oid": "62b170d567d2b24e2792967354c31de2ff9fa7cf",
+    "path": "single_mutant/stability/thermomutdb_1TUP_ddG.csv",
+    "size": 5842,
+    "type": "file"
+  },
+  {
+    "oid": "15d0473137d6c817ce825f595946c27f22e748f5",
+    "path": "single_mutant/stability/thermomutdb_1VQB_ddG.csv",
+    "size": 9194,
+    "type": "file"
+  },
+  {
+    "oid": "1955a9e08f0f847e32610d3e719e93fdcb641cc5",
+    "path": "single_mutant/stability/thermomutdb_1WPQ_ddG.csv",
+    "size": 2202,
+    "type": "file"
+  },
+  {
+    "oid": "600467eddd7902df319e35e6f9e6d75a2ad2042f",
+    "path": "single_mutant/stability/thermomutdb_1WQ5_ddG.csv",
+    "size": 24289,
+    "type": "file"
+  },
+  {
+    "oid": "45b979693095be72a10018ee37ed74962b6531a4",
+    "path": "single_mutant/stability/thermomutdb_1X0J_ddG.csv",
+    "size": 5735,
+    "type": "file"
+  },
+  {
+    "oid": "2cce5832d74768c2c7aab6dced218813089d1e9c",
+    "path": "single_mutant/stability/thermomutdb_1Y9X_ddG.csv",
+    "size": 1534,
+    "type": "file"
+  },
+  {
+    "oid": "d0ef6ff3444701b12a1aea9a42e72aa71a01a757",
+    "path": "single_mutant/stability/thermomutdb_1d5r_ddG.csv",
+    "size": 2525,
+    "type": "file"
+  },
+  {
+    "oid": "4ac23d091331947e7d3d6910412dea8ffa369130",
+    "path": "single_mutant/stability/thermomutdb_1mj5_ddG.csv",
+    "size": 37817,
+    "type": "file"
+  },
+  {
+    "oid": "22c839ebdf8c2589fdc096a74ab772bda1c7eeb4",
+    "path": "single_mutant/stability/thermomutdb_1tgl_ddG.csv",
+    "size": 13526,
+    "type": "file"
+  },
+  {
+    "oid": "dcd7c03552f5ca85e31638164d6c44806a279de1",
+    "path": "single_mutant/stability/thermomutdb_2A36_ddG.csv",
+    "size": 1806,
+    "type": "file"
+  },
+  {
+    "oid": "2e86a64ee051f6502abe1ecf2f3707a2ac1c1e18",
+    "path": "single_mutant/stability/thermomutdb_2CI2_ddG.csv",
+    "size": 5595,
+    "type": "file"
+  },
+  {
+    "oid": "38da5a68298162cc8c40ae4fe68a1487bf297681",
+    "path": "single_mutant/stability/thermomutdb_2EWN_ddG.csv",
+    "size": 3035,
+    "type": "file"
+  },
+  {
+    "oid": "a2d2a7d1e78e22c14d2f387903500b1421b9770f",
+    "path": "single_mutant/stability/thermomutdb_2GNQ_ddG.csv",
+    "size": 2460,
+    "type": "file"
+  },
+  {
+    "oid": "ba288064a85985d1341d73f3dae0c431e3def6e3",
+    "path": "single_mutant/stability/thermomutdb_2JIE_ddG.csv",
+    "size": 23899,
+    "type": "file"
+  },
+  {
+    "oid": "f09327cd247dd5d0a4962f23c83f8a14302cef9b",
+    "path": "single_mutant/stability/thermomutdb_2KJ3_ddG.csv",
+    "size": 2739,
+    "type": "file"
+  },
+  {
+    "oid": "0a928291ae8afcd1e403a1f9b54c88e89a8f5a56",
+    "path": "single_mutant/stability/thermomutdb_2LTB_ddG.csv",
+    "size": 4212,
+    "type": "file"
+  },
+  {
+    "oid": "45c0851892f5fc9e2cf5a56960cf5e5b3f4dfd1d",
+    "path": "single_mutant/stability/thermomutdb_2LZM_ddG.csv",
+    "size": 55540,
+    "type": "file"
+  },
+  {
+    "oid": "5b39bd0dce0f4a87dca0606e7f5518cc52006424",
+    "path": "single_mutant/stability/thermomutdb_2WQG_ddG.csv",
+    "size": 1637,
+    "type": "file"
+  },
+  {
+    "oid": "bc79adc097219aeaf01cef193f9042f2c729ad2a",
+    "path": "single_mutant/stability/thermomutdb_3DV0_ddG.csv",
+    "size": 13678,
+    "type": "file"
+  },
+  {
+    "oid": "68e0a8f15e470f2f3a991d8b020e8013a60cd775",
+    "path": "single_mutant/stability/thermomutdb_3MBP_ddG.csv",
+    "size": 2926,
+    "type": "file"
+  },
+  {
+    "oid": "37cc103235d7b1dc5f469cf2c42f3e594fecd6ba",
+    "path": "single_mutant/stability/thermomutdb_3UMR_ddG.csv",
+    "size": 118494,
+    "type": "file"
+  },
+  {
+    "oid": "e31a8aadc832d7553ef80373f6a2648a063ebceb",
+    "path": "single_mutant/stability/thermomutdb_3VUB_ddG.csv",
+    "size": 935,
+    "type": "file"
+  },
+  {
+    "oid": "2fff9535568f7a13967d0295846358dbae9e09a2",
+    "path": "single_mutant/stability/thermomutdb_4EYB_ddG.csv",
+    "size": 1723,
+    "type": "file"
+  },
+  {
+    "oid": "046cb4ca057ba8eb25e0fdd61e3bb7785227d66e",
+    "path": "single_mutant/stability/thermomutdb_4G3H_ddG.csv",
+    "size": 4380,
+    "type": "file"
+  },
+  {
+    "oid": "cd9e589392485350508cdebd5cc0ffc7983cfd39",
+    "path": "single_mutant/stability/thermomutdb_4GWT_ddG.csv",
+    "size": 1645,
+    "type": "file"
+  },
+  {
+    "oid": "077a9980d88357eb539df4afb4a4cf758cdafc79",
+    "path": "single_mutant/stability/thermomutdb_4kbq_ddG.csv",
+    "size": 4127,
+    "type": "file"
+  },
+  {
+    "oid": "701744d48e6cf239fa773c590cf6868040b1c61d",
+    "path": "single_mutant/stability/thermomutdb_4wxq_ddG.csv",
+    "size": 11406,
+    "type": "file"
+  },
+  {
+    "oid": "0f0a36aadefaaa1063cff11722c50fcb2772424d",
+    "path": "single_mutant/stability/thermomutdb_5CG0_ddG.csv",
+    "size": 10473,
+    "type": "file"
+  },
+  {
+    "oid": "76ebcd9fcd5a5035d7856c01958cc0e290e80c93",
+    "path": "single_mutant/stability/thermomutdb_5CRO_ddG.csv",
+    "size": 875,
+    "type": "file"
+  },
+  {
+    "oid": "7bbf03b0d1f967288856e0bdadd621a60cd94c88",
+    "path": "single_mutant/stability/thermomutdb_5EMZ_ddG.csv",
+    "size": 6538,
+    "type": "file"
+  },
+  {
+    "oid": "3931ca2531d6141ea004da61a599f6ee240dd099",
+    "path": "single_mutant/stability/thermomutdb_5ZNO_ddG.csv",
+    "size": 3189,
+    "type": "file"
+  },
+  {
+    "oid": "78dc5910dfea6a656228186b8cb938a4b89a97fc",
+    "path": "single_mutant/stability/thermomutdb_5dfr_ddG.csv",
+    "size": 6340,
+    "type": "file"
+  },
+  {
+    "oid": "947944f468f74c81c664d7f0038688f8f5942abf",
+    "path": "single_mutant/stability/thermomutdb_6RB9_ddG.csv",
+    "size": 2758,
+    "type": "file"
+  },
+  {
+    "oid": "8f334af15cb2d2521e47ea0cb2f8d416b525475b",
+    "path": "single_mutant/stability/vb1432_1AAR_ddG.csv",
+    "size": 7050,
+    "type": "file"
+  },
+  {
+    "oid": "6c2fe09d53e226e5fa6ff133c63acb70f0f9c693",
+    "path": "single_mutant/stability/vb1432_1C9O_ddG.csv",
+    "size": 1509,
+    "type": "file"
+  },
+  {
+    "oid": "f17e4545df7bac813738923490571382395a5297",
+    "path": "single_mutant/stability/vb1432_1L63_ddG.csv",
+    "size": 4596,
+    "type": "file"
+  },
+  {
+    "oid": "546ce7f915c86484a2f03149f9fc49ca59255733",
+    "path": "single_mutant/stability/vb1432_1PIN_ddG.csv",
+    "size": 9817,
+    "type": "file"
+  },
+  {
+    "oid": "8c4bd85eb054752731e6b233a650b0c94b314f51",
+    "path": "single_mutant/stability/vb1432_1RGG_ddG.csv",
+    "size": 4831,
+    "type": "file"
+  },
+  {
+    "oid": "8a4bfd258804b4f4b7ce491d22f5d521d31fb5db",
+    "path": "single_mutant/stability/vb1432_1RX4_ddG.csv",
+    "size": 2081,
+    "type": "file"
+  },
+  {
+    "oid": "1304a2d8fe9dc51a6e50b3ab9cc67063e00f77eb",
+    "path": "single_mutant/stability/vb1432_1VQB_ddG.csv",
+    "size": 9045,
+    "type": "file"
+  },
+  {
+    "oid": "724747b781e36edf8558d5e9c2de66c214dc3270",
+    "path": "single_mutant/stability/vb1432_2CI2_ddG.csv",
+    "size": 5054,
+    "type": "file"
+  },
+  {
+    "oid": "0eef25e79fd266b643565efb0012785386409eb7",
+    "path": "single_mutant/stability/vb1432_2LZM_ddG.csv",
+    "size": 29995,
+    "type": "file"
+  },
+  {
+    "oid": "80f56f19843797f810c387b170379b318e252012",
+    "path": "single_mutant/stability/vb1432_5CRO_ddG.csv",
+    "size": 647,
+    "type": "file"
+  }
+]
