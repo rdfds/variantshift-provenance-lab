@@ -4,9 +4,12 @@ import pytest
 
 from variantshift.transportability import (
     TransportConfig,
+    confirmation_acceptance_gates,
     cross_fitted_transport_predictions,
+    fit_frozen_transport_model,
     group_conformal_quantile,
     hierarchical_bootstrap_mean,
+    predict_with_frozen_transport_model,
     selective_policy_curve,
     summarize_policy_curves,
 )
@@ -90,3 +93,83 @@ def test_transport_features_reject_outcome_leakage() -> None:
     )
     with pytest.raises(ValueError, match="Outcome-derived"):
         config.validate()
+
+
+def test_frozen_bundle_emits_elastic_and_feature_ablation_predictions() -> None:
+    frame = _transport_frame()
+    bundle = fit_frozen_transport_model(frame, _config())
+    confirmation = frame.drop(columns="selection_gain_sd")
+    predicted = predict_with_frozen_transport_model(bundle, confirmation)
+    assert predicted["elastic_predicted_selection_gain_sd"].notna().all()
+    assert {
+        "ablation__msa_only__lower_selection_gain_sd",
+        "ablation__ensemble_only__lower_selection_gain_sd",
+    }.issubset(predicted.columns)
+
+
+def test_confirmation_gates_are_machine_readable_and_require_both_panels() -> None:
+    config = _config()
+    frame = _transport_frame()
+    frame["panel_id"] = np.where(
+        frame["family_id"].str.removeprefix("F").astype(int) < 5,
+        "human-domainome-v1",
+        "mavedb-complement-v1",
+    )
+    predictions, _ = cross_fitted_transport_predictions(frame, config)
+    predictions["elastic_predicted_selection_gain_sd"] = predictions[
+        "predicted_selection_gain_sd"
+    ]
+    predictions["ablation__msa_only__lower_selection_gain_sd"] = 0.0
+    predictions["ablation__ensemble_only__lower_selection_gain_sd"] = 0.0
+    policies = [
+        "variantshift",
+        "elastic_net",
+        "ablation:msa_only",
+        "ablation:ensemble_only",
+    ]
+    curves = pd.concat(
+        [selective_policy_curve(predictions, config, policy=policy) for policy in policies],
+        ignore_index=True,
+    )
+    bootstrap_summary = pd.DataFrame(
+        {
+            "comparator": [
+                "elastic_net",
+                "ablation:msa_only",
+                "ablation:ensemble_only",
+            ],
+            "risk_coverage_auc_improvement": [0.1, 0.1, 0.1],
+            "ci_low": [0.01, 0.01, 0.01],
+            "holm_adjusted_p_value": [0.03, 0.04, 0.04],
+        }
+    )
+    panel_summary = pd.DataFrame(
+        {
+            "panel_id": ["human-domainome-v1", "mavedb-complement-v1"],
+            "risk_coverage_auc_improvement": [0.02, 0.01],
+        }
+    )
+    result = confirmation_acceptance_gates(
+        predictions,
+        curves,
+        bootstrap_summary,
+        panel_summary,
+        config,
+        comparator="elastic_net",
+        required_panels=("human-domainome-v1", "mavedb-complement-v1"),
+        negative_conclusion={
+            "statement": "One preregistered subgroup does not transport.",
+            "interpretation_change": "Do not infer cross-family utility from random splits.",
+            "evidence_artifacts": ["confirmation-panel-summary.csv"],
+        },
+    )
+    assert result["schema_version"] == 1
+    assert not result["missing_primary_panels"]
+    assert {row["gate"] for row in result["gates"]} == {
+        "primary_risk_coverage",
+        "failure_reduction_at_50pct",
+        "nominal_90pct_coverage",
+        "primary_panel_direction_consistency",
+        "feature_ablation",
+        "useful_negative_conclusion",
+    }
