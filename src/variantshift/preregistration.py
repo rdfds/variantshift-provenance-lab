@@ -54,7 +54,14 @@ def build_preregistration_bundle(
     _verify_locked_artifacts(lock)
     method = json.loads(Path(method_path).read_text(encoding="utf-8"))
     model_audit = pd.read_csv(model_audit_path)
-    required_model_columns = {"model_id", "primary_eligible", "exclusion_reason"}
+    required_model_columns = {
+        "model_id",
+        "family",
+        "primary_eligible",
+        "exclusion_reason",
+        "primary_shared_target_count",
+        "feasibility_gate_passed",
+    }
     missing = sorted(required_model_columns.difference(model_audit.columns))
     if missing:
         raise ValueError(f"Model audit is missing columns: {missing}")
@@ -65,6 +72,26 @@ def build_preregistration_bundle(
         str(row.model_id): str(row.exclusion_reason)
         for row in model_audit.loc[~model_audit["primary_eligible"].astype(bool)].itertuples()
     }
+    eligible_family_count = int(
+        model_audit.loc[model_audit["primary_eligible"].astype(bool), "family"].nunique()
+    )
+    shared_target_counts = set(
+        model_audit["primary_shared_target_count"].dropna().astype(int)
+    )
+    if len(shared_target_counts) != 1:
+        raise ValueError("Model audit has inconsistent shared-target counts")
+    shared_target_count = next(iter(shared_target_counts))
+    feasibility_gate = bool(model_audit["feasibility_gate_passed"].astype(bool).all())
+    if not (
+        feasibility_gate
+        and len(eligible) >= 8
+        and eligible_family_count >= 4
+        and shared_target_count >= 300
+    ):
+        raise ValueError(
+            "Model-panel feasibility gate failed: require at least 8 executable models, "
+            "4 model/input families, and 300 shared targets at >=95% coverage"
+        )
     registration = {
         "schema_version": 1,
         "title": "VariantShift: outcome-blind evaluation of variant-effect model transport",
@@ -87,6 +114,8 @@ def build_preregistration_bundle(
         "resampling_unit": "family, then protein, then assay; variants are not independent units",
         "confirmation_characterization": "outcome-blind retrospective confirmation",
         "eligible_models": eligible,
+        "eligible_model_family_count": eligible_family_count,
+        "shared_confirmation_targets": shared_target_count,
         "excluded_models": excluded,
         "transport_method": method,
         "inclusion": protocol.get("inclusion", {}),
