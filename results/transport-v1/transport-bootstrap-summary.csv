@@ -1,2 +1,2 @@
 comparator,risk_coverage_auc_improvement,ci_low,ci_high,probability_improvement_above_zero,bootstrap_repeats,bootstrap_unit
-elastic_net,-0.0038142434844728908,-0.014912698412698414,0.0,0.0,10000,"family, then protein, then assay"
+elastic_net,-0.00961172284127428,-0.029515183117962123,0.001738252303746314,0.1506,10000,"family, then protein, then assay"
