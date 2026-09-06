@@ -11,7 +11,7 @@ requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Rohan Variankaval" }]
 dependencies = [
-  "numpy>=1.26",
+  "numpy>=1.26,<2",
   "pandas>=2.1",
   "scikit-learn>=1.6",
   "scipy>=1.11",
@@ -20,7 +20,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6"]
 plm = ["torch>=2.4", "fair-esm>=2.0.0"]
-workflow = ["snakemake>=8.0", "snakemake-executor-plugin-slurm>=1.0"]
+workflow = [
+  "snakemake>=8.0,<10",
+  "snakemake-executor-plugin-slurm==2.5.4",
+]
 
 [project.scripts]
 variantshift = "variantshift.cli:main"
