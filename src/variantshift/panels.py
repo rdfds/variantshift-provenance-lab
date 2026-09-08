@@ -134,6 +134,14 @@ def freeze_panel(config_path: Path, output_dir: Path) -> dict[str, Path]:
     write_table(targets, outputs["targets"])
     write_table(variants, outputs["variants"])
     write_schema_catalog(outputs["schemas"])
+    source_artifacts = []
+    for configured_path in config.get("source_artifacts", []):
+        source_path = Path(str(configured_path))
+        if not source_path.is_absolute():
+            source_path = (config_path.parent / source_path).resolve()
+        if not source_path.is_file():
+            raise ValueError(f"Configured source artifact is unavailable: {source_path}")
+        source_artifacts.append(source_path)
     protocol = {
         "schema_version": 1,
         "protocol_id": str(config["protocol_id"]),
@@ -147,6 +155,9 @@ def freeze_panel(config_path: Path, output_dir: Path) -> dict[str, Path]:
         "target_sha256": sha256_file(outputs["targets"]),
         "variant_sha256": sha256_file(outputs["variants"]),
         "source_git_commit": git_revision(Path.cwd()),
+        "source_artifact_sha256": {
+            str(path): sha256_file(path) for path in source_artifacts
+        },
         "inclusion": config.get("inclusion", {}),
         "exclusion": config.get("exclusion", {}),
     }
@@ -161,6 +172,7 @@ def freeze_panel(config_path: Path, output_dir: Path) -> dict[str, Path]:
             outputs["variants"],
             outputs["protocol"],
             outputs["schemas"],
+            *source_artifacts,
         ],
     )
     return outputs
