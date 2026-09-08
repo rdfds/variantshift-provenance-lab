@@ -2,24 +2,28 @@
   {
     "id": "transport_summary",
     "title": "Transport summary",
-    "description": "Development-only task-level risk and utility. These results are not confirmation evidence.",
+    "description": "Development-only regret, failure risk, and utility. These results are not confirmation evidence.",
     "kind": "table",
     "rows": 10,
     "columns": [
       "policy",
       "risk_coverage_auc",
+      "regret_coverage_auc",
+      "utility_coverage_auc",
       "failure_rate_at_50pct",
       "mean_selection_gain_at_50pct",
+      "mean_selection_regret_at_50pct",
+      "worst_quintile_gain_at_50pct",
       "tasks"
     ],
     "data": "data/transport_summary.json",
     "download": "downloads/transport_summary.csv",
-    "sha256": "02637baa6b2cbb2dd91e549903d85123ecbe20bc0b755bb03de17cca5fc8e1f1"
+    "sha256": "86676c3f81adeab9c35a4860120478880c8df81b9dc8620f61ef4f741899051a"
   },
   {
     "id": "risk_coverage",
     "title": "Risk\u2013coverage",
-    "description": "Family-held-out selective deployment curves on the development panel.",
+    "description": "Family-held-out regret, failure-risk, and utility curves on the development panel.",
     "kind": "risk_coverage",
     "rows": 100,
     "columns": [
@@ -29,30 +33,37 @@
       "failure_rate",
       "mean_selection_gain_sd",
       "median_selection_gain_sd",
+      "mean_selection_regret_sd",
+      "median_selection_regret_sd",
+      "worst_quintile_mean_gain_sd",
       "confidence_threshold"
     ],
     "data": "data/risk_coverage.json",
     "download": "downloads/risk_coverage.csv",
-    "sha256": "58ae3b669f6541de47e425d81332742bb801068964ef8984204a510b409defdd"
+    "sha256": "f26199c224f6c8853b4edf4d96055e4a520a50e721c596cd0d820397988bca95"
   },
   {
     "id": "transport_bootstrap",
     "title": "Transport inference",
-    "description": "Nested family, protein, and assay bootstrap comparison with the strongest development comparator.",
+    "description": "Nested family, protein, and assay bootstrap for the frozen regret-coverage comparison.",
     "kind": "table",
     "rows": 1,
     "columns": [
       "comparator",
+      "primary_endpoint",
+      "regret_coverage_auc_improvement",
+      "regret_ci_low",
+      "regret_ci_high",
+      "regret_probability_improvement_above_zero",
       "risk_coverage_auc_improvement",
-      "ci_low",
-      "ci_high",
-      "probability_improvement_above_zero",
+      "risk_ci_low",
+      "risk_ci_high",
       "bootstrap_repeats",
       "bootstrap_unit"
     ],
     "data": "data/transport_bootstrap.json",
     "download": "downloads/transport_bootstrap.csv",
-    "sha256": "2ab8ebd3f50d32738b04e389813841e5dd7474e1d6bc04bb4922a5c7016a2f6b"
+    "sha256": "31bbf247ad85a1fcca93b2bf3cda913db7d4559aebb973ce25aca5f63b3828a2"
   },
   {
     "id": "fold_audit",
@@ -68,15 +79,20 @@
       "test_rows",
       "fit_groups",
       "calibration_groups",
+      "calibration_tasks",
       "test_groups",
       "conformal_quantile",
+      "decision_shrinkage",
+      "override_margin",
+      "priority_weights",
+      "policy_inner_audit",
       "median_predicted_error_scale",
       "error_scale_floor",
       "parameters"
     ],
     "data": "data/fold_audit.json",
     "download": "downloads/fold_audit.csv",
-    "sha256": "97c16a8fa310b1009f9ea16896731931682e02a7cd641cb7cd908b338b073fdf"
+    "sha256": "0fa1d8f8b91ba526c75c4cdbf74ffeec6411915cc03f0a62d93c7a8f8e5a4c49"
   },
   {
     "id": "model_audit",
