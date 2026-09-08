@@ -525,6 +525,12 @@ def build_parser() -> argparse.ArgumentParser:
     mavedb_complement.add_argument("--output-dir", type=Path, required=True)
     mavedb_complement.add_argument("--cutoff", default="2026-08-30")
 
+    domainome_targets = subparsers.add_parser(
+        "domainome-freeze-targets",
+        help="Freeze Domainome targets from a mixed table without decoding outcome fields",
+    )
+    domainome_targets.add_argument("--output-dir", type=Path, required=True)
+
     venus_targets = subparsers.add_parser(
         "venus-freeze-targets",
         help="Freeze a VenusMutHub target panel without reading mutation files",
@@ -709,6 +715,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             arguments.output_dir,
             criteria=MaveDBComplementCriteria(frozen_on_or_before=arguments.cutoff),
         )
+        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+        return 0
+
+    if arguments.command == "domainome-freeze-targets":
+        from .confirmation_panels import freeze_domainome_targets
+
+        outputs = freeze_domainome_targets(arguments.output_dir)
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
 
