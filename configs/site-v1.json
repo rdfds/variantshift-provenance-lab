@@ -5,21 +5,21 @@
     {
       "id": "transport_summary",
       "title": "Transport summary",
-      "description": "Development-only task-level risk and utility. These results are not confirmation evidence.",
+      "description": "Development-only regret, failure risk, and utility. These results are not confirmation evidence.",
       "kind": "table",
       "path": "../results/transport-v1/transport-summary.csv"
     },
     {
       "id": "risk_coverage",
       "title": "Risk–coverage",
-      "description": "Family-held-out selective deployment curves on the development panel.",
+      "description": "Family-held-out regret, failure-risk, and utility curves on the development panel.",
       "kind": "risk_coverage",
       "path": "../results/transport-v1/risk-coverage.csv"
     },
     {
       "id": "transport_bootstrap",
       "title": "Transport inference",
-      "description": "Nested family, protein, and assay bootstrap comparison with the strongest development comparator.",
+      "description": "Nested family, protein, and assay bootstrap for the frozen regret-coverage comparison.",
       "kind": "table",
       "path": "../results/transport-v1/transport-bootstrap-summary.csv"
     },
