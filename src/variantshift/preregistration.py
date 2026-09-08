@@ -102,8 +102,9 @@ def build_preregistration_bundle(
         "primary_questions": list(PRIMARY_QUESTIONS),
         "primary_utility": "task-level standardized top-decile selection gain",
         "primary_failure": "selection_gain_sd <= 0",
-        "primary_endpoint": "task-level failure risk-coverage AUC",
+        "primary_endpoint": "task-level selection-regret coverage AUC",
         "secondary_endpoints": [
+            "failure risk-coverage AUC",
             "Spearman correlation",
             "top-decile recall",
             "normalized discounted cumulative gain",
@@ -170,8 +171,10 @@ outcome-blind retrospective confirmation, not prospective or independently blind
 
 ## Estimands and analysis
 
-The primary utility is task-level standardized top-decile selection gain. Failure is a gain less
-than or equal to zero. The primary reliability endpoint is task-level failure risk-coverage AUC.
+The primary utility is task-level standardized top-decile selection gain. Selection regret is the
+difference between the best available model's gain and the selected model's gain. The primary
+reliability endpoint is task-level selection-regret coverage AUC. Failure is a gain less than or
+equal to zero, and failure risk-coverage AUC is secondary.
 Families, proteins, and assays are the resampling hierarchy; individual variants are not treated
 as independent replicates. Primary policy comparisons use 10,000 hierarchical bootstrap repeats
 and Holm multiplicity adjustment.
