@@ -621,6 +621,15 @@ def build_parser() -> argparse.ArgumentParser:
     overlap_audit.add_argument("--development-structure-families", type=Path)
     overlap_audit.add_argument("--mmseqs-binary", default="mmseqs")
     overlap_audit.add_argument("--threads", type=int, default=8)
+
+    budget = subparsers.add_parser(
+        "compute-budget-check",
+        help="Block an external-compute job that would exceed the fixed budget",
+    )
+    budget.add_argument("ledger", type=Path)
+    budget.add_argument("--planned-cost-usd", type=float, default=0.0)
+    budget.add_argument("--hard-cap-usd", type=float, default=2_000.0)
+    budget.add_argument("--output", type=Path, required=True)
     transport_evaluate.add_argument(
         "--development",
         action="store_true",
@@ -821,6 +830,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
         return 0
+
+    if arguments.command == "compute-budget-check":
+        from .compute_budget import check_compute_budget, write_budget_report
+
+        report = check_compute_budget(
+            arguments.ledger,
+            planned_cost_usd=arguments.planned_cost_usd,
+            hard_cap_usd=arguments.hard_cap_usd,
+        )
+        write_budget_report(report, arguments.output)
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0 if report["permitted"] else 2
 
     if arguments.command == "confirmation-freeze":
         from .outcome_lock import freeze_predictions
