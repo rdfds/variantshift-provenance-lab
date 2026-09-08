@@ -1,4 +1,4 @@
-.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-family-clusters proteingym-heldout-family proteingym-structure-clusters proteingym-heldout-structure-family proteingym-curated-families proteingym-heldout-curated-family proteingym-heldout-curated-family-ablation proteingym-modern-zero-shot proteingym-crossover proteingym-figure proteingym-extended-figure proteingym-research-figure mavedb-freeze-external mavedb-download-external mavedb-evaluate-external mavedb-external-figure model-preflight transport-features transport-fit site workflow-local workflow-slurm clean
+.PHONY: install test lint benchmark report robustness transfer figure verify proteingym-download proteingym-audit proteingym-benchmark proteingym-zero-shot proteingym-official-supervised proteingym-esm2-embeddings proteingym-embedding-probe proteingym-heldout-protein proteingym-family-clusters proteingym-heldout-family proteingym-structure-clusters proteingym-heldout-structure-family proteingym-curated-families proteingym-heldout-curated-family proteingym-heldout-curated-family-ablation proteingym-modern-zero-shot proteingym-crossover proteingym-figure proteingym-extended-figure proteingym-research-figure mavedb-freeze-external mavedb-download-external mavedb-evaluate-external mavedb-external-figure model-preflight transport-features transport-fit confirmation-overlap budget-check site workflow-local workflow-slurm clean
 
 DATASET := data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
 PROTEINGYM_DIR := data/raw/proteingym
@@ -120,6 +120,12 @@ transport-features:
 
 transport-fit: transport-features
 	variantshift transport-fit results/transport-v1/development-task-features.csv configs/transport-v1.json --output-dir results/transport-v1
+
+confirmation-overlap:
+	variantshift confirmation-overlap-audit $(PROTEINGYM_REFERENCE) results/proteingym/eligibility.csv --confirmation-target protocols/mavedb-complement-v1/frozen/targets.csv --confirmation-target protocols/venusmuthub-v1/frozen/targets.csv --model-config configs/model-panel-v1.json --output-dir results/confirmation-overlap-v1
+
+budget-check:
+	variantshift compute-budget-check configs/compute-ledger.csv --planned-cost-usd 0 --output results/compute-budget-status.json
 
 site: model-preflight transport-fit
 	variantshift site-build configs/site-v1.json site
