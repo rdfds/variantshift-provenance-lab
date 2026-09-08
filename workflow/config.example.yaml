@@ -16,9 +16,12 @@ proteingym:
 confirmation:
   panel: mavedb-complement-v1
   protocol_id: variantshift-mavedb-complement-confirmation-v1
-  targets: protocols/mavedb-complement-v1/frozen/targets.csv
+  prediction_targets: protocols/mavedb-complement-v1/frozen/targets.csv
   variants: protocols/mavedb-complement-v1/frozen/variants.csv
   lock: protocols/mavedb-complement-v1/frozen/outcome-lock.json
+  target_tables:
+    - protocols/mavedb-complement-v1/frozen/targets.csv
+    - protocols/venusmuthub-v1/frozen/targets.csv
   executable_models:
     - esm2_650m
 
