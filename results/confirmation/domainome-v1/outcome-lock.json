@@ -1,0 +1,17 @@
+{
+  "created_at": "2026-08-31T17:45:37.367847+00:00",
+  "method_artifacts": {},
+  "prediction_artifacts": {},
+  "protocol_id": "variantshift-domainome-confirmation-v1",
+  "registration": null,
+  "reveal": null,
+  "schema_version": 1,
+  "state": "targets_frozen",
+  "target_artifacts": {
+    "/Users/rvariankaval/Documents/Codex/2026-08-22/h/work/variantshift-provenance-lab/data/confirmation-targets/domainome-v1/target-extraction-receipt.json": "da0e388f36f6b2bf9be8a96e0f4be7745a97125ba24b22770bdf6cc762f73984",
+    "results/confirmation/domainome-v1/protocol.json": "6376bc3aa700706347db156cda8c3e48775bc9611f38c2ff17fe1d33af622a54",
+    "results/confirmation/domainome-v1/schemas.json": "752d93640357ab08c924de9ed7797e3776c387cafada6b025c128bcf3349a8ed",
+    "results/confirmation/domainome-v1/targets.csv": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e",
+    "results/confirmation/domainome-v1/variants.csv": "eb4891a705b60ed19ebfd2485a1bf3f07c786413455caea198c911e56f83232f"
+  }
+}
