@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import os
 import tempfile
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -27,7 +27,7 @@ OUTCOME_COLUMN_MARKERS = {
 
 
 def _now() -> str:
-    return datetime.now(UTC).isoformat()
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _atomic_json(path: Path, payload: dict[str, object]) -> Path:
