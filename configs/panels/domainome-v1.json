@@ -3,8 +3,11 @@
   "panel_id": "human-domainome-v1",
   "source": "Site-saturation mutagenesis of 500 human protein domains",
   "source_version": "Human Domainome 1.0",
-  "adapter": "fasta",
-  "target_input": "../../data/confirmation-targets/domainome-v1/wild_type.fasta",
+  "adapter": "target_table",
+  "target_input": "../../data/confirmation-targets/domainome-v1/targets.csv",
+  "source_artifacts": [
+    "../../data/confirmation-targets/domainome-v1/target-extraction-receipt.json"
+  ],
   "exposure_policy": "model-specific clean, possible, known, or undocumented",
   "inclusion": {
     "variant_type": "single amino-acid substitution",
