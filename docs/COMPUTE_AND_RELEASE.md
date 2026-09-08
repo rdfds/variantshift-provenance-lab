@@ -66,6 +66,23 @@ Model preflight records first-run wall time and substitution throughput. GPU typ
 memory, and cache bytes must be added by the ARCH job wrapper because a local process cannot
 reliably infer scheduler-level resource accounting.
 
+## Outcome-sealed Domainome targets
+
+The Domainome target freeze is reproducible without loading its experimental residuals into the
+analysis process:
+
+```bash
+variantshift domainome-freeze-targets \
+  --output-dir data/confirmation-targets/domainome-v1
+variantshift panel-freeze configs/panels/domainome-v1.json \
+  results/confirmation/domainome-v1
+```
+
+The extractor hashes every source byte, decodes only the first three tab-delimited fields
+(`dom_ID`, `PFAM_ID`, and `wt_seq`), and discards every trailing byte without decoding it. The
+receipt is itself included in the target lock. The pinned Zenodo MD5 must match before the live
+freeze succeeds.
+
 ## Release checklist
 
 1. Full tests, lint, workflow dry-run, and static-link audit pass.
