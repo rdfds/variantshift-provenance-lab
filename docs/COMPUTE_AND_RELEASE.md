@@ -2,9 +2,12 @@
 
 ## ARCH execution
 
-Install the workflow extra and make a local copy of `workflow/config.example.yaml`. The default
-workflow builds the development features, refits transport, audits model metadata, and rebuilds the
-site. It does not run confirmation scoring automatically.
+Install the workflow extra and make a local copy of `workflow/config.example.yaml`. NumPy is held
+below 2 for compatibility with the pinned PyTorch 2.2 fair-esm image, and the Slurm executor is
+pinned to 2.5.4 so the workflow and PLM extras remain dependency-compatible. The default workflow
+builds the development features, refits transport, audits model metadata, reruns target-only
+sequence overlap auditing, and rebuilds the site. It does not run confirmation scoring
+automatically.
 
 ```bash
 pip install -e '.[dev,workflow]'
@@ -50,6 +53,18 @@ Profile one representative target per model before scheduling a panel. Record wa
 GPU-hours, peak memory, cache size, and substitution throughput. Use ARCH first. Cloud jobs require
 a separate cost manifest, an alert at 50%, 75%, and 90%, and a hard stop at $2,000. No workflow in
 this repository silently falls back to paid compute.
+
+The executable guard reads `configs/compute-ledger.csv`, includes the proposed job cost, emits a
+checksum-bound report, and exits with status 2 if the hard cap would be exceeded:
+
+```bash
+variantshift compute-budget-check configs/compute-ledger.csv \
+  --planned-cost-usd 125 --output results/compute-budget-status.json
+```
+
+Model preflight records first-run wall time and substitution throughput. GPU type, GPU-hours, peak
+memory, and cache bytes must be added by the ARCH job wrapper because a local process cannot
+reliably infer scheduler-level resource accounting.
 
 ## Release checklist
 

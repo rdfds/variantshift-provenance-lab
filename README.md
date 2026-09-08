@@ -16,22 +16,30 @@ variants measured across 24 conditions at NIST's Living Measurement Systems Foun
 The repository now implements the analysis contracts for a no-lab, outcome-blind retrospective
 confirmation study:
 
-- versioned target, variant, prediction, outcome, and task-metric schemas;
+- versioned target, variant, prediction, outcome, task-metric, transport-feature, and
+  risk–coverage schemas;
 - model and panel adapter interfaces with content-addressed prediction caching;
 - a one-way target → prediction → registration → reveal lock;
 - family-grouped cross-fitting, one-sided group conformal lower bounds, selective model choice,
-  abstention, comparator policies, and nested family/protein/assay bootstrap inference;
+  abstention, frozen comparator and feature-ablation policies, machine-readable acceptance gates,
+  and nested family/protein/assay bootstrap inference;
 - config-driven local and Slurm workflows, Apptainer recipes, and a static result explorer;
-- a metadata-only untouched MaveDB complement frozen without score-endpoint access.
+- a metadata-only untouched MaveDB complement and target-only VenusMutHub panel frozen without
+  score or mutation-table access;
+- an outcome-free sequence audit over 99 frozen targets, yielding 96 confirmation families, 97
+  exact-sequence-unseen targets, and 96 MMseqs2-family-unseen targets.
 
 The current development run contains 2,340 assay–model rows across 195 ProteinGym assays, 169
 proteins, 132 curated family groups, and 12 modern model score sets. It is not yet confirmation
 evidence. The calibrated selector currently fails the preregistered scientific improvement gate,
-and no model has yet passed the executable external-panel preflight. Those are active blockers,
-not omitted results. See the [publication readiness audit](docs/PUBLICATION_READINESS.md) and
+and no model has yet passed the executable external-panel preflight. Domainome, confirmation
+structure/Pfam annotations, ARCH execution, and the 300-common-target threshold remain blockers.
+Those are active blockers, not omitted results. See the [publication readiness audit](docs/PUBLICATION_READINESS.md) and
 [Nature Methods protocol](docs/NATURE_METHODS_PROTOCOL.md).
 
 Open the generated [benchmark explorer](site/index.html) or rebuild it with `make site`.
+For a fast local walk-through that stops safely at `predictions_frozen`, run the
+[tiny outcome-blind example](examples/tiny/README.md).
 
 ## Research questions
 
