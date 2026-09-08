@@ -1,0 +1,82 @@
+{
+  "best_average_model": "s3f_msa",
+  "best_label_free_comparator": "crossover_classifier",
+  "config": {
+    "assay_column": "assay_id",
+    "bootstrap_repeats": 10000,
+    "calibration_fraction": 0.2,
+    "categorical_features": [
+      "taxon",
+      "assay_modality",
+      "model_family",
+      "model_modalities",
+      "exposure_status",
+      "structure_available"
+    ],
+    "coverage": 0.9,
+    "group_column": "family_id",
+    "model_column": "model_id",
+    "numeric_features": [
+      "protein_length",
+      "assayed_fraction",
+      "mutated_positions",
+      "msa_depth",
+      "msa_neff",
+      "alignment_coverage",
+      "sequence_identity_to_development",
+      "structure_similarity_to_development",
+      "domain_coverage",
+      "score_dispersion",
+      "score_tail_separation",
+      "missing_fraction",
+      "ensemble_disagreement",
+      "ensemble_agreement"
+    ],
+    "outer_folds": 5,
+    "protein_column": "protein_id",
+    "seed": 20260830,
+    "target_column": "selection_gain_sd",
+    "task_column": "task_id"
+  },
+  "confirmation_primary_panels": [
+    "human-domainome-v1",
+    "mavedb-complement-v1"
+  ],
+  "conformal_mode": "selection-aware, locally scaled hierarchical conformal calibration; equal family mass and equal within-family task mass",
+  "conformal_quantile": 1.8378896991363098,
+  "decision_rule": "maximize nested-CV shrinkage of predicted gain toward model prior",
+  "decision_shrinkage": 0.75,
+  "error_scale_floor": 0.007474213576733519,
+  "formal_scope": "one-sided marginal coverage for a new task from a new family under two-level hierarchical exchangeability",
+  "frozen_feature_ablations": [
+    "ensemble_only",
+    "msa_only",
+    "without_ensemble",
+    "without_msa"
+  ],
+  "name": "VariantShift Selective Transport Auditor",
+  "parameters": {
+    "l2_regularization": 1.0,
+    "learning_rate": 0.05,
+    "max_iter": 250,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 10
+  },
+  "primary_endpoint": "task-level selection-regret coverage AUC",
+  "primary_failure": "selection_gain_sd <= 0",
+  "schema_version": 2,
+  "secondary_endpoints": [
+    "failure risk-coverage AUC",
+    "mean selection gain",
+    "worst-quintile selection gain",
+    "selected-policy lower-bound coverage"
+  ],
+  "shrinkage_candidates": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "training_frame_sha256": "e869dafdc1ecda91ca2323d417ae2aeaff560e8bc0d73f4681d59c2775514d89"
+}
