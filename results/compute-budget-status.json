@@ -1,0 +1,12 @@
+{
+  "alert_threshold_reached": "none",
+  "hard_cap_usd": 2000.0,
+  "jobs_recorded": 0,
+  "ledger_sha256": "18259bf00910504db113cbaee0312e9a8603f53c8520206885583174f29edd8f",
+  "permitted": true,
+  "planned_cost_usd": 0.0,
+  "projected_total_usd": 0.0,
+  "schema_version": 1,
+  "spent_usd": 0.0,
+  "status": "within_budget"
+}
