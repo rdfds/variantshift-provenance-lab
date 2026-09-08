@@ -14,7 +14,7 @@
     ],
     "data": "data/transport_summary.json",
     "download": "downloads/transport_summary.csv",
-    "sha256": "c8ff0c652cad37d5b318e3fcddac3b98acb204e167d5d4666f9205f265d64fa8"
+    "sha256": "02637baa6b2cbb2dd91e549903d85123ecbe20bc0b755bb03de17cca5fc8e1f1"
   },
   {
     "id": "risk_coverage",
@@ -33,7 +33,7 @@
     ],
     "data": "data/risk_coverage.json",
     "download": "downloads/risk_coverage.csv",
-    "sha256": "ecda39d76b8b524ef0d1c525dd0ea015c7dbc62af407e92fb547a7742166b930"
+    "sha256": "58ae3b669f6541de47e425d81332742bb801068964ef8984204a510b409defdd"
   },
   {
     "id": "transport_bootstrap",
@@ -52,7 +52,7 @@
     ],
     "data": "data/transport_bootstrap.json",
     "download": "downloads/transport_bootstrap.csv",
-    "sha256": "dd305f1b45894f49a21920a79c8c2e2f17fa57087d6ef6979407a43ee1402d1d"
+    "sha256": "2ab8ebd3f50d32738b04e389813841e5dd7474e1d6bc04bb4922a5c7016a2f6b"
   },
   {
     "id": "fold_audit",
@@ -70,11 +70,13 @@
       "calibration_groups",
       "test_groups",
       "conformal_quantile",
+      "median_predicted_error_scale",
+      "error_scale_floor",
       "parameters"
     ],
     "data": "data/fold_audit.json",
     "download": "downloads/fold_audit.csv",
-    "sha256": "ee66f49a131aa3ca461c5c235c0405d53e74cb29acc9e26502cf7499b34f7144"
+    "sha256": "97c16a8fa310b1009f9ea16896731931682e02a7cd641cb7cd908b338b073fdf"
   },
   {
     "id": "model_audit",
@@ -95,17 +97,28 @@
       "exposure_status",
       "container_image",
       "container_digest",
+      "checkpoint_sha256",
+      "provenance_complete",
       "metadata_complete",
       "execution_status",
       "coverage",
       "parity_spearman",
       "repeat_spearman",
+      "elapsed_seconds",
+      "variants_per_second",
+      "target_count",
+      "targets_at_95pct_coverage",
       "primary_eligible",
-      "exclusion_reason"
+      "exclusion_reason",
+      "primary_eligible_model_count",
+      "primary_family_count",
+      "primary_shared_target_count",
+      "primary_shared_targets_sha256",
+      "feasibility_gate_passed"
     ],
     "data": "data/model_audit.json",
     "download": "downloads/model_audit.csv",
-    "sha256": "c3ad9b0f3776edfd515ce5be94740d23628cb9d5cc72dea5b8f2149d2414b176"
+    "sha256": "3dd9e8ac27fac9d9e0f91b39856215dd1c68a131ab5de12388c5a8030133c279"
   },
   {
     "id": "model_landscape",
@@ -162,6 +175,76 @@
     "data": "data/mavedb_complement.json",
     "download": "downloads/mavedb_complement.csv",
     "sha256": "ecf49f75f7a3dc7190d29864fa2e94559d4522e4e5a3c49f815fe2b75fa0aae8"
+  },
+  {
+    "id": "venusmuthub_targets",
+    "title": "VenusMutHub target audit",
+    "description": "Outcome-blind target resolution and overlap exclusions; no mutation table was accessed.",
+    "kind": "table",
+    "rows": 796,
+    "columns": [
+      "dataset_id",
+      "category",
+      "source_path",
+      "source_type",
+      "source_identifier",
+      "sequence",
+      "sequence_status",
+      "protein_polymer_sequences",
+      "reference_accessions",
+      "doi_normalized",
+      "exclusion_reasons",
+      "selected",
+      "sequence_sha256",
+      "target_id"
+    ],
+    "data": "data/venusmuthub_targets.json",
+    "download": "downloads/venusmuthub_targets.csv",
+    "sha256": "cf6bf1802aa20aebadd2ae129b0d59d3fdbf08c1b8036d3d6016574bd50742e1"
+  },
+  {
+    "id": "confirmation_overlap",
+    "title": "Confirmation novelty",
+    "description": "Exact-sequence and MMseqs2-family novelty for every frozen confirmation target. Missing structure and Pfam annotations remain undocumented.",
+    "kind": "table",
+    "rows": 99,
+    "columns": [
+      "panel_id",
+      "target_id",
+      "protein_id",
+      "sequence_sha256",
+      "sequence_length",
+      "family_id",
+      "exact_sequence_unseen",
+      "mmseqs_family_unseen",
+      "foldseek_structure_family_status",
+      "foldseek_structure_family_unseen",
+      "foldseek_structure_family_overlap_ids",
+      "pfam_clan_status",
+      "pfam_clan_unseen",
+      "pfam_clan_overlap_ids"
+    ],
+    "data": "data/confirmation_overlap.json",
+    "download": "downloads/confirmation_overlap.csv",
+    "sha256": "5ea170c22d2575868bc3a8ec4efc4deec51057b5b5b2852f9ad13ca5dee1eca6"
+  },
+  {
+    "id": "model_exposure",
+    "title": "Model exposure audit",
+    "description": "Per-model, per-target exposure categories; undocumented training data are never treated as clean.",
+    "kind": "table",
+    "rows": 1287,
+    "columns": [
+      "panel_id",
+      "target_id",
+      "model_id",
+      "training_cutoff",
+      "exposure_category",
+      "exposure_reason"
+    ],
+    "data": "data/model_exposure.json",
+    "download": "downloads/model_exposure.csv",
+    "sha256": "ed975c020909446db4cfb837932212de32ce62df2d8738141dfca688e28e1804"
   },
   {
     "id": "mavedb_development",
