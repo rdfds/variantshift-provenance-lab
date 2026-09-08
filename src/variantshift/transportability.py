@@ -1,4 +1,4 @@
-"""VariantShift Transportability Score and task-level selective evaluation."""
+"""VariantShift selective transport auditing and task-level evaluation."""
 
 from __future__ import annotations
 
@@ -38,6 +38,8 @@ OUTCOME_DERIVED_MARKERS = (
     "outcome",
     "dms_score",
     "failure",
+    "supervised_wins",
+    "crossover_probability",
 )
 
 CONFIRMATION_PRIMARY_PANELS = (
@@ -165,6 +167,19 @@ HISTGB_CANDIDATES: tuple[dict[str, float | int], ...] = (
     },
 )
 
+# Fixed before confirmation. The value is selected inside family-held-out folds, so the
+# deployment rule can borrow strength from stable model-level performance without reporting a
+# post-selection development estimate as if the shrinkage had been known in advance.
+DECISION_SHRINKAGE_CANDIDATES: tuple[float, ...] = (0.5, 0.75, 1.0)
+OVERRIDE_MARGIN_CANDIDATES: tuple[float, ...] = (0.05, 0.075, 0.1, 0.15)
+# Frozen after development. Every component is available from sequence, MSA, and model predictions
+# before confirmation assay outcomes are opened.
+PRIORITY_WEIGHTS = {
+    "log_msa_neff": 1.0,
+    "log_protein_length": 0.5,
+    "decision_score": 0.25,
+}
+
 
 def _pipeline(
     config: TransportConfig,
@@ -211,6 +226,7 @@ def _out_of_group_predictions(
     estimator: str,
     parameters: dict[str, float | int],
     seed_offset: int,
+    decision_shrinkage: float = 1.0,
 ) -> np.ndarray:
     target = frame[config.target_column].to_numpy(dtype=float)
     groups = frame[config.group_column].astype(str).to_numpy()
@@ -229,7 +245,14 @@ def _out_of_group_predictions(
             seed_offset=seed_offset * 10 + fold,
         )
         model.fit(frame.iloc[train_indices], target[train_indices])
-        predicted[test_indices] = model.predict(frame.iloc[test_indices])
+        raw_prediction = model.predict(frame.iloc[test_indices])
+        predicted[test_indices] = _decision_scores(
+            frame.iloc[test_indices],
+            raw_prediction,
+            config,
+            priors=_model_priors(frame.iloc[train_indices], config),
+            shrinkage=decision_shrinkage,
+        )
     if not np.isfinite(predicted).all():
         raise RuntimeError("Group-held-out error scale did not cover every fit row")
     return predicted
@@ -242,6 +265,7 @@ def _fit_error_scale(
     estimator: str,
     parameters: dict[str, float | int],
     seed_offset: int,
+    decision_shrinkage: float = 1.0,
 ) -> tuple[Pipeline, float]:
     target = frame[config.target_column].to_numpy(dtype=float)
     out_of_group = _out_of_group_predictions(
@@ -250,6 +274,7 @@ def _fit_error_scale(
         estimator=estimator,
         parameters=parameters,
         seed_offset=seed_offset,
+        decision_shrinkage=decision_shrinkage,
     )
     absolute_error = np.abs(out_of_group - target)
     positive = absolute_error[absolute_error > 0]
@@ -316,6 +341,331 @@ def group_conformal_quantile(
     return float(np.sort(values.to_numpy(dtype=float))[rank - 1])
 
 
+def hierarchical_conformal_quantile(
+    residuals: np.ndarray,
+    groups: np.ndarray,
+    *,
+    coverage: float,
+) -> float:
+    """Hierarchical split-conformal quantile for a new task from a new group.
+
+    Every calibration family receives equal total mass, and tasks within a family share that
+    mass. The remaining 1 / (n_families + 1) mass is placed at infinity. This is the finite-sample
+    construction for two-level hierarchical exchangeability; unlike a family maximum, it targets
+    marginal coverage for a randomly sampled task in an unseen family rather than simultaneous
+    coverage of every task in that family.
+    """
+    if not 0 < coverage < 1:
+        raise ValueError("Coverage must lie in (0, 1)")
+    values = pd.DataFrame(
+        {"residual": np.asarray(residuals, dtype=float), "group": groups.astype(str)}
+    )
+    if values.empty or not np.isfinite(values["residual"]).all():
+        raise ValueError("Finite residuals from at least one calibration group are required")
+    group_count = int(values["group"].nunique())
+    weighted_values: list[float] = []
+    weights: list[float] = []
+    for _group, selected in values.groupby("group", sort=False):
+        group_size = len(selected)
+        weighted_values.extend(selected["residual"].tolist())
+        weights.extend([1.0 / ((group_count + 1) * group_size)] * group_size)
+    weighted_values.append(float("inf"))
+    weights.append(1.0 / (group_count + 1))
+    order = np.argsort(np.asarray(weighted_values, dtype=float), kind="stable")
+    ordered_values = np.asarray(weighted_values, dtype=float)[order]
+    cumulative = np.cumsum(np.asarray(weights, dtype=float)[order])
+    index = min(len(ordered_values) - 1, int(np.searchsorted(cumulative, coverage)))
+    return float(ordered_values[index])
+
+
+def _model_priors(frame: pd.DataFrame, config: TransportConfig) -> dict[str, float]:
+    return {
+        str(model): float(value)
+        for model, value in frame.groupby(config.model_column, sort=True)[
+            config.target_column
+        ].mean().items()
+    }
+
+
+def _decision_scores(
+    frame: pd.DataFrame,
+    predicted: np.ndarray,
+    config: TransportConfig,
+    *,
+    priors: dict[str, float],
+    shrinkage: float,
+) -> np.ndarray:
+    if not 0 <= shrinkage <= 1:
+        raise ValueError("Decision shrinkage must lie in [0, 1]")
+    model_ids = frame[config.model_column].astype(str)
+    prior_values = model_ids.map(priors)
+    if prior_values.isna().any():
+        missing = sorted(model_ids.loc[prior_values.isna()].unique())
+        raise ValueError(f"Decision priors are missing models: {missing}")
+    return (
+        shrinkage * np.asarray(predicted, dtype=float)
+        + (1.0 - shrinkage) * prior_values.to_numpy(dtype=float)
+    )
+
+
+def _mean_selected_regret(
+    frame: pd.DataFrame,
+    scores: np.ndarray,
+    config: TransportConfig,
+) -> float:
+    working = frame.loc[:, [config.task_column, config.target_column]].copy()
+    working["_decision_score"] = np.asarray(scores, dtype=float)
+    selected = working.loc[working.groupby(config.task_column)["_decision_score"].idxmax()]
+    oracle = working.groupby(config.task_column)[config.target_column].max()
+    observed = selected.set_index(config.task_column)[config.target_column]
+    return float((oracle - observed).mean())
+
+
+def _selected_with_override(
+    frame: pd.DataFrame,
+    scores: np.ndarray,
+    config: TransportConfig,
+    *,
+    baseline_models: np.ndarray,
+    margin: float,
+) -> pd.DataFrame:
+    working = frame.copy()
+    working["_source_index"] = np.arange(len(working), dtype=int)
+    working["_decision_score"] = np.asarray(scores, dtype=float)
+    working["_baseline_model"] = np.asarray(baseline_models, dtype=str)
+    top_indices = working.groupby(config.task_column)["_decision_score"].idxmax()
+    top = working.loc[top_indices].set_index(config.task_column, drop=False)
+    baseline_candidates = working.loc[
+        working[config.model_column].astype(str).eq(working["_baseline_model"])
+    ]
+    baseline = baseline_candidates.set_index(config.task_column, drop=False)
+    if len(baseline) != working[config.task_column].nunique():
+        raise ValueError("Every task must contain its development-baseline model")
+    use_override = (
+        top["_decision_score"] - baseline["_decision_score"]
+    ) > margin
+    selected_rows = []
+    for task_id in top.index:
+        selected_rows.append(
+            top.loc[task_id] if bool(use_override.loc[task_id]) else baseline.loc[task_id]
+        )
+    selected = pd.DataFrame(selected_rows).reset_index(drop=True)
+    selected["_overrode_baseline"] = use_override.to_numpy(dtype=bool)
+    return selected
+
+
+def _apply_auditor_policy(
+    frame: pd.DataFrame,
+    scores: np.ndarray,
+    config: TransportConfig,
+    policy: dict[str, object],
+) -> pd.DataFrame:
+    baseline_models = np.repeat(str(policy["baseline_model"]), len(frame))
+    selected = _selected_with_override(
+        frame.reset_index(drop=True),
+        scores,
+        config,
+        baseline_models=baseline_models,
+        margin=float(policy["override_margin"]),
+    )
+    selected["confidence"] = _priority_values(
+        selected,
+        decision_mean=float(policy["decision_mean"]),
+        decision_std=float(policy["decision_std"]),
+        log_msa_neff_mean=float(policy["log_msa_neff_mean"]),
+        log_msa_neff_std=float(policy["log_msa_neff_std"]),
+        log_protein_length_mean=float(policy["log_protein_length_mean"]),
+        log_protein_length_std=float(policy["log_protein_length_std"]),
+    )
+    return selected
+
+
+def _safe_standard_deviation(values: np.ndarray) -> float:
+    finite = np.asarray(values, dtype=float)
+    finite = finite[np.isfinite(finite)]
+    if not len(finite):
+        return 1.0
+    standard_deviation = float(np.std(finite, ddof=0))
+    return standard_deviation if standard_deviation > 1e-12 else 1.0
+
+
+def _finite_mean(values: np.ndarray) -> float:
+    finite = np.asarray(values, dtype=float)
+    finite = finite[np.isfinite(finite)]
+    return float(np.mean(finite)) if len(finite) else 0.0
+
+
+def _log1p_nonnegative(values: pd.Series) -> np.ndarray:
+    numeric = pd.to_numeric(values, errors="coerce").to_numpy(dtype=float, copy=True)
+    numeric[numeric < 0] = np.nan
+    return np.log1p(numeric)
+
+
+def _priority_values(
+    selected: pd.DataFrame,
+    *,
+    decision_mean: float,
+    decision_std: float,
+    log_msa_neff_mean: float,
+    log_msa_neff_std: float,
+    log_protein_length_mean: float,
+    log_protein_length_std: float,
+) -> np.ndarray:
+    decision = selected["_decision_score"].to_numpy(dtype=float)
+    if not np.isfinite(decision).all():
+        raise ValueError("Auditor decision scores must be finite")
+    log_msa_neff = _log1p_nonnegative(selected["msa_neff"])
+    log_protein_length = _log1p_nonnegative(selected["protein_length"])
+    # Missing deployment metadata is neutral rather than silently promoted or rejected. The
+    # imputation constants are learned on development data and serialized with the policy.
+    log_msa_neff = np.where(
+        np.isfinite(log_msa_neff), log_msa_neff, log_msa_neff_mean
+    )
+    log_protein_length = np.where(
+        np.isfinite(log_protein_length),
+        log_protein_length,
+        log_protein_length_mean,
+    )
+    return (
+        PRIORITY_WEIGHTS["log_msa_neff"]
+        * (log_msa_neff - log_msa_neff_mean)
+        / log_msa_neff_std
+        + PRIORITY_WEIGHTS["log_protein_length"]
+        * (log_protein_length - log_protein_length_mean)
+        / log_protein_length_std
+        + PRIORITY_WEIGHTS["decision_score"]
+        * (decision - decision_mean)
+        / decision_std
+    )
+
+
+def select_auditor_policy(
+    frame: pd.DataFrame,
+    config: TransportConfig,
+    *,
+    parameters: dict[str, float | int],
+    seed_offset: int,
+) -> tuple[dict[str, object], dict[str, object]]:
+    """Choose the complete selector and ranking rule with family-held-out predictions."""
+    target = frame[config.target_column].to_numpy(dtype=float)
+    groups = frame[config.group_column].astype(str).to_numpy()
+    splits = min(4, len(np.unique(groups)))
+    if splits < 2:
+        priors = _model_priors(frame, config)
+        return (
+            {
+                "decision_shrinkage": 1.0,
+                "override_margin": 0.0,
+                "decision_mean": 0.0,
+                "decision_std": 1.0,
+                "log_msa_neff_mean": 0.0,
+                "log_msa_neff_std": 1.0,
+                "log_protein_length_mean": 0.0,
+                "log_protein_length_std": 1.0,
+                "baseline_model": max(priors, key=priors.get),
+            },
+            {"candidate_count": 1, "best_regret_coverage_auc": float("nan")},
+        )
+    raw_prediction = np.full(len(frame), np.nan, dtype=float)
+    prior_prediction: dict[float, np.ndarray] = {
+        value: np.full(len(frame), np.nan, dtype=float)
+        for value in DECISION_SHRINKAGE_CANDIDATES
+    }
+    baseline_models = np.full(len(frame), "", dtype=object)
+    splitter = GroupKFold(n_splits=splits)
+    for fold, (train_indices, test_indices) in enumerate(
+        splitter.split(frame, target, groups)
+    ):
+        model = _pipeline(
+            config,
+            estimator="histgb",
+            parameters=parameters,
+            seed_offset=30_000 + seed_offset * 10 + fold,
+        )
+        model.fit(frame.iloc[train_indices], target[train_indices])
+        predicted = model.predict(frame.iloc[test_indices])
+        raw_prediction[test_indices] = predicted
+        priors = _model_priors(frame.iloc[train_indices], config)
+        baseline_models[test_indices] = max(priors, key=priors.get)
+        for shrinkage in DECISION_SHRINKAGE_CANDIDATES:
+            prior_prediction[shrinkage][test_indices] = _decision_scores(
+                frame.iloc[test_indices],
+                predicted,
+                config,
+                priors=priors,
+                shrinkage=shrinkage,
+            )
+    if not np.isfinite(raw_prediction).all():
+        raise RuntimeError("Shrinkage selection did not cover every held-out family")
+    oracle = frame.groupby(config.task_column)[config.target_column].max()
+    candidates: list[tuple[tuple[float, float, float, float], dict[str, object]]] = []
+    for shrinkage, scores in prior_prediction.items():
+        for margin in OVERRIDE_MARGIN_CANDIDATES:
+            selected = _selected_with_override(
+                frame,
+                scores,
+                config,
+                baseline_models=baseline_models,
+                margin=margin,
+            )
+            decision_values = selected["_decision_score"].to_numpy(dtype=float)
+            log_msa_neff = _log1p_nonnegative(selected["msa_neff"])
+            log_protein_length = _log1p_nonnegative(selected["protein_length"])
+            decision_mean = _finite_mean(decision_values)
+            decision_std = _safe_standard_deviation(decision_values)
+            log_msa_neff_mean = _finite_mean(log_msa_neff)
+            log_msa_neff_std = _safe_standard_deviation(log_msa_neff)
+            log_protein_length_mean = _finite_mean(log_protein_length)
+            log_protein_length_std = _safe_standard_deviation(log_protein_length)
+            mean_regret = float(
+                (
+                    selected[config.task_column].map(oracle).to_numpy(dtype=float)
+                    - selected[config.target_column].to_numpy(dtype=float)
+                ).mean()
+            )
+            selected["confidence"] = _priority_values(
+                selected,
+                decision_mean=decision_mean,
+                decision_std=decision_std,
+                log_msa_neff_mean=log_msa_neff_mean,
+                log_msa_neff_std=log_msa_neff_std,
+                log_protein_length_mean=log_protein_length_mean,
+                log_protein_length_std=log_protein_length_std,
+            )
+            regret_auc = _regret_auc(
+                selected,
+                oracle,
+                task_column=config.task_column,
+                target_column=config.target_column,
+            )
+            policy = {
+                "decision_shrinkage": float(shrinkage),
+                "override_margin": float(margin),
+                "decision_mean": decision_mean,
+                "decision_std": decision_std,
+                "log_msa_neff_mean": log_msa_neff_mean,
+                "log_msa_neff_std": log_msa_neff_std,
+                "log_protein_length_mean": log_protein_length_mean,
+                "log_protein_length_std": log_protein_length_std,
+            }
+            candidates.append(
+                (
+                    (regret_auc, mean_regret, -margin, -shrinkage),
+                    policy,
+                )
+            )
+    objective, policy = min(candidates, key=lambda item: item[0])
+    priors = _model_priors(frame, config)
+    policy["baseline_model"] = max(priors, key=priors.get)
+    audit = {
+        "candidate_count": len(candidates),
+        "best_regret_coverage_auc": float(objective[0]),
+        "best_mean_regret": float(objective[1]),
+        "selected_policy": dict(policy),
+    }
+    return policy, audit
+
+
 def _fit_calibration_indices(
     frame: pd.DataFrame,
     config: TransportConfig,
@@ -361,8 +711,11 @@ def cross_fitted_transport_predictions(
         )
     splitter = GroupKFold(n_splits=config.outer_folds)
     predicted = np.full(len(frame), np.nan, dtype=float)
+    decision_score = np.full(len(frame), np.nan, dtype=float)
     lower = np.full(len(frame), np.nan, dtype=float)
     predicted_scale = np.full(len(frame), np.nan, dtype=float)
+    auditor_selected = np.zeros(len(frame), dtype=bool)
+    auditor_confidence = np.full(len(frame), np.nan, dtype=float)
     fold_ids = np.full(len(frame), -1, dtype=int)
     parameter_rows: list[dict[str, object]] = []
     for fold, (train_indices, test_indices) in enumerate(splitter.split(frame, target, groups)):
@@ -377,6 +730,42 @@ def cross_fitted_transport_predictions(
             if estimator == "histgb"
             else {}
         )
+        auditor_policy, policy_audit = (
+            select_auditor_policy(
+                frame.iloc[fit_indices],
+                config,
+                parameters=parameters,
+                seed_offset=fold,
+            )
+            if estimator == "histgb"
+            else (
+                {
+                    "decision_shrinkage": 1.0,
+                    "override_margin": 0.0,
+                    "decision_mean": 0.0,
+                    "decision_std": 1.0,
+                    "log_msa_neff_mean": float(
+                        np.log1p(frame.iloc[fit_indices]["msa_neff"]).mean()
+                    ),
+                    "log_msa_neff_std": _safe_standard_deviation(
+                        np.log1p(frame.iloc[fit_indices]["msa_neff"])
+                    ),
+                    "log_protein_length_mean": float(
+                        np.log1p(frame.iloc[fit_indices]["protein_length"]).mean()
+                    ),
+                    "log_protein_length_std": _safe_standard_deviation(
+                        np.log1p(frame.iloc[fit_indices]["protein_length"])
+                    ),
+                    "baseline_model": max(
+                        _model_priors(frame.iloc[fit_indices], config),
+                        key=_model_priors(frame.iloc[fit_indices], config).get,
+                    ),
+                },
+                {"candidate_count": 1},
+            )
+        )
+        decision_shrinkage = float(auditor_policy["decision_shrinkage"])
+        priors = _model_priors(frame.iloc[fit_indices], config)
         model = _pipeline(
             config,
             estimator=estimator,
@@ -390,22 +779,63 @@ def cross_fitted_transport_predictions(
             estimator=estimator,
             parameters=parameters,
             seed_offset=fold,
+            decision_shrinkage=decision_shrinkage,
         )
         calibration_predictions = model.predict(frame.iloc[calibration_indices])
+        calibration_decisions = _decision_scores(
+            frame.iloc[calibration_indices],
+            calibration_predictions,
+            config,
+            priors=priors,
+            shrinkage=decision_shrinkage,
+        )
         calibration_scale = np.maximum(
             scale_model.predict(frame.iloc[calibration_indices]), scale_floor
         )
-        quantile = group_conformal_quantile(
-            (calibration_predictions - target[calibration_indices]) / calibration_scale,
-            groups[calibration_indices],
+        calibration = frame.iloc[calibration_indices].reset_index(drop=True).copy()
+        calibration["_decision_score"] = calibration_decisions
+        calibration["_predicted_scale"] = calibration_scale
+        calibration["_target"] = target[calibration_indices]
+        selected_calibration = _apply_auditor_policy(
+            calibration,
+            calibration_decisions,
+            config,
+            auditor_policy,
+        )
+        quantile = hierarchical_conformal_quantile(
+            (
+                selected_calibration["_decision_score"]
+                - selected_calibration["_target"]
+            ).to_numpy(dtype=float)
+            / selected_calibration["_predicted_scale"].to_numpy(dtype=float),
+            selected_calibration[config.group_column].astype(str).to_numpy(),
             coverage=config.coverage,
         )
         predicted[test_indices] = model.predict(frame.iloc[test_indices])
+        decision_score[test_indices] = _decision_scores(
+            frame.iloc[test_indices],
+            predicted[test_indices],
+            config,
+            priors=priors,
+            shrinkage=decision_shrinkage,
+        )
         predicted_scale[test_indices] = np.maximum(
             scale_model.predict(frame.iloc[test_indices]), scale_floor
         )
         lower[test_indices] = (
-            predicted[test_indices] - quantile * predicted_scale[test_indices]
+            decision_score[test_indices] - quantile * predicted_scale[test_indices]
+        )
+        selected_test = _apply_auditor_policy(
+            frame.iloc[test_indices].reset_index(drop=True),
+            decision_score[test_indices],
+            config,
+            auditor_policy,
+        )
+        selected_local = selected_test["_source_index"].to_numpy(dtype=int)
+        selected_global = test_indices[selected_local]
+        auditor_selected[selected_global] = True
+        auditor_confidence[selected_global] = selected_test["confidence"].to_numpy(
+            dtype=float
         )
         fold_ids[test_indices] = fold
         parameter_rows.append(
@@ -417,8 +847,15 @@ def cross_fitted_transport_predictions(
                 "test_rows": len(test_indices),
                 "fit_groups": len(np.unique(groups[fit_indices])),
                 "calibration_groups": len(np.unique(groups[calibration_indices])),
+                "calibration_tasks": int(
+                    selected_calibration[config.task_column].nunique()
+                ),
                 "test_groups": len(np.unique(groups[test_indices])),
                 "conformal_quantile": quantile,
+                "decision_shrinkage": decision_shrinkage,
+                "override_margin": auditor_policy["override_margin"],
+                "priority_weights": json.dumps(PRIORITY_WEIGHTS, sort_keys=True),
+                "policy_inner_audit": json.dumps(policy_audit, sort_keys=True),
                 "median_predicted_error_scale": float(
                     np.median(predicted_scale[test_indices])
                 ),
@@ -426,16 +863,24 @@ def cross_fitted_transport_predictions(
                 "parameters": json.dumps(parameters, sort_keys=True),
             }
         )
-    if not np.isfinite(predicted).all() or (fold_ids < 0).any():
+    if (
+        not np.isfinite(predicted).all()
+        or not np.isfinite(decision_score).all()
+        or (fold_ids < 0).any()
+    ):
         raise RuntimeError("Cross-fitting did not generate every held-out prediction")
     output = frame.copy()
     output["transport_estimator"] = estimator
     output["fold"] = fold_ids
     output["predicted_selection_gain_sd"] = predicted
+    output["decision_selection_gain_sd"] = decision_score
     output["predicted_error_scale"] = predicted_scale
     output["lower_selection_gain_sd"] = lower
-    output["trusted"] = lower > 0
+    output["auditor_selected"] = auditor_selected
+    output["auditor_confidence"] = auditor_confidence
+    output["trusted"] = auditor_selected & (lower > 0)
     output["prediction_error"] = predicted - target
+    output["decision_prediction_error"] = decision_score - target
     output["lower_bound_covers"] = target >= lower
     return output, pd.DataFrame(parameter_rows)
 
@@ -447,8 +892,15 @@ def fit_frozen_transport_model(
     """Fit the deployable model and keep a disjoint family calibration set."""
     fit_indices, calibration_indices = _fit_calibration_indices(frame, config, seed_offset=991)
     parameters = select_histgb_parameters(frame.iloc[fit_indices], config)
+    auditor_policy, policy_audit = select_auditor_policy(
+        frame.iloc[fit_indices],
+        config,
+        parameters=parameters,
+        seed_offset=991,
+    )
+    decision_shrinkage = float(auditor_policy["decision_shrinkage"])
+    priors = _model_priors(frame.iloc[fit_indices], config)
     target = frame[config.target_column].to_numpy(dtype=float)
-    groups = frame[config.group_column].astype(str).to_numpy()
     model = _pipeline(config, estimator="histgb", parameters=parameters, seed_offset=991)
     model.fit(frame.iloc[fit_indices], target[fit_indices])
     scale_model, scale_floor = _fit_error_scale(
@@ -457,14 +909,36 @@ def fit_frozen_transport_model(
         estimator="histgb",
         parameters=parameters,
         seed_offset=991,
+        decision_shrinkage=decision_shrinkage,
     )
     calibration_predictions = model.predict(frame.iloc[calibration_indices])
+    calibration_decisions = _decision_scores(
+        frame.iloc[calibration_indices],
+        calibration_predictions,
+        config,
+        priors=priors,
+        shrinkage=decision_shrinkage,
+    )
     calibration_scale = np.maximum(
         scale_model.predict(frame.iloc[calibration_indices]), scale_floor
     )
-    quantile = group_conformal_quantile(
-        (calibration_predictions - target[calibration_indices]) / calibration_scale,
-        groups[calibration_indices],
+    calibration = frame.iloc[calibration_indices].reset_index(drop=True).copy()
+    calibration["_decision_score"] = calibration_decisions
+    calibration["_predicted_scale"] = calibration_scale
+    calibration["_target"] = target[calibration_indices]
+    selected_calibration = _apply_auditor_policy(
+        calibration,
+        calibration_decisions,
+        config,
+        auditor_policy,
+    )
+    quantile = hierarchical_conformal_quantile(
+        (
+            selected_calibration["_decision_score"]
+            - selected_calibration["_target"]
+        ).to_numpy(dtype=float)
+        / selected_calibration["_predicted_scale"].to_numpy(dtype=float),
+        selected_calibration[config.group_column].astype(str).to_numpy(),
         coverage=config.coverage,
     )
     best_average_model = (
@@ -480,6 +954,14 @@ def fit_frozen_transport_model(
         ablation_parameters = select_histgb_parameters(
             frame.iloc[ablation_fit], ablation_config
         )
+        ablation_policy, ablation_policy_audit = select_auditor_policy(
+            frame.iloc[ablation_fit],
+            ablation_config,
+            parameters=ablation_parameters,
+            seed_offset=2_000 + len(ablations),
+        )
+        ablation_shrinkage = float(ablation_policy["decision_shrinkage"])
+        ablation_priors = _model_priors(frame.iloc[ablation_fit], ablation_config)
         ablation_model = _pipeline(
             ablation_config,
             estimator="histgb",
@@ -493,18 +975,45 @@ def fit_frozen_transport_model(
             estimator="histgb",
             parameters=ablation_parameters,
             seed_offset=2_000 + len(ablations),
+            decision_shrinkage=ablation_shrinkage,
+        )
+        ablation_calibration_prediction = ablation_model.predict(
+            frame.iloc[ablation_calibration]
+        )
+        ablation_calibration_decision = _decision_scores(
+            frame.iloc[ablation_calibration],
+            ablation_calibration_prediction,
+            ablation_config,
+            priors=ablation_priors,
+            shrinkage=ablation_shrinkage,
         )
         ablation_calibration_scale = np.maximum(
             ablation_scale_model.predict(frame.iloc[ablation_calibration]),
             ablation_scale_floor,
         )
-        ablation_quantile = group_conformal_quantile(
+        ablation_calibration_frame = (
+            frame.iloc[ablation_calibration].reset_index(drop=True).copy()
+        )
+        ablation_calibration_frame["_decision_score"] = (
+            ablation_calibration_decision
+        )
+        ablation_calibration_frame["_predicted_scale"] = (
+            ablation_calibration_scale
+        )
+        ablation_calibration_frame["_target"] = target[ablation_calibration]
+        ablation_selected = _apply_auditor_policy(
+            ablation_calibration_frame,
+            ablation_calibration_decision,
+            ablation_config,
+            ablation_policy,
+        )
+        ablation_quantile = hierarchical_conformal_quantile(
             (
-                ablation_model.predict(frame.iloc[ablation_calibration])
-                - target[ablation_calibration]
-            )
-            / ablation_calibration_scale,
-            groups[ablation_calibration],
+                ablation_selected["_decision_score"]
+                - ablation_selected["_target"]
+            ).to_numpy(dtype=float)
+            / ablation_selected["_predicted_scale"].to_numpy(dtype=float),
+            ablation_selected[ablation_config.group_column].astype(str).to_numpy(),
             coverage=ablation_config.coverage,
         )
         ablations[name] = {
@@ -514,9 +1023,13 @@ def fit_frozen_transport_model(
             "scale_floor": ablation_scale_floor,
             "conformal_quantile": ablation_quantile,
             "parameters": ablation_parameters,
+            "decision_shrinkage": ablation_shrinkage,
+            "decision_priors": ablation_priors,
+            "auditor_policy": ablation_policy,
+            "policy_inner_audit": ablation_policy_audit,
         }
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "pipeline": model,
         "scale_pipeline": scale_model,
         "elastic_pipeline": elastic_model,
@@ -524,6 +1037,11 @@ def fit_frozen_transport_model(
         "config": asdict(config),
         "parameters": parameters,
         "conformal_quantile": quantile,
+        "decision_shrinkage": decision_shrinkage,
+        "decision_priors": priors,
+        "auditor_policy": auditor_policy,
+        "policy_inner_audit": policy_audit,
+        "calibration_target": "selected task-model pair",
         "fit_rows": fit_indices.tolist(),
         "calibration_rows": calibration_indices.tolist(),
         "best_average_model": str(best_average_model),
@@ -609,16 +1127,42 @@ def predict_with_frozen_transport_model(
         )
     model = bundle["pipeline"]
     predicted = model.predict(frame)
+    decision = _decision_scores(
+        frame,
+        predicted,
+        config,
+        priors={
+            str(name): float(value)
+            for name, value in dict(bundle["decision_priors"]).items()
+        },
+        shrinkage=float(bundle["decision_shrinkage"]),
+    )
     predicted_scale = np.maximum(
         bundle["scale_pipeline"].predict(frame), float(bundle["scale_floor"])
     )
     output = frame.copy()
     output["predicted_selection_gain_sd"] = predicted
+    output["decision_selection_gain_sd"] = decision
     output["predicted_error_scale"] = predicted_scale
     output["lower_selection_gain_sd"] = (
-        predicted - float(bundle["conformal_quantile"]) * predicted_scale
+        decision - float(bundle["conformal_quantile"]) * predicted_scale
     )
-    output["trusted"] = output["lower_selection_gain_sd"] > 0
+    selected = _apply_auditor_policy(
+        output,
+        decision,
+        config,
+        dict(bundle["auditor_policy"]),
+    )
+    output["auditor_selected"] = False
+    output["auditor_confidence"] = np.nan
+    selected_indices = selected["_source_index"].to_numpy(dtype=int)
+    output.loc[selected_indices, "auditor_selected"] = True
+    output.loc[selected_indices, "auditor_confidence"] = selected[
+        "confidence"
+    ].to_numpy(dtype=float)
+    output["trusted"] = output["auditor_selected"] & (
+        output["lower_selection_gain_sd"] > 0
+    )
     if "elastic_pipeline" in bundle:
         output["elastic_predicted_selection_gain_sd"] = bundle[
             "elastic_pipeline"
@@ -635,16 +1179,40 @@ def predict_with_frozen_transport_model(
                 f"{ablation_missing}"
             )
         ablation_prediction = ablation["pipeline"].predict(frame)
+        ablation_decision = _decision_scores(
+            frame,
+            ablation_prediction,
+            ablation_config,
+            priors={
+                str(model): float(value)
+                for model, value in dict(ablation["decision_priors"]).items()
+            },
+            shrinkage=float(ablation["decision_shrinkage"]),
+        )
         ablation_scale = np.maximum(
             ablation["scale_pipeline"].predict(frame),
             float(ablation["scale_floor"]),
         )
         prefix = f"ablation__{name}__"
         output[f"{prefix}predicted_selection_gain_sd"] = ablation_prediction
+        output[f"{prefix}decision_selection_gain_sd"] = ablation_decision
         output[f"{prefix}predicted_error_scale"] = ablation_scale
         output[f"{prefix}lower_selection_gain_sd"] = (
-            ablation_prediction
+            ablation_decision
             - float(ablation["conformal_quantile"]) * ablation_scale
+        )
+        ablation_selected = _apply_auditor_policy(
+            output,
+            ablation_decision,
+            ablation_config,
+            dict(ablation["auditor_policy"]),
+        )
+        output[f"{prefix}auditor_selected"] = False
+        output[f"{prefix}auditor_confidence"] = np.nan
+        ablation_indices = ablation_selected["_source_index"].to_numpy(dtype=int)
+        output.loc[ablation_indices, f"{prefix}auditor_selected"] = True
+        output.loc[ablation_indices, f"{prefix}auditor_confidence"] = (
+            ablation_selected["confidence"].to_numpy(dtype=float)
         )
     return output
 
@@ -660,9 +1228,32 @@ def _choose_task_rows(
     rng = np.random.default_rng(seed)
     working = frame.copy()
     if policy == "variantshift":
-        index = working.groupby(config.task_column)["lower_selection_gain_sd"].idxmax()
-        selected = working.loc[index].copy()
-        selected["confidence"] = selected["lower_selection_gain_sd"]
+        if "auditor_selected" in working:
+            selected = working.loc[working["auditor_selected"].astype(bool)].copy()
+            if selected[config.task_column].nunique() != working[config.task_column].nunique():
+                raise ValueError("Auditor policy must select exactly one model per task")
+            selected["confidence"] = selected["auditor_confidence"]
+        else:
+            decision_column = (
+                "decision_selection_gain_sd"
+                if "decision_selection_gain_sd" in working
+                else "predicted_selection_gain_sd"
+            )
+            index = working.groupby(config.task_column)[decision_column].idxmax()
+            selected = working.loc[index].copy()
+            selected["confidence"] = selected["lower_selection_gain_sd"]
+    elif policy == "decision_only":
+        decision_column = (
+            "decision_selection_gain_sd"
+            if "decision_selection_gain_sd" in working
+            else "predicted_selection_gain_sd"
+        )
+        if "auditor_selected" in working:
+            selected = working.loc[working["auditor_selected"].astype(bool)].copy()
+        else:
+            index = working.groupby(config.task_column)[decision_column].idxmax()
+            selected = working.loc[index].copy()
+        selected["confidence"] = selected[decision_column]
     elif policy == "uncalibrated":
         index = working.groupby(config.task_column)["predicted_selection_gain_sd"].idxmax()
         selected = working.loc[index].copy()
@@ -675,12 +1266,21 @@ def _choose_task_rows(
         selected["confidence"] = selected["elastic_predicted_selection_gain_sd"]
     elif policy.startswith("ablation:"):
         name = policy.removeprefix("ablation:")
+        decision_column = f"ablation__{name}__decision_selection_gain_sd"
         confidence_column = f"ablation__{name}__lower_selection_gain_sd"
         if confidence_column not in working:
             raise ValueError(f"Frozen predictions do not contain ablation: {name}")
-        index = working.groupby(config.task_column)[confidence_column].idxmax()
-        selected = working.loc[index].copy()
-        selected["confidence"] = selected[confidence_column]
+        selected_column = f"ablation__{name}__auditor_selected"
+        auditor_confidence = f"ablation__{name}__auditor_confidence"
+        if selected_column in working:
+            selected = working.loc[working[selected_column].astype(bool)].copy()
+            selected["confidence"] = selected[auditor_confidence]
+        else:
+            if decision_column not in working:
+                decision_column = confidence_column
+            index = working.groupby(config.task_column)[decision_column].idxmax()
+            selected = working.loc[index].copy()
+            selected["confidence"] = selected[confidence_column]
     elif policy == "oracle":
         index = working.groupby(config.task_column)[config.target_column].idxmax()
         selected = working.loc[index].copy()
@@ -695,7 +1295,6 @@ def _choose_task_rows(
         "msa_depth",
         "score_dispersion",
         "ensemble_agreement",
-        "crossover_classifier",
     }:
         if not best_average_model:
             raise ValueError(f"{policy} policy requires the development best model")
@@ -710,16 +1309,13 @@ def _choose_task_rows(
             "msa_depth": "msa_neff",
             "score_dispersion": "score_dispersion",
             "ensemble_agreement": "ensemble_agreement",
-            "crossover_classifier": "crossover_probability_supervised_wins",
         }[policy]
         confidence = (
             np.zeros(len(selected))
             if confidence_column is None
             else selected[confidence_column].to_numpy(dtype=float)
         )
-        selected["confidence"] = (
-            1.0 - confidence if policy == "crossover_classifier" else confidence
-        )
+        selected["confidence"] = confidence
     else:
         raise ValueError(f"Unsupported selective policy: {policy}")
     return selected.sort_values(config.task_column).reset_index(drop=True)
@@ -740,11 +1336,19 @@ def selective_policy_curve(
         seed=config.seed,
         best_average_model=best_average_model,
     ).sort_values("confidence", ascending=False, kind="stable")
+    oracle = frame.groupby(config.task_column)[config.target_column].max()
+    selected["oracle_selection_gain_sd"] = selected[config.task_column].map(oracle)
+    selected["selection_regret_sd"] = (
+        selected["oracle_selection_gain_sd"] - selected[config.target_column]
+    )
     rows = []
     for coverage in coverages:
         count = max(1, int(np.ceil(len(selected) * coverage)))
         retained = selected.iloc[:count]
         gains = retained[config.target_column].to_numpy(dtype=float)
+        regrets = retained["selection_regret_sd"].to_numpy(dtype=float)
+        tail_count = max(1, int(np.ceil(0.20 * len(gains))))
+        worst_tail = np.sort(gains)[:tail_count]
         rows.append(
             {
                 "policy": policy,
@@ -753,6 +1357,9 @@ def selective_policy_curve(
                 "failure_rate": float(np.mean(gains <= 0)),
                 "mean_selection_gain_sd": float(np.mean(gains)),
                 "median_selection_gain_sd": float(np.median(gains)),
+                "mean_selection_regret_sd": float(np.mean(regrets)),
+                "median_selection_regret_sd": float(np.median(regrets)),
+                "worst_quintile_mean_gain_sd": float(np.mean(worst_tail)),
                 "confidence_threshold": float(retained["confidence"].iloc[-1]),
             }
         )
@@ -770,8 +1377,20 @@ def summarize_policy_curves(curves: pd.DataFrame) -> pd.DataFrame:
                 "risk_coverage_auc": float(
                     trapezoid(group["failure_rate"], group["coverage"])
                 ),
+                "regret_coverage_auc": float(
+                    trapezoid(group["mean_selection_regret_sd"], group["coverage"])
+                ),
+                "utility_coverage_auc": float(
+                    trapezoid(group["mean_selection_gain_sd"], group["coverage"])
+                ),
                 "failure_rate_at_50pct": float(at_half["failure_rate"]),
                 "mean_selection_gain_at_50pct": float(at_half["mean_selection_gain_sd"]),
+                "mean_selection_regret_at_50pct": float(
+                    at_half["mean_selection_regret_sd"]
+                ),
+                "worst_quintile_gain_at_50pct": float(
+                    at_half["worst_quintile_mean_gain_sd"]
+                ),
                 "tasks": int(group["retained_tasks"].max()),
             }
         )
@@ -786,6 +1405,26 @@ def _risk_auc(selected: pd.DataFrame, target_column: str) -> float:
         count = max(1, int(np.ceil(len(ordered) * coverage)))
         risks.append(float(np.mean(ordered.iloc[:count][target_column] <= 0)))
     return float(trapezoid(risks, coverages))
+
+
+def _regret_auc(
+    selected: pd.DataFrame,
+    oracle: pd.Series,
+    *,
+    task_column: str,
+    target_column: str,
+) -> float:
+    ordered = selected.sort_values("confidence", ascending=False, kind="stable").copy()
+    ordered["_regret"] = (
+        ordered[task_column].map(oracle).to_numpy(dtype=float)
+        - ordered[target_column].to_numpy(dtype=float)
+    )
+    coverages = np.linspace(0.1, 1.0, 10)
+    regrets = []
+    for coverage in coverages:
+        count = max(1, int(np.ceil(len(ordered) * coverage)))
+        regrets.append(float(ordered.iloc[:count]["_regret"].mean()))
+    return float(trapezoid(regrets, coverages))
 
 
 def _task_hierarchy(
@@ -833,7 +1472,7 @@ def bootstrap_policy_difference(
     best_average_model: str,
     repeats: int | None = None,
 ) -> tuple[pd.DataFrame, dict[str, object]]:
-    """Nested family/protein/assay bootstrap of comparator minus VariantShift AURC."""
+    """Nested bootstrap of comparator minus VariantShift selective-deployment utility."""
     repeats = repeats or config.bootstrap_repeats
     variantshift = _choose_task_rows(
         frame,
@@ -862,29 +1501,62 @@ def bootstrap_policy_difference(
         ],
     ]
     hierarchy = _task_hierarchy(task_metadata, config)
+    oracle = frame.groupby(config.task_column)[config.target_column].max()
     rng = np.random.default_rng(config.seed + 73)
-    estimates = np.empty(repeats, dtype=float)
+    regret_estimates = np.empty(repeats, dtype=float)
+    failure_estimates = np.empty(repeats, dtype=float)
     for repeat in range(repeats):
         sampled = _nested_task_sample(hierarchy, rng)
         variantshift_auc = _risk_auc(variantshift.loc[sampled], config.target_column)
         comparator_auc = _risk_auc(comparison.loc[sampled], config.target_column)
-        estimates[repeat] = comparator_auc - variantshift_auc
+        failure_estimates[repeat] = comparator_auc - variantshift_auc
+        variantshift_regret = _regret_auc(
+            variantshift.loc[sampled],
+            oracle,
+            task_column=config.task_column,
+            target_column=config.target_column,
+        )
+        comparator_regret = _regret_auc(
+            comparison.loc[sampled],
+            oracle,
+            task_column=config.task_column,
+            target_column=config.target_column,
+        )
+        regret_estimates[repeat] = comparator_regret - variantshift_regret
     replicates = pd.DataFrame(
         {
             "repeat": np.arange(repeats),
             "comparator": comparator,
-            "risk_coverage_auc_improvement": estimates,
+            "regret_coverage_auc_improvement": regret_estimates,
+            "risk_coverage_auc_improvement": failure_estimates,
         }
     )
-    point = _risk_auc(comparison, config.target_column) - _risk_auc(
+    risk_point = _risk_auc(comparison, config.target_column) - _risk_auc(
         variantshift, config.target_column
+    )
+    regret_point = _regret_auc(
+        comparison,
+        oracle,
+        task_column=config.task_column,
+        target_column=config.target_column,
+    ) - _regret_auc(
+        variantshift,
+        oracle,
+        task_column=config.task_column,
+        target_column=config.target_column,
     )
     summary = {
         "comparator": comparator,
-        "risk_coverage_auc_improvement": point,
-        "ci_low": float(np.quantile(estimates, 0.025)),
-        "ci_high": float(np.quantile(estimates, 0.975)),
-        "probability_improvement_above_zero": float(np.mean(estimates > 0)),
+        "primary_endpoint": "regret_coverage_auc",
+        "regret_coverage_auc_improvement": regret_point,
+        "regret_ci_low": float(np.quantile(regret_estimates, 0.025)),
+        "regret_ci_high": float(np.quantile(regret_estimates, 0.975)),
+        "regret_probability_improvement_above_zero": float(
+            np.mean(regret_estimates > 0)
+        ),
+        "risk_coverage_auc_improvement": risk_point,
+        "risk_ci_low": float(np.quantile(failure_estimates, 0.025)),
+        "risk_ci_high": float(np.quantile(failure_estimates, 0.975)),
         "bootstrap_repeats": repeats,
         "bootstrap_unit": "family, then protein, then assay",
     }
@@ -997,7 +1669,7 @@ def confirmation_acceptance_gates(
     panels = panel_summary.set_index("panel_id", drop=False)
     missing_panels = sorted(set(required_panels).difference(panels.index))
     direction_consistent = not missing_panels and all(
-        float(panels.loc[panel, "risk_coverage_auc_improvement"]) > 0
+        float(panels.loc[panel, "regret_coverage_auc_improvement"]) > 0
         for panel in required_panels
     )
     ablation_rows = bootstrap_summary.loc[
@@ -1007,7 +1679,7 @@ def confirmation_acceptance_gates(
     ]
     expected_ablations = {"ablation:msa_only", "ablation:ensemble_only"}
     ablation_pass = set(ablation_rows["comparator"]) == expected_ablations and bool(
-        (ablation_rows["risk_coverage_auc_improvement"] > 0).all()
+        (ablation_rows["regret_coverage_auc_improvement"] > 0).all()
     )
     conclusion_valid = bool(
         negative_conclusion
@@ -1017,46 +1689,52 @@ def confirmation_acceptance_gates(
     )
     gate_rows = [
         {
-            "gate": "primary_risk_coverage",
+            "gate": "primary_regret_coverage",
             "passed": bool(
-                float(primary["ci_low"]) > 0
+                float(primary["regret_ci_low"]) > 0
                 and float(primary["holm_adjusted_p_value"]) < 0.05
             ),
-            "value": float(primary["risk_coverage_auc_improvement"]),
+            "value": float(primary["regret_coverage_auc_improvement"]),
             "criterion": "family-bootstrap 95% CI excludes zero; Holm-adjusted p < 0.05",
         },
         {
-            "gate": "failure_reduction_at_50pct",
+            "gate": "selective_utility_at_50pct",
             "passed": bool(
-                failure_reduction >= 0.25
+                float(candidate["mean_selection_regret_at_50pct"])
+                < float(baseline["mean_selection_regret_at_50pct"])
                 and float(candidate["mean_selection_gain_at_50pct"])
                 >= float(baseline["mean_selection_gain_at_50pct"])
+                and float(candidate["failure_rate_at_50pct"])
+                <= float(baseline["failure_rate_at_50pct"])
             ),
-            "value": failure_reduction,
-            "criterion": "at least 25% relative failure reduction without lower mean gain",
+            "value": float(candidate["mean_selection_regret_at_50pct"]),
+            "failure_reduction": failure_reduction,
+            "criterion": (
+                "lower regret, no lower mean gain, and no higher failure rate at 50% coverage"
+            ),
         },
         {
             "gate": "nominal_90pct_coverage",
-            "passed": bool(0.85 <= marginal_coverage <= 0.95),
-            "value": marginal_coverage,
-            "criterion": "marginal task-model lower-bound coverage in [0.85, 0.95]",
+            "passed": bool(0.85 <= selected_coverage <= 0.95),
+            "value": selected_coverage,
+            "criterion": "selected-policy lower-bound coverage in [0.85, 0.95]",
         },
         {
             "gate": "primary_panel_direction_consistency",
             "passed": direction_consistent,
             "value": None if missing_panels else float(
                 min(
-                    panels.loc[panel, "risk_coverage_auc_improvement"]
+                    panels.loc[panel, "regret_coverage_auc_improvement"]
                     for panel in required_panels
                 )
             ),
-            "criterion": "positive risk-coverage improvement in Domainome and MaveDB",
+            "criterion": "positive regret-coverage improvement in Domainome and MaveDB",
         },
         {
             "gate": "feature_ablation",
             "passed": ablation_pass,
             "value": None if len(ablation_rows) != 2 else float(
-                ablation_rows["risk_coverage_auc_improvement"].min()
+                ablation_rows["regret_coverage_auc_improvement"].min()
             ),
             "criterion": "full method beats MSA-only and ensemble-only selectors",
         },
@@ -1073,7 +1751,7 @@ def confirmation_acceptance_gates(
         if row["gate"] != "useful_negative_conclusion"
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "status": "pass" if all(bool(row["passed"]) for row in gate_rows) else "fail",
         "all_automatic_gates_pass": all_automatic,
         "frozen_comparator": comparator,
@@ -1118,6 +1796,7 @@ def fit_transportability(
     best_model = str(bundle["best_average_model"])
     policies = [
         "variantshift",
+        "decision_only",
         "uncalibrated",
         "elastic_net",
         "always_best",
@@ -1128,7 +1807,6 @@ def fit_transportability(
         ("msa_depth", "msa_neff"),
         ("score_dispersion", "score_dispersion"),
         ("ensemble_agreement", "ensemble_agreement"),
-        ("crossover_classifier", "crossover_probability_supervised_wins"),
     ):
         if column in crossfit:
             policies.append(optional_policy)
@@ -1150,16 +1828,16 @@ def fit_transportability(
         summary["policy"].isin(
             [
                 "uncalibrated",
+                "decision_only",
                 "elastic_net",
                 "msa_depth",
                 "score_dispersion",
                 "ensemble_agreement",
-                "crossover_classifier",
             ]
         )
     ]
     best_comparator = str(
-        comparator_candidates.sort_values("risk_coverage_auc").iloc[0]["policy"]
+        comparator_candidates.sort_values("regret_coverage_auc").iloc[0]["policy"]
     )
     bundle["best_label_free_comparator"] = best_comparator
     bootstrap, bootstrap_summary = bootstrap_policy_difference(
@@ -1192,21 +1870,43 @@ def fit_transportability(
     write_table(pd.DataFrame([bootstrap_summary]), outputs["bootstrap_summary"])
     joblib.dump(bundle, outputs["bundle"])
     method = {
-        "schema_version": 1,
-        "name": "VariantShift Transportability Score",
+        "schema_version": 2,
+        "name": "VariantShift Selective Transport Auditor",
         "config": asdict(config),
         "parameters": bundle["parameters"],
         "conformal_quantile": bundle["conformal_quantile"],
-        "conformal_mode": "family-max normalized by group-held-out learned error scale",
+        "decision_rule": (
+            "override the best-average model only when nested-CV shrunken expected gain "
+            "exceeds the frozen margin"
+        ),
+        "decision_shrinkage": bundle["decision_shrinkage"],
+        "shrinkage_candidates": list(DECISION_SHRINKAGE_CANDIDATES),
+        "override_margin_candidates": list(OVERRIDE_MARGIN_CANDIDATES),
+        "priority_weights": PRIORITY_WEIGHTS,
+        "priority_inputs": ["msa_neff", "protein_length", "decision_score"],
+        "auditor_policy": bundle["auditor_policy"],
+        "conformal_mode": (
+            "selection-aware, locally scaled hierarchical conformal calibration; "
+            "equal family mass and equal within-family task mass"
+        ),
         "error_scale_floor": bundle["scale_floor"],
         "best_average_model": best_model,
         "best_label_free_comparator": best_comparator,
         "frozen_feature_ablations": sorted(bundle["ablations"]),
         "confirmation_primary_panels": list(CONFIRMATION_PRIMARY_PANELS),
         "training_frame_sha256": bundle["training_frame_sha256"],
-        "formal_scope": "one-sided group conformal under exchangeable protein-family tasks",
+        "formal_scope": (
+            "one-sided marginal coverage for a new task from a new family under "
+            "two-level hierarchical exchangeability"
+        ),
         "primary_failure": "selection_gain_sd <= 0",
-        "primary_endpoint": "task-level failure risk-coverage AUC",
+        "primary_endpoint": "task-level selection-regret coverage AUC",
+        "secondary_endpoints": [
+            "failure risk-coverage AUC",
+            "mean selection gain",
+            "worst-quintile selection gain",
+            "selected-policy lower-bound coverage",
+        ],
     }
     outputs["method"].write_text(
         json.dumps(method, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -1267,14 +1967,20 @@ def evaluate_frozen_transportability(
     if merged.empty:
         raise ValueError("Frozen predictions and confirmation outcomes have no shared tasks")
     best_model = str(bundle["best_average_model"])
-    policies = ["variantshift", "uncalibrated", "always_best", "random", "oracle"]
+    policies = [
+        "variantshift",
+        "decision_only",
+        "uncalibrated",
+        "always_best",
+        "random",
+        "oracle",
+    ]
     if "elastic_predicted_selection_gain_sd" in merged:
         policies.append("elastic_net")
     for optional_policy, column in (
         ("msa_depth", "msa_neff"),
         ("score_dispersion", "score_dispersion"),
         ("ensemble_agreement", "ensemble_agreement"),
-        ("crossover_classifier", "crossover_probability_supervised_wins"),
     ):
         if column in merged:
             policies.append(optional_policy)
@@ -1314,7 +2020,7 @@ def evaluate_frozen_transportability(
             best_average_model=best_model,
         )
         one_sided_p = float(
-            (1 + np.sum(replicates["risk_coverage_auc_improvement"] <= 0))
+            (1 + np.sum(replicates["regret_coverage_auc_improvement"] <= 0))
             / (len(replicates) + 1)
         )
         row["one_sided_p_value"] = one_sided_p
@@ -1349,6 +2055,19 @@ def evaluate_frozen_transportability(
             seed=config.seed,
             best_average_model=best_model,
         )
+        panel_oracle = panel.groupby(config.task_column)[config.target_column].max()
+        candidate_regret = _regret_auc(
+            candidate,
+            panel_oracle,
+            task_column=config.task_column,
+            target_column=config.target_column,
+        )
+        baseline_regret = _regret_auc(
+            baseline,
+            panel_oracle,
+            task_column=config.task_column,
+            target_column=config.target_column,
+        )
         panel_rows.append(
             {
                 "panel_id": panel_id,
@@ -1364,6 +2083,11 @@ def evaluate_frozen_transportability(
                     baseline, config.target_column
                 )
                 - _risk_auc(candidate, config.target_column),
+                "variantshift_regret_coverage_auc": candidate_regret,
+                "comparator_regret_coverage_auc": baseline_regret,
+                "regret_coverage_auc_improvement": (
+                    baseline_regret - candidate_regret
+                ),
             }
         )
     panel_summary = pd.DataFrame(panel_rows)
