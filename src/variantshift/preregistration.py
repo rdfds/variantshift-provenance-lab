@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from .outcome_lock import read_outcome_lock
@@ -20,10 +21,77 @@ PRIMARY_QUESTIONS = (
         "variant selection?"
     ),
     (
-        "Can a calibrated decision rule reduce failed model deployments by abstaining or choosing "
-        "a different model?"
+        "Can an outcome-free confidence rule reduce failed deployments by abstaining while "
+        "otherwise using the best fixed development model?"
     ),
 )
+
+
+def build_preregistration_model_audit(
+    qualification_audit_path: Path,
+    qualification_summary_path: Path,
+    output_path: Path,
+) -> dict[str, object]:
+    """Convert the frozen qualification evidence into the preregistration contract."""
+    audit = pd.read_csv(qualification_audit_path)
+    summary = json.loads(qualification_summary_path.read_text(encoding="utf-8"))
+    required = {"model_id", "family", "qualification_status"}
+    missing = sorted(required.difference(audit.columns))
+    if missing:
+        raise ValueError(f"Qualification audit is missing columns: {missing}")
+    shared = int(summary["shared_confirmation_targets"])
+    summary_gates = dict(summary.get("gates", {}))
+    feasibility = bool(summary_gates) and all(map(bool, summary_gates.values()))
+    audit = audit.copy()
+    audit["primary_eligible"] = audit["qualification_status"].astype(str).eq("passed")
+    audit["exclusion_reason"] = np.where(
+        audit["primary_eligible"], "", audit["qualification_status"].astype(str)
+    )
+    audit["primary_shared_target_count"] = shared
+    audit["feasibility_gate_passed"] = feasibility
+    columns = [
+        "model_id",
+        "family",
+        "primary_eligible",
+        "exclusion_reason",
+        "primary_shared_target_count",
+        "feasibility_gate_passed",
+        *[
+            column
+            for column in audit.columns
+            if column
+            not in {
+                "model_id",
+                "family",
+                "primary_eligible",
+                "exclusion_reason",
+                "primary_shared_target_count",
+                "feasibility_gate_passed",
+            }
+        ],
+    ]
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    audit.loc[:, columns].to_csv(output_path, index=False, lineterminator="\n")
+    manifest = {
+        "schema_version": 1,
+        "outcomes_accessed": False,
+        "eligible_models": int(audit["primary_eligible"].sum()),
+        "eligible_families": int(
+            audit.loc[audit["primary_eligible"], "family"].nunique()
+        ),
+        "shared_confirmation_targets": shared,
+        "feasibility_gate_passed": feasibility,
+        "inputs": {
+            str(qualification_audit_path): sha256_file(qualification_audit_path),
+            str(qualification_summary_path): sha256_file(qualification_summary_path),
+        },
+        "artifact": {str(output_path): sha256_file(output_path)},
+    }
+    manifest_path = output_path.with_suffix(".manifest.json")
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return manifest
 
 
 def _verify_locked_artifacts(lock: dict[str, object]) -> None:
@@ -103,6 +171,7 @@ def build_preregistration_bundle(
         "primary_utility": "task-level standardized top-decile selection gain",
         "primary_failure": "selection_gain_sd <= 0",
         "primary_endpoint": "task-level selection-regret coverage AUC",
+        "primary_comparator": "always deploy VespaG with analytical random abstention",
         "secondary_endpoints": [
             "failure risk-coverage AUC",
             "Spearman correlation",
@@ -177,7 +246,8 @@ reliability endpoint is task-level selection-regret coverage AUC. Failure is a g
 equal to zero, and failure risk-coverage AUC is secondary.
 Families, proteins, and assays are the resampling hierarchy; individual variants are not treated
 as independent replicates. Primary policy comparisons use 10,000 hierarchical bootstrap repeats
-and Holm multiplicity adjustment.
+and Holm multiplicity adjustment. The primary comparator always deploys VespaG; VariantShift v2
+may only deploy VespaG or abstain and may never switch to another model.
 
 ## Frozen primary model panel
 
@@ -190,9 +260,11 @@ and Holm multiplicity adjustment.
 ## Reveal rule
 
 Confirmation effects may be retrieved once after this bundle receives a public OSF or Zenodo
-timestamp. The transport model, feature list, conformal threshold, model predictions, inclusion
-rules, and subgroup definitions will not be changed after reveal. Any additional analysis will be
-labeled exploratory.
+timestamp. The auditor model, feature list, confidence rankings, model predictions, inclusion
+rules, and subgroup definitions will not be changed after reveal. The development leave-one-panel-
+out failure is disclosed in advance, and a failed confirmation will be reported as a negative
+result rather than followed by method refitting. Any additional analysis will be labeled
+exploratory.
 """,
         encoding="utf-8",
     )

@@ -4,7 +4,45 @@ import pandas as pd
 import pytest
 
 from variantshift.outcome_lock import create_outcome_lock, freeze_predictions
-from variantshift.preregistration import build_preregistration_bundle
+from variantshift.preregistration import (
+    build_preregistration_bundle,
+    build_preregistration_model_audit,
+)
+
+
+def test_qualification_audit_is_converted_without_outcomes(tmp_path) -> None:
+    audit_path = tmp_path / "qualification.csv"
+    summary_path = tmp_path / "summary.json"
+    output_path = tmp_path / "preregistration-model-audit.csv"
+    pd.DataFrame(
+        {
+            "model_id": ["passed", "failed"],
+            "family": ["sequence", "structure"],
+            "qualification_status": ["passed", "parity_failed"],
+        }
+    ).to_csv(audit_path, index=False)
+    summary_path.write_text(
+        json.dumps(
+            {
+                "shared_confirmation_targets": 413,
+                "gates": {
+                    "configurations": True,
+                    "families": True,
+                    "shared_confirmation_targets": True,
+                },
+            }
+        )
+    )
+
+    manifest = build_preregistration_model_audit(
+        audit_path, summary_path, output_path
+    )
+
+    converted = pd.read_csv(output_path)
+    assert converted["primary_eligible"].tolist() == [True, False]
+    assert converted["primary_shared_target_count"].tolist() == [413, 413]
+    assert manifest["outcomes_accessed"] is False
+    assert manifest["feasibility_gate_passed"] is True
 
 
 def test_preregistration_is_built_only_from_frozen_artifacts(tmp_path, monkeypatch) -> None:
