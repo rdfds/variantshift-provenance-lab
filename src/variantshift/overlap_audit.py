@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import tempfile
@@ -243,26 +244,69 @@ def _optional_overlap(
 def _model_exposure(
     audit: pd.DataFrame,
     model_config_path: Path,
+    publication_dates_path: Path | None = None,
 ) -> pd.DataFrame:
+    publication_dates: dict[tuple[str, str], pd.Timestamp] = {}
+    panel_dates: dict[str, pd.Timestamp] = {}
+    if publication_dates_path is not None:
+        dates = pd.read_csv(publication_dates_path)
+        for row in dates.itertuples(index=False):
+            parsed = pd.to_datetime(row.publication_date, errors="coerce")
+            if pd.isna(parsed):
+                continue
+            if str(row.target_id) == "*":
+                panel_dates[str(row.panel_id)] = parsed
+            else:
+                publication_dates[(str(row.panel_id), str(row.target_id))] = parsed
+
+    def cutoff_end(value: str) -> pd.Timestamp | None:
+        text = str(value).strip()
+        try:
+            if re.fullmatch(r"\d{4}", text):
+                return pd.Period(text, freq="Y").end_time.normalize()
+            if re.fullmatch(r"\d{4}-\d{2}", text):
+                return pd.Period(text, freq="M").end_time.normalize()
+            parsed = pd.to_datetime(text, errors="coerce")
+            return None if pd.isna(parsed) else parsed
+        except ValueError:
+            return None
+
     rows = []
     for specification in load_model_specifications(model_config_path):
         declared = specification.exposure_status.lower()
+        cutoff = cutoff_end(specification.training_cutoff)
         for target in audit.itertuples(index=False):
-            if declared in {"clean", "possible", "known"}:
+            publication = publication_dates.get(
+                (str(target.panel_id), str(target.target_id)),
+                panel_dates.get(str(target.panel_id)),
+            )
+            if declared == "known":
                 category = declared
-                reason = "model configuration declaration"
+                reason = "model configuration documents known training exposure"
             elif not bool(target.exact_sequence_unseen):
                 category = "possible"
                 reason = "exact sequence occurs in the development benchmark"
+            elif cutoff is not None and publication is not None and publication > cutoff:
+                category = "clean"
+                reason = "confirmation assay was published after the documented training cutoff"
+            elif cutoff is not None and publication is not None:
+                category = "possible"
+                reason = "confirmation assay was public by the documented training cutoff"
+            elif declared in {"clean", "possible"}:
+                category = declared
+                reason = "model configuration declaration"
             else:
                 category = "undocumented"
-                reason = "training data exposure is not documented"
+                reason = "training cutoff or confirmation publication date is undocumented"
             rows.append(
                 {
                     "panel_id": target.panel_id,
                     "target_id": target.target_id,
                     "model_id": specification.model_id,
                     "training_cutoff": specification.training_cutoff,
+                    "confirmation_publication_date": (
+                        publication.date().isoformat() if publication is not None else ""
+                    ),
                     "exposure_category": category,
                     "exposure_reason": reason,
                 }
@@ -281,6 +325,7 @@ def audit_confirmation_overlap(
     development_pfam_path: Path | None = None,
     confirmation_structure_path: Path | None = None,
     development_structure_path: Path | None = None,
+    publication_dates_path: Path | None = None,
     mmseqs_binary: str = "mmseqs",
     threads: int = 8,
 ) -> dict[str, Path]:
@@ -334,7 +379,7 @@ def audit_confirmation_overlap(
         annotation_column="clan_accession",
         prefix="pfam_clan",
     )
-    exposure = _model_exposure(audit, model_config_path)
+    exposure = _model_exposure(audit, model_config_path, publication_dates_path)
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     outputs = {
@@ -374,6 +419,11 @@ def audit_confirmation_overlap(
             **{
                 str(path): sha256_file(path) for path in confirmation_target_paths
             },
+            **(
+                {"publication_dates": sha256_file(publication_dates_path)}
+                if publication_dates_path is not None
+                else {}
+            ),
         },
     }
     outputs["summary"].write_text(
