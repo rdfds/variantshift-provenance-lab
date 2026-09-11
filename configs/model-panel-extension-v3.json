@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "policy": "Outcome-free executable extension to the qualified v1 panel. Only candidates that pass the frozen ProteinGym parity and independent-run gates enter the final primary panel.",
+  "models": [
+    {
+      "model_id": "carp_640m",
+      "model_version": "af695772c4a1c056d930c95ec7e6428aa042f5cd",
+      "family": "convolutional-protein-language-model",
+      "modalities": ["sequence"],
+      "adapter": "carp",
+      "source_url": "https://github.com/microsoft/protein-sequence-models",
+      "license_name": "BSD-3-Clause",
+      "license_status": "permitted",
+      "checkpoint": "carp_640M",
+      "checkpoint_sha256": "bc500a04b3e4ff1a4bb4129006ecf40f18c552135b23b635117c74ccd3ea604d",
+      "strategy": "masked-marginal",
+      "parity_required": true,
+      "training_cutoff": "2020-03",
+      "exposure_status": "undocumented",
+      "container_image": "qualification-extension-v3",
+      "container_digest": "11373f28857fab398f3f0692f2e05c7523a48abad049980c2b8920f943615077",
+      "batch_size": 32,
+      "notes": "Official 640M ByteNet convolutional masked-language model trained on the March 2020 UniRef50 release."
+    },
+    {
+      "model_id": "vespag",
+      "model_version": "3d4758252dbd423249e694d6f7d195c707f72a92",
+      "family": "distilled-evolutionary-variant-effect-model",
+      "modalities": ["sequence"],
+      "adapter": "vespag",
+      "source_url": "https://github.com/JSchlensok/VespaG",
+      "license_name": "GPL-3.0",
+      "license_status": "permitted",
+      "checkpoint": "facebook/esm2_t36_3B_UR50D",
+      "checkpoint_revision": "476b639933c8baad5ad09a60ac1a87f987b656fc",
+      "checkpoint_sha256": "add2d095f6506b2c7359d03c85a695a86b5b22b2312fb8e4a6bf617cd83188d4",
+      "strategy": "raw-esm2-3b-fnn-v2",
+      "parity_required": true,
+      "training_cutoff": "2023",
+      "exposure_status": "known",
+      "container_image": "qualification-extension-v3",
+      "container_digest": "11373f28857fab398f3f0692f2e05c7523a48abad049980c2b8920f943615077",
+      "batch_size": 1,
+      "notes": "VespaG v2 ESM-2 head trained on GEMME pseudo-labels; raw scores are retained and training exposure is explicitly classified as known."
+    }
+  ]
+}
