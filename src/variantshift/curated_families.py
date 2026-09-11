@@ -209,6 +209,10 @@ def _protein_pfams(accession: str, uniprot_id: str, cache_dir: Path) -> list[dic
         f"{INTERPRO_API}/entry/pfam/protein/uniprot/{accession}/?page_size=200",
         cache_dir / "interpro" / "proteins" / f"{accession}.json",
     )
+    # InterPro returns HTTP 204 with an empty body for proteins without a Pfam
+    # assignment.  That is an audited negative result, not malformed JSON.
+    if not payload.strip():
+        return []
     response = json.loads(payload)
     if response.get("next"):
         raise RuntimeError(f"Pfam response requires unexpected pagination: {accession}")
