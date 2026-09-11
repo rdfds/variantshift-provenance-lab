@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "protocol_id": "variantshift-model-qualification-v1",
+  "confirmation_protocol_id": "variantshift-domainome-confirmation-v1",
+  "confirmation_lock_required_state": "targets_frozen",
+  "model_config": "configs/model-panel-v1.json",
+  "execution_config": "configs/executable-panel-v1.json",
+  "container_lock": "containers/qualification-lock-v1.json",
+  "independent_runs": ["qualification-a", "qualification-b"],
+  "parity_run_id": "parity-reference-v3",
+  "thresholds": {
+    "minimum_substitution_coverage": 0.95,
+    "minimum_parity_spearman": 0.99,
+    "minimum_repeat_spearman": 0.999,
+    "minimum_parity_variants_per_target": 500,
+    "minimum_parity_targets": 8,
+    "minimum_configurations": 8,
+    "minimum_families": 4,
+    "minimum_shared_confirmation_targets": 300
+  },
+  "models": [
+    {"model_id": "esm1v_ensemble", "official_column": "ESM1v_ensemble", "container": "fair_esm"},
+    {"model_id": "esm2_8m", "official_column": "ESM2_8M", "container": "fair_esm"},
+    {"model_id": "esm2_35m", "official_column": "ESM2_35M", "container": "fair_esm"},
+    {"model_id": "esm2_150m", "official_column": "ESM2_150M", "container": "fair_esm"},
+    {"model_id": "esm2_650m", "official_column": "ESM2_650M", "container": "fair_esm"},
+    {"model_id": "esm_if1", "official_column": "ESM-IF1", "container": "fair_esm"},
+    {"model_id": "saprot_35m", "official_column": "SaProt_35M_AF2", "container": "external"},
+    {"model_id": "tranception_l_no_retrieval", "official_column": "Tranception_L_no_retrieval", "container": "external"}
+  ],
+  "documented_exclusions": [
+    {
+      "model_id": "proteinmpnn",
+      "stage": "implementation_parity",
+      "status": "failed",
+      "reason": "The released ProteinGym full-sequence scorer draws an unrecorded random decoding seed; an independently executed official-path implementation did not reproduce the published rank scores at the preregistered 0.99 threshold.",
+      "evidence": "artifacts/qualification/probes/checkpoint-probe-proteinmpnn-fullseq-v2"
+    }
+  ],
+  "parity_panel": {
+    "panel_id": "proteingym-parity-v1",
+    "targets": [
+      "DN7A_SACS2_Tsuboyama_2023_1JIC",
+      "VRPI_BPT7_Tsuboyama_2023_2WNM",
+      "SOX30_HUMAN_Tsuboyama_2023_7JJK",
+      "SCIN_STAAR_Tsuboyama_2023_2QFF",
+      "A0A1I9GEU1_NEIME_Kennouche_2019",
+      "MLAC_ECOLI_MacRae_2023",
+      "TPMT_HUMAN_Matreyek_2018",
+      "MET_HUMAN_Estevam_2023"
+    ]
+  }
+}

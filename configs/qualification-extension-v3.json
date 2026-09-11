@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "protocol_id": "variantshift-model-qualification-extension-v3",
+  "confirmation_protocol_id": "variantshift-domainome-confirmation-v1",
+  "confirmation_lock_required_state": "targets_frozen",
+  "model_config": "configs/model-panel-extension-v3.json",
+  "container_lock": "containers/qualification-extension-lock-v3.json",
+  "independent_runs": ["qualification-extension-v3-a", "qualification-extension-v3-b"],
+  "parity_run_id": "parity-extension-v3",
+  "thresholds": {
+    "minimum_substitution_coverage": 0.95,
+    "minimum_parity_spearman": 0.99,
+    "minimum_repeat_spearman": 0.999,
+    "minimum_parity_variants_per_target": 500,
+    "minimum_parity_targets": 8,
+    "minimum_configurations": 2,
+    "minimum_families": 2,
+    "minimum_shared_confirmation_targets": 300
+  },
+  "models": [
+    {"model_id": "carp_640m", "official_column": "CARP_640M", "container": "extension"},
+    {"model_id": "vespag", "official_column": "VespaG", "container": "extension"}
+  ],
+  "documented_exclusions": [
+    {
+      "model_id": "prosst_2048",
+      "stage": "implementation_parity",
+      "status": "failed",
+      "reason": "The pinned official implementation produced per-target ProteinGym Spearman values from 0.923 to 0.969, below the preregistered 0.99 threshold; it remains a transparent exclusion rather than entering the primary panel.",
+      "evidence": "results/model-qualification-extension-v2/prosst-parity-audit.csv"
+    }
+  ],
+  "parity_panel": {
+    "panel_id": "proteingym-parity-extension-v3",
+    "targets": [
+      "DN7A_SACS2_Tsuboyama_2023_1JIC",
+      "VRPI_BPT7_Tsuboyama_2023_2WNM",
+      "SOX30_HUMAN_Tsuboyama_2023_7JJK",
+      "SCIN_STAAR_Tsuboyama_2023_2QFF",
+      "A0A1I9GEU1_NEIME_Kennouche_2019",
+      "MLAC_ECOLI_MacRae_2023",
+      "TPMT_HUMAN_Matreyek_2018",
+      "MET_HUMAN_Estevam_2023"
+    ]
+  }
+}
