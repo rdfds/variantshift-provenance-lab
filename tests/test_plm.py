@@ -9,6 +9,14 @@ from variantshift.plm import (
 )
 
 
+def test_esm_runtime_is_an_explicit_reusable_argument() -> None:
+    import inspect
+
+    from variantshift.plm import esm2_position_log_probabilities
+
+    assert "runtime" in inspect.signature(esm2_position_log_probabilities).parameters
+
+
 def test_scores_alternate_against_reference() -> None:
     token_index = {"A": 0, "C": 1, "D": 2, "E": 3}
     log_probabilities = np.array(

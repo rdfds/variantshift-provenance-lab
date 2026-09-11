@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -71,6 +72,7 @@ def esm2_position_log_probabilities(
     batch_size: int = 16,
     window_size: int = 1022,
     overlap: int = 256,
+    runtime: tuple[Any, Any, str] | None = None,
 ) -> tuple[dict[int, np.ndarray], Mapping[str, int]]:
     """Compute amino-acid log probabilities at selected positions of any-length sequences.
 
@@ -79,7 +81,6 @@ def esm2_position_log_probabilities(
     the secondary comparison changes only the masking strategy.
     """
     try:
-        import esm
         import torch
     except ImportError as error:
         raise RuntimeError("ESM scoring requires the optional 'plm' dependencies") from error
@@ -90,18 +91,13 @@ def esm2_position_log_probabilities(
     sequence = sequence.removesuffix("*").upper()
     if set(sequence).difference(set("ACDEFGHIKLMNPQRSTVWY")):
         raise ValueError("ESM-2 external scoring requires the 20 standard amino acids")
-    loader = getattr(esm.pretrained, model_name, None)
-    if loader is None:
-        raise ValueError(f"Unsupported fair-esm model: {model_name}")
-    if device is None:
-        if torch.backends.mps.is_available():
-            device = "mps"
-        elif torch.cuda.is_available():
-            device = "cuda"
-        else:
-            device = "cpu"
-    model, alphabet = loader()
-    model = model.eval().to(device)
+    if runtime is None:
+        model, alphabet, device = load_fair_esm_runtime(model_name, device=device)
+    else:
+        model, alphabet, runtime_device = runtime
+        if device is not None and device != runtime_device:
+            raise ValueError("Requested ESM device does not match the supplied runtime")
+        device = runtime_device
     batch_converter = alphabet.get_batch_converter()
     assignments = assign_positions_to_windows(
         len(sequence),
@@ -146,6 +142,31 @@ def esm2_position_log_probabilities(
         amino_acid: alphabet.get_idx(amino_acid) for amino_acid in "ACDEFGHIKLMNPQRSTVWY"
     }
     return results, token_index
+
+
+def load_fair_esm_runtime(
+    model_name: str,
+    *,
+    device: str | None = None,
+) -> tuple[Any, Any, str]:
+    """Load one fair-esm checkpoint once for reuse across a target panel."""
+    try:
+        import esm
+        import torch
+    except ImportError as error:
+        raise RuntimeError("ESM scoring requires the optional 'plm' dependencies") from error
+    loader = getattr(esm.pretrained, model_name, None)
+    if loader is None:
+        raise ValueError(f"Unsupported fair-esm model: {model_name}")
+    if device is None:
+        if torch.backends.mps.is_available():
+            device = "mps"
+        elif torch.cuda.is_available():
+            device = "cuda"
+        else:
+            device = "cpu"
+    model, alphabet = loader()
+    return model.eval().to(device), alphabet, device
 
 
 def score_single_substitutions(
