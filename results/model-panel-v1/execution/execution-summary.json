@@ -1,0 +1,29 @@
+{
+  "executed_configurations": 8,
+  "executed_families": 4,
+  "execution_status": "complete",
+  "gates": {
+    "configurations": true,
+    "families": true,
+    "shared_targets": true
+  },
+  "inputs": {
+    "execution_config_sha256": "a620d4fde7aa3ada5bbc92e814b5f036c202adad4dc48c5b862b8061f77641d0",
+    "model_config_sha256": "ec9b51cc538b2f5f139181ff8e451d1418f7278845fa11b8dfb4b542a859655b",
+    "targets_sha256": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e",
+    "variants_sha256": "eb4891a705b60ed19ebfd2485a1bf3f07c786413455caea198c911e56f83232f"
+  },
+  "minimums": {
+    "configurations": 8,
+    "families": 4,
+    "shared_targets": 300,
+    "target_coverage": 0.95
+  },
+  "outcomes_accessed": false,
+  "protocol_id": "variantshift-domainome-confirmation-v1",
+  "qualification_note": "Parity, repeated-run determinism, pinned-container reproducibility, and checkpoint qualification have not been evaluated by this command.",
+  "qualification_status": "not_started",
+  "schema_version": 1,
+  "scope": "execution-only",
+  "shared_targets_at_minimum_coverage": 413
+}
