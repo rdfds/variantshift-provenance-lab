@@ -20,6 +20,7 @@ confirmation:
   variants: protocols/mavedb-complement-v1/frozen/variants.csv
   lock: protocols/mavedb-complement-v1/frozen/outcome-lock.json
   target_tables:
+    - results/confirmation/domainome-v1/targets.csv
     - protocols/mavedb-complement-v1/frozen/targets.csv
     - protocols/venusmuthub-v1/frozen/targets.csv
   executable_models:
