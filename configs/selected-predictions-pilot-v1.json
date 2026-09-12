@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "freeze_id": "external-development-pilot-predictions-v1",
+  "minimum_domainome_shared_targets": 0,
+  "model_ids": [
+    "carp_640m",
+    "esm2_8m",
+    "esm2_35m",
+    "esm2_150m",
+    "esm2_650m",
+    "vespag"
+  ],
+  "panels": {
+    "mavedb-complement-v1": {
+      "targets": "protocols/mavedb-complement-v1/frozen/targets.csv",
+      "variants": "protocols/mavedb-complement-v1/frozen/variants.csv",
+      "executions": {
+        "carp_640m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/carp_640m",
+        "esm2_8m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/esm2_8m",
+        "esm2_35m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/esm2_35m",
+        "esm2_150m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/esm2_150m",
+        "esm2_650m": "artifacts/confirmation/final-predictions/mavedb-complement-v1/esm2_650m",
+        "vespag": "artifacts/confirmation/final-predictions/mavedb-complement-v1/vespag"
+      }
+    },
+    "venusmuthub-v1": {
+      "targets": "protocols/venusmuthub-v1/frozen/targets.csv",
+      "variants": "protocols/venusmuthub-v1/frozen/variants.csv.gz",
+      "executions": {
+        "carp_640m": "artifacts/confirmation/final-predictions/venusmuthub-v1/carp_640m",
+        "esm2_8m": "artifacts/confirmation/final-predictions/venusmuthub-v1/esm2_8m",
+        "esm2_35m": "artifacts/confirmation/final-predictions/venusmuthub-v1/esm2_35m",
+        "esm2_150m": "artifacts/confirmation/final-predictions/venusmuthub-v1/esm2_150m",
+        "esm2_650m": "artifacts/confirmation/final-predictions/venusmuthub-v1/esm2_650m",
+        "vespag": "artifacts/confirmation/final-predictions/venusmuthub-v1/vespag"
+      }
+    }
+  }
+}
