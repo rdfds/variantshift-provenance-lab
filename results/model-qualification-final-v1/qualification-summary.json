@@ -1,0 +1,39 @@
+{
+  "artifacts": {
+    "configs/model-panel-final-v1.json": "704e6b081ac78dc4d99258628ba8cc86bb2c088b1cd12f64bdbc21a779bdd56e",
+    "model-qualification-audit.csv": "6e105356831a25cad09749bf009da188da615cf8582113ad7981b5e51e6c5eed",
+    "qualified-shared-targets.csv": "05822d3762c7609880bfd94bb004af9b34e49e49cfa99a0d59dc307b53a985d1"
+  },
+  "confirmation_outcomes_accessed": false,
+  "families": [
+    "autoregressive-protein-language-model",
+    "convolutional-protein-language-model",
+    "distilled-evolutionary-variant-effect-model",
+    "inverse-folding-model",
+    "masked-protein-language-model",
+    "structure-aware-protein-language-model"
+  ],
+  "gates": {
+    "configurations": true,
+    "families": true,
+    "shared_confirmation_targets": true
+  },
+  "qualification_status": "passed",
+  "qualified_configurations": 10,
+  "qualified_families": 6,
+  "schema_version": 1,
+  "shared_confirmation_targets": 413,
+  "source_model_configs": {
+    "configs/model-panel-extension-v3.json": "cf0131d2504a73bb6dd72197a5b7d4d660ac192292ffbc6d39bcefb73bc3b02a",
+    "configs/model-panel-v1.json": "720df6822abd3ac7195895ae7d4dfecd34ace0acc18deab033819cc5a90b79c0"
+  },
+  "source_receipts": {
+    "results/model-qualification-extension-v3": "8e1b5472f7b054512b2de7a337302f0ca648e5738f6dbb2a3415fcef9e0bf6da",
+    "results/model-qualification-v1": "69814cfeca2fb6ec2244d94b023089b428bdeb6a358c223300170dd139c4a672"
+  },
+  "thresholds": {
+    "minimum_configurations": 10,
+    "minimum_families": 6,
+    "minimum_shared_confirmation_targets": 300
+  }
+}
