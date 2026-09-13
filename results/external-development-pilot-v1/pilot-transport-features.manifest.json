@@ -1,0 +1,29 @@
+{
+  "artifact": {
+    "results/external-development-pilot-v1/pilot-transport-features.csv": "2c8be1c6c3a1af600452120299f59f702ac238a0dd27b418488c99d66929fd7e"
+  },
+  "inputs": {
+    "configs/model-panel-final-v1.json": "704e6b081ac78dc4d99258628ba8cc86bb2c088b1cd12f64bdbc21a779bdd56e",
+    "protocols/external-development-pilot-v1/pilot-task-registry.csv": "ed113d9a3feabd8bf7ef4474ff9f1555ea706b5d0acb169411f5bde41402fa3f",
+    "protocols/mavedb-complement-v1/frozen/targets.csv": "f5548322f8483ecbad8bf05b583f84e3404ea681e0a935f8824e3347ef067c21",
+    "protocols/mavedb-complement-v1/frozen/variants.csv": "1e9161ee9e1efd82faec1f0294b62051d5b025541baea216fcd72d1f01727de9",
+    "protocols/venusmuthub-v1/frozen/targets.csv": "6384809e028e9ad221244870852a43b6d6d9a61e88b1c54d715c4aa707d2e733",
+    "protocols/venusmuthub-v1/frozen/variants.csv.gz": "32190f8ad2ff25e4b2faeecebfdc2af718a93726cdf2bb2da924ed51f3c5873d",
+    "results/confirmation-annotations-v1/confirmation-pfam-annotations.csv": "fdd2bdddbb3eec2d59173ba7a26619c4c62a15551138e21f99df06269cd115b8",
+    "results/confirmation-overlap-final-v1/confirmation-overlap-audit.csv": "e0428e2ce45e0a1911871aced32e94ce93ed435fd931bb1818752f78f52cf69f",
+    "results/confirmation-overlap-final-v1/model-target-exposure.csv": "92789aeea6bb9b423bfd39d6925f7ac2ac7a3d6f25b8265154e52826c0697fa8",
+    "results/confirmation-structure-families-v1/foldseek-reciprocal-edges.csv.gz": "1a5e06dfbd9d069326205a4bf66fa512f0543b20562351e54c0f1776a3c42a99",
+    "results/confirmation-structure-families-v1/structure-family-audit.csv": "03d08d72014912ef471f5a5ad12209f9e26aca40c4707723aed03195f98262f2",
+    "results/confirmation-structure-families-v1/structure-inputs.csv": "97d244fbc723e245d853f9d7ea8502702ade1ca4f842b92e079a8a919d4a0252",
+    "results/confirmation/domainome-v1/targets.csv": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e",
+    "results/confirmation/domainome-v1/variants.csv": "eb4891a705b60ed19ebfd2485a1bf3f07c786413455caea198c911e56f83232f",
+    "results/external-development-pilot-v1/selected-predictions/selected-prediction-registry.csv": "785aa65878f8fc258fb3f7028c2fed9e2b1d6373af7e3fbba86cfbc28bd40b7a"
+  },
+  "missing_msa_policy": "MSA depth, Neff, and MSA alignment coverage remain missing and use the frozen development-time imputer; they are not reverse-engineered from outcomes.",
+  "models": 6,
+  "outcomes_accessed": false,
+  "protocol_id": "variantshift-external-development-pilot-v1",
+  "rows": 300,
+  "schema_version": 1,
+  "tasks": 50
+}
