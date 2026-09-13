@@ -1,0 +1,27 @@
+{
+  "annotation_error_count": 0,
+  "artifacts": {
+    "confirmation-pfam-annotations.csv": "fdd2bdddbb3eec2d59173ba7a26619c4c62a15551138e21f99df06269cd115b8",
+    "development-pfam-annotations.csv": "c82f62b84883227530dc01d9c302e3d170a3d7a4c52fbc85c85e5886aae0648e",
+    "pfam-annotation-audit.csv": "4caa8657725d0bc9293dcd6ef43590322da8d2776c7a5b67e8a1d61356d5c638"
+  },
+  "confirmation_target_count": 525,
+  "grouping_rule": "Pfam clan when available; otherwise the individual Pfam family",
+  "inputs": {
+    "development_domains": "9d3069624e1ccbede851798ea8470880208de37c64e4eb29e77f7bd687977f09",
+    "structure_audits": {
+      "artifacts/confirmation/domainome-v1/structures/structure-input-audit.csv": "e85850436f42395deb67214c52cb60e9ed3a23d8981d9ef5fe94103ee0bdb01a",
+      "artifacts/confirmation/mavedb-complement-v1/structure-input-audit.csv": "b8e442e83d5e3c56ee9421b1561fe5d6ffe6c5c8c3cd833f4ddbdc1636f948e4",
+      "artifacts/confirmation/venusmuthub-v1/structure-input-audit.csv": "31dbc5ce5448d07cdf784e05f318317c37d64c0f1f1344c66bba592f468a4c27"
+    },
+    "targets": {
+      "protocols/mavedb-complement-v1/frozen/targets.csv": "f5548322f8483ecbad8bf05b583f84e3404ea681e0a935f8824e3347ef067c21",
+      "protocols/venusmuthub-v1/frozen/targets.csv": "6384809e028e9ad221244870852a43b6d6d9a61e88b1c54d715c4aa707d2e733",
+      "results/confirmation/domainome-v1/targets.csv": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e"
+    }
+  },
+  "outcomes_accessed": false,
+  "schema_version": 1,
+  "targets_with_annotations": 512,
+  "targets_without_exact_uniprot_mapping": 12
+}
