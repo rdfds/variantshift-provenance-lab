@@ -1,0 +1,14 @@
+{
+  "artifact": {
+    "results/confirmation-registry-v1/confirmation-publication-dates.csv": "0281e816201836b555fe3560ff1bebfccfcdf5205059116d6a04e26702f5270b"
+  },
+  "crossref_errors": 0,
+  "inputs": {
+    "protocols/mavedb-complement-v1/score-set-audit.csv": "ecf49f75f7a3dc7190d29864fa2e94559d4522e4e5a3c49f815fe2b75fa0aae8",
+    "protocols/venusmuthub-v1/assay-audit.csv": "cf6bf1802aa20aebadd2ae129b0d59d3fdbf08c1b8036d3d6016574bd50742e1"
+  },
+  "outcomes_accessed": false,
+  "schema_version": 1,
+  "targets": 525,
+  "targets_with_date": 525
+}

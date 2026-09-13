@@ -1,0 +1,25 @@
+{
+  "artifacts": {
+    "confirmation-task-registry.csv": "6da5f4585fa57806d9de14680572ae538d1515fe758dd81f1bc47b9066a642f7",
+    "confirmation-task-summary.csv": "29663ac8dbcb0efde4b5d1deb43592b2af370647384647a9560bbfc8e54b39c1"
+  },
+  "direction_policy": {
+    "domainome": "higher abundance score is favorable",
+    "mavedb": "registry metadata orientation frozen during target acquisition",
+    "venus_activity": "higher is favorable except Km, where lower is favorable",
+    "venus_selectivity": "excluded because signed ee/de values are not universally ordered"
+  },
+  "included_tasks": 555,
+  "included_tasks_by_panel": {
+    "human-domainome-v1": 426,
+    "mavedb-complement-v1": 23,
+    "venusmuthub-v1": 106
+  },
+  "inputs": {
+    "protocols/mavedb-complement-v1/score-set-audit.csv": "ecf49f75f7a3dc7190d29864fa2e94559d4522e4e5a3c49f815fe2b75fa0aae8",
+    "protocols/venusmuthub-v1/assay-audit.csv": "cf6bf1802aa20aebadd2ae129b0d59d3fdbf08c1b8036d3d6016574bd50742e1",
+    "results/confirmation/domainome-v1/targets.csv": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e"
+  },
+  "outcomes_accessed": false,
+  "schema_version": 1
+}
