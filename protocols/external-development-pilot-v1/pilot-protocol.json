@@ -1,0 +1,56 @@
+{
+  "artifacts": {
+    "protocols/external-development-pilot-v1/pilot-source-manifest.csv": "35163e753746cda7fdd29a70cef6a86934dde2ce135d6da150aa77ccdb53ff25",
+    "protocols/external-development-pilot-v1/pilot-targets.csv": "0173790c3a0ca801a0a6425e339e26efe6b52a2b79542bd5083d5b172c0551cf",
+    "protocols/external-development-pilot-v1/pilot-task-registry.csv": "ed113d9a3feabd8bf7ef4474ff9f1555ea706b5d0acb169411f5bde41402fa3f",
+    "protocols/external-development-pilot-v1/task-partitions.csv": "1989ea459ebdf799beb78d65c48e891179c9ed7c8dd01932e1489c1f52b7a4cf",
+    "protocols/external-development-pilot-v1/untouched-holdout-task-registry.csv": "66802488dd3880bb4f43e5bafee9251dcb3277c82474561bd269a31d3d7accbd"
+  },
+  "claim_boundary": "Development evidence for a go/no-go decision only; never confirmation evidence.",
+  "counts": {
+    "domainome_targets_untouched": 426,
+    "pilot_targets": 30,
+    "pilot_tasks": 50,
+    "untouched_venus_targets": 60,
+    "untouched_venus_tasks": 79
+  },
+  "created_at_utc": "2026-09-01T18:31:24.263746+00:00",
+  "inputs": {
+    "protocols/mavedb-complement-v1/frozen/targets.csv": "f5548322f8483ecbad8bf05b583f84e3404ea681e0a935f8824e3347ef067c21",
+    "protocols/mavedb-complement-v1/score-set-audit.csv": "ecf49f75f7a3dc7190d29864fa2e94559d4522e4e5a3c49f815fe2b75fa0aae8",
+    "protocols/venusmuthub-v1/assay-audit.csv": "cf6bf1802aa20aebadd2ae129b0d59d3fdbf08c1b8036d3d6016574bd50742e1",
+    "protocols/venusmuthub-v1/frozen/targets.csv": "6384809e028e9ad221244870852a43b6d6d9a61e88b1c54d715c4aa707d2e733",
+    "protocols/venusmuthub-v1/source-tree.json": "b3d2b661a903e559a0cb9ea78d0b7bb31495a5167c83088ce892e19dd6aa30e5",
+    "results/confirmation-registry-v1/confirmation-task-registry.csv": "6da5f4585fa57806d9de14680572ae538d1515fe758dd81f1bc47b9066a642f7",
+    "results/external-development-pilot-v1/selected-predictions/shared-model-intersection.csv": "c3726f637eafbdc7a047e43471fc65598198176c16bb9c886ccd886469e04c56"
+  },
+  "model_ids": [
+    "carp_640m",
+    "esm2_150m",
+    "esm2_35m",
+    "esm2_650m",
+    "esm2_8m",
+    "vespag"
+  ],
+  "outcome_parsing": {
+    "mavedb": "frozen metadata direction; finite single substitutions; duplicates median",
+    "minimum_aligned_variants_per_task_model": 10,
+    "venus": "single-substitution column chosen by maximum valid-sequence match rate; outcome column chosen from predeclared metric-name tokens then finite-row count; frozen direction; duplicates median; no manual repair"
+  },
+  "outcomes_accessed": false,
+  "primary_endpoints": [
+    "selection-regret risk-coverage AUC versus frozen best label-free comparator",
+    "failed-deployment rate at 50% task coverage",
+    "mean top-decile selection gain"
+  ],
+  "protocol_id": "variantshift-external-development-pilot-v1",
+  "schema_version": 1,
+  "selection": {
+    "mavedb": "all direction-resolved tasks whose targets are in the frozen six-model 95%-coverage intersection",
+    "seed": "variantshift-external-development-pilot-v1|2026-09-01",
+    "target_level_partition": true,
+    "venus": "24 target-level selections, six per sequence-length quartile, ranked by SHA-256 of a frozen seed and target id"
+  },
+  "status": "outcome_blind_development_pilot_frozen",
+  "venus_source_revision": "08a27d07b5764af58f99d26734d096ebe2a5f9cf"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "post-freeze documentation correction",
+  "frozen_protocol_unchanged": true,
+  "issue": "The frozen pilot protocol labels aggregate external-holdout counts as Venus-only counts.",
+  "correct_counts_from_frozen_partition_table": {
+    "mavedb-complement-v1": {
+      "tasks": 2,
+      "targets": 2
+    },
+    "venusmuthub-v1": {
+      "tasks": 77,
+      "targets": 58
+    },
+    "human-domainome-v1": {
+      "tasks": 426,
+      "targets": 426
+    }
+  },
+  "source": "protocols/external-development-pilot-v1/untouched-holdout-task-registry.csv",
+  "scientific_effect": "none; partitions, model predictions, outcomes, and analyses are unchanged"
+}
