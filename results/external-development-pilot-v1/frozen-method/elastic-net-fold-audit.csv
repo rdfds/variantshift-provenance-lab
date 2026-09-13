@@ -1,0 +1,6 @@
+fold,estimator,fit_rows,calibration_rows,test_rows,fit_groups,calibration_groups,calibration_tasks,test_groups,conformal_quantile,decision_shrinkage,override_margin,priority_weights,policy_inner_audit,median_predicted_error_scale,error_scale_floor,parameters
+0,elastic_net,726,210,234,86,22,35,24,2.6590017502348546,1.0,0.0,"{""decision_score"": 0.25, ""log_msa_neff"": 1.0, ""log_protein_length"": 0.5}","{""candidate_count"": 1}",0.17666828469494145,0.007877648874148616,{}
+1,elastic_net,678,258,234,84,21,43,27,1.9839208468986798,1.0,0.0,"{""decision_score"": 0.25, ""log_msa_neff"": 1.0, ""log_protein_length"": 0.5}","{""candidate_count"": 1}",0.18458031514922657,0.007315162831787032,{}
+2,elastic_net,750,186,234,84,21,31,27,2.1453408498791773,1.0,0.0,"{""decision_score"": 0.25, ""log_msa_neff"": 1.0, ""log_protein_length"": 0.5}","{""candidate_count"": 1}",0.14784310332794728,0.007075574838059336,{}
+3,elastic_net,684,252,234,84,21,42,27,1.7570412684596268,1.0,0.0,"{""decision_score"": 0.25, ""log_msa_neff"": 1.0, ""log_protein_length"": 0.5}","{""candidate_count"": 1}",0.14791212274609186,0.00749590327106969,{}
+4,elastic_net,744,192,234,84,21,32,27,2.9587200240369556,1.0,0.0,"{""decision_score"": 0.25, ""log_msa_neff"": 1.0, ""log_protein_length"": 0.5}","{""candidate_count"": 1}",0.17231555984504926,0.007692247339379352,{}
