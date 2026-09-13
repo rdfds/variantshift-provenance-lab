@@ -1,0 +1,37 @@
+{
+  "artifacts": {
+    "confirmation-structure-families.csv": "5b0dc14de9ea8946c879f6fd2ca5bf560bc86caf5f931f6876f25a13e1057be9",
+    "development-structure-families.csv": "86f7c722ecf29e98a77858b2a8a8c04e540d3d23e9162d8c6fc10d03feea7fe7",
+    "foldseek-directed-alignments.csv.gz": "c795915958047bc2c52b7958ff2176fe9cb851020664603d6fed250df946a3f4",
+    "foldseek-reciprocal-edges.csv.gz": "1a5e06dfbd9d069326205a4bf66fa512f0543b20562351e54c0f1776a3c42a99",
+    "structure-family-audit.csv": "03d08d72014912ef471f5a5ad12209f9e26aca40c4707723aed03195f98262f2",
+    "structure-inputs.csv": "97d244fbc723e245d853f9d7ea8502702ade1ca4f842b92e079a8a919d4a0252"
+  },
+  "confirmation_structure_count": 502,
+  "confirmation_structure_unseen_count": 340,
+  "confirmation_target_count": 525,
+  "development_structure_count": 169,
+  "foldseek_version": "e28c8d2045b2603f192f20ffdc81b6084b53cc5d",
+  "inputs": {
+    "confirmation_structure_audits": {
+      "artifacts/confirmation/domainome-v1/structures/structure-input-audit.csv": "e85850436f42395deb67214c52cb60e9ed3a23d8981d9ef5fe94103ee0bdb01a",
+      "artifacts/confirmation/mavedb-complement-v1/structure-input-audit.csv": "b8e442e83d5e3c56ee9421b1561fe5d6ffe6c5c8c3cd833f4ddbdc1636f948e4",
+      "artifacts/confirmation/venusmuthub-v1/structure-input-audit.csv": "31dbc5ce5448d07cdf784e05f318317c37d64c0f1f1344c66bba592f468a4c27"
+    },
+    "confirmation_targets": {
+      "protocols/mavedb-complement-v1/frozen/targets.csv": "f5548322f8483ecbad8bf05b583f84e3404ea681e0a935f8824e3347ef067c21",
+      "protocols/venusmuthub-v1/frozen/targets.csv": "6384809e028e9ad221244870852a43b6d6d9a61e88b1c54d715c4aa707d2e733",
+      "results/confirmation/domainome-v1/targets.csv": "9f64e97387d2793364fcd6d341e5947304d31ca3c6772f340b8efb8d9c23c06e"
+    },
+    "eligibility": "28e92d1bdb8665ea2b7b01dae989c14e45059681b96e31e01a2ecf55ab5925e8",
+    "reference": "a8f498011532a74aa9fe556a50555a75e928c5837d19c06a87592ae04049b308",
+    "structure_archive": "ed8611bf12cfb840ea1c2561be36254901008610a49b1be475e917b6c5d6d56a"
+  },
+  "outcomes_accessed": false,
+  "schema_version": 1,
+  "thresholds": {
+    "minimum_bidirectional_coverage": 0.8,
+    "minimum_reciprocal_homology_probability": 0.95,
+    "minimum_reciprocal_tm_score": 0.5
+  }
+}
