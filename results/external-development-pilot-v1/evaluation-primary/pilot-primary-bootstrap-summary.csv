@@ -1,0 +1,3 @@
+comparator,primary_endpoint,regret_coverage_auc_improvement,regret_ci_low,regret_ci_high,regret_probability_improvement_above_zero,risk_coverage_auc_improvement,risk_ci_low,risk_ci_high,bootstrap_repeats,bootstrap_unit,one_sided_p_value
+score_dispersion,regret_coverage_auc,0.09446051414725612,-0.0712309799918052,0.25593165870582885,0.8643,-0.03612504353883664,-0.19120918679640583,0.04212367452321501,10000,"family, then protein, then assay",0.1357864213578642
+always_best,regret_coverage_auc,-0.06735199500177283,-0.20397678230977948,0.15652460358282205,0.5563,-0.04622605363984674,-0.18901980013973552,0.08902999101861328,10000,"family, then protein, then assay",0.44375562443755623
