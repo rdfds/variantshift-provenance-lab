@@ -44,6 +44,33 @@ It publishes all 45 inclusion decisions, 21 eligible-assay estimates, protein-ba
 audit, and SHA-256 records for all 45 raw public inputs. Raw score tables and the reusable 78,982-row
 prediction cache remain outside Git.
 
+## Model qualification
+
+[`model-qualification-v1/`](model-qualification-v1/) records the initial eight-configuration audit;
+[`model-qualification-final-v1/`](model-qualification-final-v1/) composes the final ten qualified
+configurations across six model/input families. The audit records coverage, official ProteinGym
+parity, independent Domainome rerun correlation, provenance checks, failure counts, and the
+413-target shared intersection. Full per-variant prediction bundles remain outside Git; their
+hashes are retained and confirmation outcomes were not accessed.
+
+## Confirmation preparation
+
+[`confirmation-registry-v1/`](confirmation-registry-v1/),
+[`confirmation-annotations-v1/`](confirmation-annotations-v1/),
+[`confirmation-structure-families-v1/`](confirmation-structure-families-v1/), and
+[`confirmation-overlap-final-v1/`](confirmation-overlap-final-v1/) contain the frozen task registry,
+publication dates, Pfam annotations, Foldseek families, sequence overlaps, and model-exposure
+classification. Missing annotations remain explicit rather than being treated as clean.
+
+## External development and auditor freeze
+
+[`external-development-pilot-v1/`](external-development-pilot-v1/) publishes the frozen pilot,
+outcome-access audit, task metrics, and negative go/no-go result for the original selector.
+[`conservative-auditor-v2/`](conservative-auditor-v2/) contains the replacement policy, grouped
+cross-fit predictions, 10,000 hierarchical bootstrap replicates, development gates, panel stress
+tests, fitted artifact, and hashes. The OSF confirmation bundle is intentionally excluded from this
+public repository while embargoed.
+
 Verify the committed outputs:
 
 ```bash

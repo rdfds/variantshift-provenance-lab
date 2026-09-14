@@ -4,9 +4,9 @@
 
 VariantShift is a leakage-aware benchmark and selective-deployment framework for protein
 variant-effect models. It measures whether rankings learned on common benchmarks transport to
-unseen positions, proteins, families, assay modalities, and external datasets. Its Selective
-Transport Auditor conservatively overrides the best-average model, ranks tasks for selective
-deployment, and separately issues a hierarchical conformal lower bound on top-decile gain.
+unseen positions, proteins, families, assay modalities, and external datasets. The repository now
+includes a qualified ten-configuration execution panel and a frozen outcome-free policy that may
+deploy the strongest fixed model or abstain. The central confirmation outcomes remain sealed.
 
 The initial case study uses the Align Foundation's TEV protease GROQ-seq release: 18,486
 variants measured across 24 conditions at NIST's Living Measurement Systems Foundry.
@@ -20,24 +20,35 @@ confirmation study:
   risk–coverage schemas;
 - model and panel adapter interfaces with content-addressed prediction caching;
 - a one-way target → prediction → registration → reveal lock;
-- nested family cross-fitting, selection-aware hierarchical conformal lower bounds, conservative
-  model overrides, abstention, frozen comparator and feature-ablation policies, machine-readable
-  acceptance gates, and nested family/protein/assay bootstrap inference;
-- config-driven local and Slurm workflows, Apptainer recipes, and a static result explorer;
+- family-grouped cross-fitting, conservative abstention, frozen comparators, machine-readable
+  acceptance gates, and family/protein/assay bootstrap inference;
+- config-driven local, Slurm, and Modal workflows, pinned runtime receipts, Apptainer recipes, and
+  a static result explorer;
 - a metadata-only untouched MaveDB complement and target-only VenusMutHub panel frozen without
   score or mutation-table access;
-- an outcome-free sequence audit over 99 frozen targets, yielding 96 confirmation families, 97
-  exact-sequence-unseen targets, and 96 MMseqs2-family-unseen targets.
+- a ten-configuration panel spanning six model/input families, with 413 shared Domainome targets;
+- exact-sequence, MMseqs2-family, Pfam-clan, Foldseek-family, publication, assay, and model-exposure
+  audits across the complete confirmation registry.
 
-The current development run contains 2,340 assay–model rows across 195 ProteinGym assays, 169
-proteins, 132 curated family groups, and 12 modern model score sets. It is not yet confirmation
-evidence. The frozen outcome-free selector reduces development regret–coverage AUC from 0.07273 to
-0.06452; its nested family-bootstrap improvement interval is 0.00214–0.01494. This remains
-adaptive development evidence, not a confirmatory claim. No model has yet passed the executable
-external-panel preflight. Domainome, confirmation structure/Pfam annotations, ARCH execution, and
-the 300-common-target threshold remain blockers.
-Those are active blockers, not omitted results. See the
+The development study contains 2,340 assay–model rows across 195 ProteinGym assays, 169 proteins,
+132 curated family groups, and 12 modern model score sets. The original selector failed its
+external development pilot against always using VespaG: regret–coverage improvement was −0.0674
+(95% interval −0.2040 to +0.1565). Conservative Auditor v2 was therefore redesigned as a fixed
+VespaG-or-abstain policy. It passes the family-held-out development screen (+0.0230 regret–coverage
+improvement; 95% interval +0.0067 to +0.0425) but fails leave-one-panel-out transport. These are
+development findings, not confirmation evidence.
+
+The final model-qualification audit passes ten configurations across six model/input families on
+413 shared Domainome targets. Per-configuration substitution coverage is 97.34% to 100%; every
+configuration reproduces eight official ProteinGym targets at Spearman at least 0.999993 and an
+independent zero-cache-hit Domainome rerun at effectively perfect rank correlation. Checkpoint,
+container, input, prediction, runner, source-tree, runtime, hardware, and failure receipts are
+hash-audited. The OSF registration is approved under embargo, the post-registration evaluator is
+publicly timestamped in this repository, and confirmation outcomes remain inaccessible. These
+results qualify the machinery, not its scientific utility. See the
 [auditor specification](docs/SELECTIVE_TRANSPORT_AUDITOR.md),
+[v2 development report](docs/CONSERVATIVE_AUDITOR_V2.md),
+[confirmation evaluator](docs/CONFIRMATION_EVALUATOR_V2.md),
 [method-development audit](docs/TRANSPORT_METHOD_DEVELOPMENT.md),
 [publication readiness audit](docs/PUBLICATION_READINESS.md), and
 [Nature Methods protocol](docs/NATURE_METHODS_PROTOCOL.md).

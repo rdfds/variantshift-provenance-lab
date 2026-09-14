@@ -31,10 +31,20 @@ Primary commands:
 variantshift panel-freeze
 variantshift mavedb-freeze-complement-targets
 variantshift models-preflight
+variantshift models-execution-audit
+variantshift models-qualification-audit
+variantshift models-freeze-final-panel
 variantshift predict-panel
 variantshift transport-features-proteingym
+variantshift transport-features-confirmation
 variantshift transport-fit
+variantshift conservative-auditor-fit
+variantshift conservative-auditor-score
+variantshift conservative-auditor-evaluate
 variantshift confirmation-overlap-audit
+variantshift confirmation-freeze-pfam
+variantshift confirmation-freeze-structure-families
+variantshift confirmation-freeze-tasks
 variantshift compute-budget-check
 variantshift confirmation-freeze
 variantshift preregistration-build
@@ -48,8 +58,10 @@ variantshift site-build
 outcome access. Optional Foldseek structure-family and Pfam-clan annotations use three-state
 auditing: `audited` with an overlap result, or `undocumented`; absence never means clean.
 
-Executable model preflight reports the number of targets reaching 95% substitution coverage and
-the intersection across primary-eligible models. Preregistration requires at least eight models,
-four model/input families, and 300 common passing targets. Confirmation evaluation requires the
-lock to be in `revealed` state and verifies the requested bundle, predictions, and outcomes against
-the recorded hashes before reading them.
+`models-execution-audit` reports the number of schema-valid executed configurations, model/input
+families, and targets reaching 95% shared substitution coverage. It always records qualification as
+not started. Executable model preflight is the separate parity, repeatability, license, and
+container-qualification stage. Preregistration requires at least eight qualified models, four
+model/input families, and 300 common passing targets. Confirmation evaluation requires the lock to
+be in `revealed` state and verifies the requested bundle, predictions, and outcomes against the
+recorded hashes before reading them.
