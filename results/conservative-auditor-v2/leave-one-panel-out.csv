@@ -1,0 +1,4 @@
+held_out_panel,training_tasks,test_tasks,status,reason,selected_candidate_policy,regret_auc_improvement,risk_auc_improvement,utility_auc_improvement,regret_improvement_at_50pct,risk_improvement_at_50pct,mean_gain_change_at_50pct
+mavedb-complement-v1,210,21,evaluated,,harm_gain_meta,-0.0033785092760771143,0.0,0.03204789817514059,-0.0009828179357364228,0.0,0.07224412881452136
+proteingym-v1.3,36,195,evaluated,,harm_gain_meta,0.008503679909910626,0.0,-0.02207482577910891,0.020767378857431094,0.0,-0.018360715994587995
+venusmuthub-v1,216,15,evaluated,,harm_gain_meta,-0.10503366003066161,-0.08651154401154404,-0.17144950341192916,-0.14839730589665634,-0.058333333333333334,-0.12671234309796908
