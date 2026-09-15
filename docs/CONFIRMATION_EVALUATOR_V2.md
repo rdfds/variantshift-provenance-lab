@@ -2,10 +2,6 @@
 
 Status: **implemented after OSF registration but before confirmation outcome access**
 
-The implementation entered the public history in commit `98d18d1`; the frozen development
-candidate and audit artifacts entered in commit `d9c732b`. This provides a content-addressed public
-timestamp, not a substitute for the planned immutable external archive.
-
 This evaluator is a mechanical implementation of the analysis registered under
 `variantshift-confirmation-freeze-v2`. It does not alter the frozen model panel, VespaG baseline,
 auditor confidence values, task ranks, coverage grid, inclusion rules, or acceptance thresholds.
