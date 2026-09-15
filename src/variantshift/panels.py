@@ -141,6 +141,12 @@ def freeze_panel(config_path: Path, output_dir: Path) -> dict[str, Path]:
             source_path = (config_path.parent / source_path).resolve()
         if not source_path.is_file():
             raise ValueError(f"Configured source artifact is unavailable: {source_path}")
+        # Keep project-local inputs portable, using the same working-directory
+        # convention as the output paths recorded in the outcome lock.
+        try:
+            source_path = source_path.resolve().relative_to(Path.cwd().resolve())
+        except ValueError:
+            source_path = source_path.resolve()
         source_artifacts.append(source_path)
     protocol = {
         "schema_version": 1,
