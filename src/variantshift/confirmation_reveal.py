@@ -246,7 +246,10 @@ def retrieve_registered_confirmation_outcomes(
     protocol = json.loads(Path(venus_protocol_path).read_text(encoding="utf-8"))
     if protocol.get("protocol_id") != "variantshift-venusmuthub-confirmation-v1":
         raise ValueError("Unexpected VenusMutHub frozen protocol")
-    revision = str(protocol["source_git_commit"])
+    source = protocol.get("source")
+    if not isinstance(source, dict) or not source.get("revision"):
+        raise ValueError("VenusMutHub target-freeze protocol lacks its source revision")
+    revision = str(source["revision"])
     venus_targets = pd.read_csv(venus_targets_path).set_index("target_id")
     venus_sources = pd.read_csv(venus_assay_audit_path).set_index("dataset_id")
     venus_rows: list[dict[str, object]] = []
@@ -316,6 +319,9 @@ def retrieve_registered_confirmation_outcomes(
         "retrieval_completed_at_utc": _now(),
         "panels_requested": list(CONFIRMATION_PANELS),
         "mavedb_outcomes_requested": False,
+        "venus_source_revision": revision,
+        "venus_source_protocol": str(venus_protocol_path),
+        "venus_source_protocol_sha256": sha256_file(venus_protocol_path),
         "requests": receipts,
         "artifacts": {
             str(outputs["outcomes"]): sha256_file(outputs["outcomes"]),
