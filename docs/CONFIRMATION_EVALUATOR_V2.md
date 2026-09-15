@@ -57,3 +57,31 @@ post hoc narrative to turn a failed confirmation into a positive method claim.
 Before outcome access, this implementation and its tests must be deposited in an immutable
 external archive or attached through a transparent registration update because they were completed
 after the original OSF submission.
+
+## Registered one-time reveal
+
+After the linked evaluator addendum is approved and its receipt and archive are bound into the
+aggregate lock, retrieve only the two panels named above:
+
+```bash
+variantshift confirmation-outcomes-retrieve \
+  results/confirmation-preregistration-v2/immutable-freeze/outcome-lock.json \
+  results/confirmation-preregistration-v2/tasks/untouched-confirmation-task-registry.csv \
+  results/confirmation/domainome-v1/targets.csv \
+  results/confirmation/domainome-v1/variants.csv \
+  protocols/venusmuthub-v1/frozen/targets.csv \
+  protocols/venusmuthub-v1/assay-audit.csv \
+  protocols/venusmuthub-v1/frozen/protocol.json \
+  --output-dir results/confirmation-reveal-v2
+
+variantshift confirmation-reveal \
+  results/confirmation-preregistration-v2/immutable-freeze/outcome-lock.json \
+  --outcome results/confirmation-reveal-v2/confirmation-outcomes.csv.gz \
+  --outcome results/confirmation-reveal-v2/outcome-parsing-audit.csv \
+  --outcome results/confirmation-reveal-v2/outcome-access-ledger.json
+```
+
+The retriever requires the lock to be exactly `registered`, validates the frozen target inputs,
+has no MaveDB score-access path, and records a source URL, SHA-256 digest, byte count, and UTC
+access timestamp for every downloaded artifact. A partially interrupted run reuses only raw files
+whose adjacent receipt still matches, preventing a second network retrieval from being hidden.
