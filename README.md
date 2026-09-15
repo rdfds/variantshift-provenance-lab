@@ -1,470 +1,123 @@
 # VariantShift
 
-**When does a protein mutation predictor actually generalize?**
+**How well do protein variant-effect models generalize beyond familiar mutations?**
 
-VariantShift is a leakage-aware benchmark and selective-deployment framework for protein
-variant-effect models. It measures whether rankings learned on common benchmarks transport to
-unseen positions, proteins, families, assay modalities, and external datasets. The repository now
-includes a qualified ten-configuration execution panel and a frozen outcome-free policy that may
-deploy the strongest fixed model or abstain. The central confirmation outcomes remain sealed.
+VariantShift is a benchmark and analysis framework for measuring how protein mutation
+predictors perform on unseen residue positions, proteins, sequence families, assay conditions,
+and external datasets. It combines leakage-aware evaluation, interpretable supervised
+baselines, pretrained model comparisons, uncertainty analysis, and selective deployment.
 
-The initial case study uses the Align Foundation's TEV protease GROQ-seq release: 18,486
-variants measured across 24 conditions at NIST's Living Measurement Systems Foundry.
+The project began with the Align Foundation's TEV protease GROQ-seq dataset and extends to
+ProteinGym and MaveDB. Its central question is whether a model's benchmark ranking translates
+into useful predictions when the biological setting changes.
 
-## Version 1.0 study status
+## What the project measures
 
-The repository now implements the analysis contracts for a no-lab, outcome-blind retrospective
-confirmation study:
+- **Generalization:** random-variant splits versus unseen positions, proteins, and families.
+- **Model comparisons:** supervised baselines and pretrained scores evaluated on matched variants.
+- **Uncertainty:** conformal coverage, interval width, and risk–coverage tradeoffs under shift.
+- **Biological overlap:** sequence, structure, and curated protein-family relationships.
+- **Model selection:** whether task features can support choosing a predictor or abstaining.
+- **Phenotype sensitivity:** whether combinations of published predictors recover assay-specific signal.
 
-- versioned target, variant, prediction, outcome, task-metric, transport-feature, and
-  risk–coverage schemas;
-- model and panel adapter interfaces with content-addressed prediction caching;
-- a one-way target → prediction → registration → reveal lock;
-- family-grouped cross-fitting, conservative abstention, frozen comparators, machine-readable
-  acceptance gates, and family/protein/assay bootstrap inference;
-- config-driven local, Slurm, and Modal workflows, pinned runtime receipts, Apptainer recipes, and
-  a static result explorer;
-- a metadata-only untouched MaveDB complement and target-only VenusMutHub panel frozen without
-  score or mutation-table access;
-- a ten-configuration panel spanning six model/input families, with 413 shared Domainome targets;
-- exact-sequence, MMseqs2-family, Pfam-clan, Foldseek-family, publication, assay, and model-exposure
-  audits across the complete confirmation registry.
+## Results
 
-The development study contains 2,340 assay–model rows across 195 ProteinGym assays, 169 proteins,
-132 curated family groups, and 12 modern model score sets. The original selector failed its
-external development pilot against always using VespaG: regret–coverage improvement was −0.0674
-(95% interval −0.2040 to +0.1565). Conservative Auditor v2 was therefore redesigned as a fixed
-VespaG-or-abstain policy. It passes the family-held-out development screen (+0.0230 regret–coverage
-improvement; 95% interval +0.0067 to +0.0425) but fails leave-one-panel-out transport. These are
-development findings, not confirmation evidence.
+### Familiar positions overstate baseline performance
 
-The final model-qualification audit passes ten configurations across six model/input families on
-413 shared Domainome targets. Per-configuration substitution coverage is 97.34% to 100%; every
-configuration reproduces eight official ProteinGym targets at Spearman at least 0.999993 and an
-independent zero-cache-hit Domainome rerun at effectively perfect rank correlation. Checkpoint,
-container, input, prediction, runner, source-tree, runtime, hardware, and failure receipts are
-hash-audited. The OSF registration is approved under embargo, the post-registration evaluator is
-publicly timestamped in this repository, and confirmation outcomes remain inaccessible. These
-results qualify the machinery, not its scientific utility. See the
-[auditor specification](docs/SELECTIVE_TRANSPORT_AUDITOR.md),
-[v2 development report](docs/CONSERVATIVE_AUDITOR_V2.md),
-[confirmation evaluator](docs/CONFIRMATION_EVALUATOR_V2.md),
-[method-development audit](docs/TRANSPORT_METHOD_DEVELOPMENT.md),
-[publication readiness audit](docs/PUBLICATION_READINESS.md), and
-[Nature Methods protocol](docs/NATURE_METHODS_PROTOCOL.md).
+On 9,514 quality-filtered TEV variants, the additive baseline loses roughly 0.38 Spearman
+correlation when test residue positions are absent from training. These are means across ten
+paired benchmark repetitions.
 
-Open the generated [benchmark explorer](site/index.html) or rebuild it with `make site`.
-For a fast local walk-through that stops safely at `predictions_frozen`, run the
-[tiny outcome-blind example](examples/tiny/README.md).
-
-## Research questions
-
-1. How much does random splitting overstate performance?
-2. Which models retain rank accuracy at residue positions absent from training?
-3. Do single-mutant models transfer to combinatorial variants?
-4. Which experimental conditions preserve variant rankings across assay shifts?
-5. Is model confidence calibrated when the biological distribution shifts?
-6. Does the random-versus-unseen-position gap replicate across independent proteins?
-7. How do supervised baselines compare with audited zero-shot model scores?
-8. Do modern supervised models, conformal intervals, and top-variant rankings survive structured
-   unseen-position splits?
-9. Can models or model-selection rules transfer to proteins absent from training?
-
-## Main result
-
-On 9,514 quality-filtered variants, the additive baseline loses **0.393 Spearman on Sal10**
-and **0.373 on Sal25** when every test residue position is absent from training. These are
-means across 10 complete benchmark repetitions (seeds 42–51), not a single favorable split.
-Nominal 80% conformal coverage falls by **14.0** and **21.3 percentage points** respectively.
-
-![VariantShift robustness and condition-transfer analysis](docs/shift-analysis.svg)
-
-The result is the point of the project: preventing exact-variant overlap is not enough. A model
-can interpolate mutations at residue positions it has already observed and still fail to
-generalize to unmeasured regions of the protein.
-
-| Target | Random Spearman | Unseen-position Spearman | Paired gap | 80% coverage shift |
-| --- | ---: | ---: | ---: | ---: |
-| Sal10 EC50 | 0.795 | 0.401 | **0.393** | 79.5% → 65.5% |
-| Sal25 EC50 | 0.763 | 0.389 | **0.373** | 79.9% → 58.5% |
-
-The paired gap remained positive in all 20 target/seed comparisons. Full seed-level and
-aggregate results are in [`results/robustness/`](results/robustness/).
-
-## Multi-protein validation
-
-The result generalizes beyond the initial case study. VariantShift audited all 217 assays in the
-ProteinGym v1.3 substitution benchmark using criteria fixed before evaluation. **195 assays across
-169 proteins** passed sequence, identifier, measurement-count, and position-coverage checks,
-yielding 689,994 single-substitution measurements.
-
-Across ten paired split seeds, the additive baseline falls from **0.617 mean Spearman on random
-variants to 0.351 at unseen positions** after first aggregating assays within UniProt ID. The mean
-gap is **0.266** with a protein-bootstrap 95% interval of **0.246–0.287**. The protein-level gap is
-positive for all 169 proteins.
-
-![VariantShift multi-protein validation](docs/proteingym-analysis.svg)
-
-| Supervised model | Random Spearman | Unseen-position Spearman | Paired gap |
+| TEV endpoint | Random variants | Unseen positions | Spearman gap |
 | --- | ---: | ---: | ---: |
-| Biophysical ridge | 0.371 | 0.324 | 0.048 |
-| Additive ridge | **0.617** | **0.351** | **0.266** |
+| Sal10 EC50 | 0.795 | 0.401 | 0.393 |
+| Sal25 EC50 | 0.763 | 0.389 | 0.373 |
 
-The complete eligibility ledger, seed-level evaluations, assay summaries, and UniProt-bootstrap
-results are in [`results/proteingym/`](results/proteingym/). The protocol is specified in
-[`docs/PROTEINGYM_METHODS.md`](docs/PROTEINGYM_METHODS.md).
+Nominal 80% conformal coverage falls by 14.0 and 21.3 percentage points, respectively.
+The performance gap is positive in all twenty endpoint–seed comparisons.
 
-### Audited ESM comparison
+![TEV generalization and condition transfer](docs/shift-analysis.svg)
 
-All 195 eligible assays also passed the official-score audit: complete one-to-one variant joins,
-100% common score coverage, no duplicate identifiers, and experimental values agreeing to within
-`8.9e-16`. The ESM-2 650M model has the strongest aggregate ranking performance; increasing model
-size to 3B or 15B does not improve it.
+### The baseline gap extends across proteins
 
-| Fixed zero-shot scores | Random subset | Unseen-position subset | Subset difference |
-| --- | ---: | ---: | ---: |
-| ESM-1v ensemble | 0.404 | 0.395 | 0.008 |
-| ESM-2 8M | 0.203 | 0.200 | 0.003 |
-| ESM-2 35M | 0.314 | 0.305 | 0.009 |
-| ESM-2 150M | 0.393 | 0.385 | 0.008 |
-| **ESM-2 650M** | **0.427** | **0.420** | **0.007** |
-| ESM-2 3B | 0.421 | 0.412 | 0.008 |
-| ESM-2 15B | 0.411 | 0.402 | 0.009 |
+Of 217 ProteinGym assays, 195 across 169 proteins pass the eligibility audit, providing
+689,994 single-substitution measurements. The additive baseline's protein-balanced mean
+Spearman falls from **0.617 to 0.351** under unseen-position evaluation. The paired gap is
+**0.266**, with a protein-bootstrap 95% interval of **0.246–0.287**.
 
-The supervised additive model is much stronger on random variants (0.617 versus 0.427) but falls
-below ESM-2 650M at unseen positions (0.351 versus 0.420). Because ESM scores are fixed and never
-fit to assay labels, their random-to-position change describes subset composition rather than the
-training-shift penalty measured for supervised models.
-
-### Paired modern zero-shot landscape
-
-A second audit compares twelve score columns from the official v1.3 archive on exactly the same
-variants in every assay. All 195 assays have 100% common finite coverage. VenusREM leads with 0.542
-protein-balanced mean Spearman, followed by ProSST at 0.528, S3F-MSA at 0.508, and ESM3 at 0.505.
-VenusREM exceeds ESM-2 650M by 0.114; the simultaneous 95% paired-bootstrap interval across all
-eleven baseline comparisons is 0.081–0.146. It ranks first in every one of 10,000 protein-bootstrap
-resamples.
-
-## Structured-shift extension
-
-The expanded study audits ProteinGym's mutation-level out-of-fold predictions for three modern
-supervised baselines and evaluates them under the official random, modulo-position, and
-contiguous-position protocols. All 585 assay-by-split files pass one-to-one mutation joins,
-prediction completeness, and experimental-score agreement checks.
+Strong supervised models retain more performance under structured splits:
 
 | Official supervised model | Random | Modulo position | Contiguous position |
 | --- | ---: | ---: | ---: |
 | ESM-1v embedding probe | 0.667 | 0.549 | 0.507 |
 | ProteinNPT | 0.776 | 0.630 | 0.584 |
-| **Kermut** | **0.785** | **0.672** | **0.633** |
+| Kermut | 0.785 | 0.672 | 0.633 |
 
-This changes the earlier interpretation: the supervised-to-zero-shot reversal is a failure of the
-simple additive baseline, not a general property of strong supervised models. Kermut remains above
-the fixed ESM-2 650M score under the two structured unseen-position protocols.
+The simple baseline's failure therefore does not establish that supervised models generally
+underperform pretrained scores. A separate matched comparison of twelve pretrained score sets
+finds VenusREM highest at **0.542** protein-balanced mean Spearman, followed by ProSST at
+**0.528** and S3F-MSA at **0.508**.
 
-A separately fitted local ESM-2 8M residue probe reaches 0.688 on random variants, 0.400 on randomly
-grouped unseen positions, 0.407 on modulo positions, and 0.317 on contiguous positions. Standard
-80% split-conformal coverage falls from 0.801 on random variants to 0.607 and 0.564 on random and
-contiguous unseen positions. Distance-scaled intervals raise those values to 0.760 and 0.911, but
-normalized width grows from 1.59× to 2.24× and 5.88×. The heuristic trades sharpness for coverage;
-it does not solve calibration under shift.
+### Family holdouts clarify the source of transfer
 
-![VariantShift structured-shift extension](docs/proteingym-extended.svg)
+A pooled nonlinear model reaches mean within-assay Spearman of **0.539** on held-out proteins
+and **0.533** on held-out curated Pfam families. Removing fixed ESM score features reduces
+the family-held-out result to **0.360**. Much of the transfer performance comes from
+pretrained score information, rather than learning from assay labels alone.
 
-![VariantShift independent validation](docs/proteingym-research.svg)
+![Cross-protein and family validation](docs/proteingym-research.svg)
 
-The final experiments change the unit of generalization:
+### External validation shows weaker signal
 
-- Across five shuffled group partitions, a nonlinear pooled model trained on disjoint proteins
-  reaches 0.539 mean within-assay Spearman on 169 held-out proteins, compared with 0.515 for ridge.
-- An exhaustive MMseqs2 audit groups the same cohort into 156 sequence-family clusters at ≥30%
-  identity and ≥80% bidirectional coverage of the ProteinGym assayed segment. Ten multi-protein
-  families contain 23 proteins, and zero qualifying homology edges cross clusters. Holding out
-  complete families changes nonlinear Spearman from 0.539 to 0.533 and ridge from 0.515 to 0.513.
-  Component-bootstrap paired changes are −0.0060 (95% interval −0.0124 to −0.0011) and −0.0021
-  (−0.0038 to −0.0007). Detectable close-homolog label transfer therefore has a small but resolved
-  effect on the pooled estimate.
-- A second exhaustive audit searches all 169 official ProteinGym AlphaFold structures with exact
-  Foldseek TM-align scoring. Sequence components are joined only when both directed alignments have
-  ≥0.95 Foldseek homology probability, ≥0.50 TM-score, and ≥80% coverage. The combined graph has
-  148 families, 14 multi-protein families covering 35 proteins, a largest component of five, and
-  zero qualifying cross-component pairs. Holding out these complete sequence-and-structure families
-  yields 0.532 Spearman for nonlinear regression and 0.512 for ridge. Relative to sequence-only
-  family holdout, component-bootstrap paired changes are −0.00045 (95% interval −0.00315 to
-  0.00235) and −0.00016 (−0.00121 to 0.00082). The declared remote structure matches do not resolve
-  an additional transfer penalty.
-- A current InterPro 109.0 / Pfam 38.2 audit maps the assayed region for 183 of 195 assays and unions
-  components through exact Pfam families. The primary graph contains 132 families; holding them out
-  yields 0.533 Spearman for nonlinear regression and 0.513 for ridge. Relative to sequence/structure
-  holdout, paired changes are +0.00068 (−0.00147 to 0.00294) and +0.00024 (−0.00078 to 0.00137).
-  A broader 97-component Pfam-clan stress test reaches 0.531 and 0.512, again without a resolved
-  additional penalty.
-- Under the strict exact-Pfam split, removing all fixed ESM score features reduces nonlinear
-  Spearman from 0.533 to 0.360 (paired family-bootstrap difference 0.174, 95% interval 0.151–0.195)
-  and ridge from 0.513 to 0.318 (difference 0.195, interval 0.169–0.219). The pooled transfer result
-  is therefore driven primarily by pretrained score priors, not assay-label learning alone.
-- A model-selection classifier predicts whether the local supervised probe will beat fixed ESM-2
-  650M scores on unseen positions. Protein-grouped out-of-fold ROC-AUC is 0.829 and accuracy is
-  0.770 across 975 decisions, versus a 0.592 majority baseline. The dominant signal is zero-shot
-  performance measured only on the labeled training partition.
+The completed MaveDB external evaluation includes **21 assays, 142,204 measurements, and
+10 proteins**. ESM-2 8M reaches mean Spearman of **0.105** (nested-bootstrap 95% interval
+**0.034–0.183**). Top-decile recall is **0.106**, close to the random baseline of **0.100**.
+Positive ranking signal transfers, but these results do not demonstrate useful top-variant
+selection.
 
-The full protocol, including interval, position-conditional coverage, risk-coverage, and
-top-variant selection definitions, is in
-[`docs/EXTENDED_METHODS.md`](docs/EXTENDED_METHODS.md). Audits and evaluation outputs are in
-[`results/proteingym/extended/`](results/proteingym/extended/).
-The paper-style result narrative and publication boundaries are in
-[`docs/RESEARCH_REPORT.md`](docs/RESEARCH_REPORT.md).
+### Selective deployment remains a development result
 
-## Condition transfer
+An initial model selector fails its external development pilot against always using VespaG.
+The revised **Conservative Auditor v2** chooses VespaG or abstains. It improves the
+regret–coverage metric by **0.0230** in the family-held-out development screen (95% interval
+**0.0067–0.0425**), but fails leave-one-panel-out transport.
 
-VariantShift also trains on each of the 20 measured assay conditions and evaluates the resulting
-ranking against all 20 target conditions. This produces a complete 20×20 transfer matrix under
-both random-variant and unseen-position splits: **800 source/target evaluations** with zero exact
-variant overlap.
+Ten model configurations spanning six model/input families pass execution qualification on
+**413 shared Domainome targets**. Qualification establishes coverage and reproducibility of
+the execution machinery; confirmation outcomes remain sealed, so it does not establish
+the policy's scientific utility.
 
-At unseen positions, mean in-condition Spearman is 0.345 and mean cross-condition Spearman is
-0.340. Average transfer is stable, but the worst source/target pair falls to 0.132 and the largest
-pair-specific transfer gap is 0.167. That distinction matters: condition shift is not uniformly
-damaging, while residue-position novelty produces a large, persistent penalty.
+### A predictor-span pilot finds assay-specific information
 
-The full matrix and summary are in [`results/transfer/`](results/transfer/).
+An exploratory study of **95 published predictors**, **22 assays**, and **11 paired proteins**
+tests whether a position-held-out linear combination recovers signal beyond selecting one
+predictor. Mean Spearman improves from **0.5097 to 0.5938**; the paired improvement is
+**0.0840** (protein-pair bootstrap 95% interval **0.0662–0.1058**).
 
-## Quick start
+The improvement is positive on all 22 development assays. This supports further investigation
+of phenotype-specific readouts; it does not establish a representational ceiling or a
+validated deployment method.
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e '.[dev]'
+## Interpretation and scope
 
-variantshift download data/raw --accept-data-use-agreement
-variantshift inspect data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
-variantshift benchmark data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
-variantshift report artifacts/benchmark.csv --filtered-rows 9514
-variantshift robustness data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
-variantshift condition-transfer data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
-```
+VariantShift shows that evaluation design can change both measured performance and the
+conclusions drawn from model rankings. Exact-variant separation alone does not prevent
+position leakage, and good average ranking performance does not guarantee calibrated
+uncertainty or useful variant selection under distribution shift.
 
-Run the public multi-protein study separately:
+These are computational studies using existing measurements. Pretrained models may have
+seen related biological sequences, repeated split seeds are not independent biological
+replicates, and retrospective benchmark performance does not establish prospective
+experimental benefit.
 
-The family-clustering targets require `mmseqs` (`brew install mmseqs2` on macOS or
-`conda install -c bioconda mmseqs2`) and `foldseek` (a release binary or Bioconda installation).
-Exact executable versions are recorded in their respective audits.
+## Explore the work
 
-```bash
-make proteingym-download
-make proteingym-audit
-make proteingym-benchmark
-make proteingym-zero-shot
-make proteingym-figure
-make proteingym-official-supervised
-make proteingym-esm2-embeddings
-make proteingym-embedding-probe
-make proteingym-heldout-protein
-make proteingym-family-clusters
-make proteingym-heldout-family
-make proteingym-structure-clusters
-make proteingym-heldout-structure-family
-make proteingym-curated-families
-make proteingym-heldout-curated-family
-make proteingym-heldout-curated-family-ablation
-make proteingym-modern-zero-shot
-make proteingym-crossover
-make proteingym-extended-figure
-make proteingym-research-figure
-```
+- [Interactive benchmark explorer](site/index.html)
+- [Methods and evaluation definitions](docs/METHODS.md)
+- [Extended model and structured-shift analysis](docs/EXTENDED_METHODS.md)
+- [Research report](docs/RESEARCH_REPORT.md)
+- [External validation report](docs/EXTERNAL_VALIDATION_REPORT.md)
+- [Conservative Auditor v2](docs/CONSERVATIVE_AUDITOR_V2.md)
+- [Predictor-span pilot](results/predictor-span-pilot-v1/PREDICTOR_SPAN_PILOT.md)
 
-Every command is deterministic at the default seed. Raw data and per-variant predictions stay
-outside version control.
-
-Run the version 1 development workflow with:
-
-```bash
-pip install -e '.[dev,workflow]'
-snakemake --snakefile workflow/Snakefile --profile workflow/profiles/local
-```
-
-On ARCH, copy `workflow/config.example.yaml`, set the actual cluster partition and resources, and
-use `workflow/profiles/slurm`. Confirmation prediction is deliberately not part of the default
-workflow; it must be invoked only after the named configurations pass executable license, parity,
-coverage, determinism, and provenance gates.
-
-The exact public UniProt/InterPro responses used by the curated-family audit are frozen in the
-results directory. To reconstruct the cache without consulting the live APIs:
-
-```bash
-tar -xzf results/proteingym/extended/curated-api-snapshot.tar.gz -C data/raw/proteingym
-make proteingym-curated-families
-```
-
-## Evaluation regimes
-
-- **Random variant:** identical mutation strings are grouped so no exact variant crosses the
-  train/test boundary. Residue positions may still overlap.
-- **Unseen position:** complete residue positions are held out. Variants spanning both train
-  and test positions are excluded, producing zero residue overlap.
-- **Higher mutation depth:** training is restricted to single substitutions and testing uses
-  variants containing two to five substitutions.
-
-Each training set is further divided into fit and calibration subsets. Reported uncertainty is
-an 80% split-conformal interval; its coverage is measured independently on every shifted test
-set. See the complete [`docs/METHODS.md`](docs/METHODS.md) for cohort construction, feature
-definitions, split invariants, and uncertainty methodology.
-
-The repeated benchmark uses consecutive seeds 42–51 and pairs random-versus-position results
-within each seed. Seed ranges measure split sensitivity; they are not treated as independent
-biological replicates or confidence intervals.
-
-## Baselines
-
-- `mean`: a no-information control.
-- `biophysical_ridge`: mutation count, position, hydropathy, side-chain volume, charge,
-  polarity, aromaticity, glycine, and proline deltas.
-- `additive_ridge`: biochemical features plus sparse residue-position, substitution-class, and
-  exact-mutation effects.
-
-The baselines are intentionally interpretable. Protein language model comparisons are kept in a
-separate audited experiment because their scores are fixed rather than trained on each assay and
-their pretraining corpora may include related sequences.
-
-The original optional ESM-2 8M scorer remains available as a local smoke test. The published
-multi-protein comparison instead uses ProteinGym's official ESM-1v ensemble and complete ESM-2
-scaling series, with one-to-one mutation joins, DMS-value agreement, score completeness, and
-archive provenance audited before evaluation.
-
-```bash
-pip install -e '.[plm]'
-variantshift esm-score data/raw/TEV_Pilot_SSVL_EP_output_v1.1.csv
-```
-
-## Data
-
-VariantShift never vendors the source measurements. Downloading the dataset requires
-explicitly accepting the provider's data-use agreement.
-
-Dataset: [TEV Protease — Pilot SSVL and epPCR Libraries](https://data.alignbio.org/groqseq/groqseq-014/)
-
-The published release contains 18,486 rows and 151 columns. The default analysis removes indels,
-nonsense mutations, and variants with fewer than 1,000 total barcode reads, leaving 9,514 rows.
-
-## Repository structure
-
-```text
-src/variantshift/
-  data.py          # download gate, schema validation, quality filtering
-  mutations.py     # mutation parser and reference-sequence checks
-  features.py      # biochemical and sparse additive encoders
-  splits.py        # split construction and leakage audits
-  models.py        # transparent supervised baselines
-  metrics.py       # ranking, error, and conformal coverage
-  evaluate.py      # benchmark orchestration
-  robustness.py    # repeated splits and paired generalization gaps
-  transfer.py      # source-to-target assay-condition transfer
-  proteingym.py    # public assay ingestion and eligibility auditing
-  multiprotein.py # repeated cross-protein supervised validation
-  zero_shot.py     # official fixed-score join and evaluation audit
-  official_supervised.py # official ProteinNPT, Kermut, and embedding-probe OOF audit
-  esm_embeddings.py      # hash-addressed frozen ESM-2 residue cache
-  embedding_probe.py     # four-split local representation probe and calibration study
-  cross_protein.py       # held-out-protein ridge and nonlinear transfer baselines
-  family_clusters.py     # exhaustive MMseqs2 family ledger and threshold audit
-  structure_clusters.py  # exhaustive reciprocal Foldseek structure-family audit
-  curated_families.py    # UniProt/InterPro/Pfam assayed-region family validation
-  modern_zero_shot.py    # exactly paired current zero-shot model landscape
-  crossover.py           # protein-grouped supervised-versus-zero-shot decision model
-  schemas.py             # stable public table contracts
-  panels.py              # outcome-blind targets and complete 19L enumeration
-  model_adapters.py      # execution, content cache, parity, and provenance
-  outcome_lock.py        # one-way confirmation state machine
-  transport_features.py # outcome-free task descriptors
-  transportability.py   # grouped transport model and selective risk
-  preregistration.py    # immutable registration bundle generator
-  benchmark_site.py     # static downloadable result explorer
-  calibration.py         # standard, group-aware, and distance-scaled intervals
-  provenance.py    # data/source/artifact integrity manifests
-  visualize.py     # dependency-free shift-analysis SVG
-  research_visualize.py # modern-model and independent-family validation SVG
-  report.py        # standalone HTML result report
-tests/             # unit and invariant tests
-results/           # aggregate, reproducible benchmark outputs
-protocols/         # cohort rules, metadata snapshots, and outcome locks
-workflow/          # local and ARCH/Slurm Snakemake execution
-containers/        # Apptainer-compatible build definitions
-site/              # generated benchmark explorer
-```
-
-## Result integrity
-
-[`results/run-manifest.json`](results/run-manifest.json) binds the dataset SHA-256, source commit,
-filter and evaluation configuration, dependency versions, and ten committed artifacts. CI verifies
-every artifact byte-for-byte without requiring the licensed raw measurements:
-
-```bash
-variantshift verify-artifacts results/run-manifest.json
-```
-
-When the dataset is available locally, the same command verifies its hash as well.
-
-## Locked-box external validation
-
-[`protocols/mavedb-external-v1`](protocols/mavedb-external-v1) freezes a label-blind external panel
-before any MaveDB score table is accessed. The exhaustive registry snapshot yielded 65 eligible
-metadata candidates; 20 assays were excluded by a predeclared ProteinGym family-overlap rule. The
-remaining 45 assays span 17 named targets and 18 distinct target sequences published after the
-ProteinGym v1.3 release. Public calibration metadata, MMseqs2 alignments, model identifiers,
-long-sequence scoring rules, outcome eligibility, estimands, and the nested-bootstrap success
-criterion are all fixed with `outcomes_accessed: false`.
-
-This protocol creates an auditable methods-before-outcomes boundary. It is an external
-computational validation, not a substitute for measurements generated prospectively after model
-and variant selection.
-
-The completed run retained 21 directed assays with 142,204 measurements across 10 proteins. The
-primary ESM-2 8M masked-marginal estimate was mean Spearman 0.105 (nested-bootstrap 95% interval
-0.034–0.183), versus a descriptive ProteinGym estimate of 0.203. Top-decile recall was 0.106 against
-a random baseline of approximately 0.100. The positive signal therefore replicated, but at much
-lower strength and without demonstrated top-variant selection utility.
-
-![VariantShift locked-box MaveDB validation](docs/mavedb-external-validation.svg)
-
-The [`external validation report`](docs/EXTERNAL_VALIDATION_REPORT.md) publishes the full timeline,
-attrition ledger, scorer-parity check, nested uncertainty, protein heterogeneity, and limitations.
-CI verifies the committed outputs against
-[`results/mavedb-external-v1/run-manifest.json`](results/mavedb-external-v1/run-manifest.json).
-
-After retrieving the raw public score tables, reproduce the executed analysis and figure with:
-
-```bash
-make mavedb-evaluate-external
-make mavedb-external-figure
-variantshift verify-artifacts results/mavedb-external-v1/run-manifest.json
-```
-
-## Limitations
-
-- The primary robustness result covers two fitted EC50 endpoints; the transfer matrix covers 20
-  complete `mean_y` condition readouts rather than every raw measurement column.
-- Curated-family validation adds exact Pfam families mapped to the assayed region; the broader Pfam
-  clan graph is reported separately as a sensitivity analysis. Relationships absent from the
-  MMseqs2, reciprocal Foldseek, and mapped Pfam snapshots may still remain in different folds.
-- Fixed ESM scores are assay-label-independent features, but their pretrained models may have seen
-  related sequences; the family split isolates experimental labels rather than pretraining data.
-- The pooled cross-family models are primarily powered by those fixed pretrained scores. The
-  mutation-only ablation is reported to prevent their performance from being misread as de novo
-  transfer from assay labels.
-- Repeated seeds characterize split sensitivity on this cohort rather than uncertainty across
-  proteins, assays, or biological replicates.
-- Conformal coverage is guaranteed only under exchangeability; its breakdown under shift is a
-  diagnostic, not a surprising violation of the method.
-- The local ESM-2 experiment is a lightweight frozen 8M-parameter representation probe rather than
-  fine-tuning. A separate exactly paired twelve-model analysis covers the modern score columns
-  available in the official ProteinGym v1.3 archive; it is not a claim that every unpublished or
-  unavailable model has been evaluated.
-- Aggregate performance does not establish that a model is ready to prioritize wet-lab
-  experiments.
-- The locked-box MaveDB run is temporally external and outcome-blind at the analysis boundary, but
-  its measurements pre-existed the prediction run. Only a new assay performed after frozen variant
-  selection can test prospective experimental enrichment.
-
-## License
-
-Code is released under the MIT License. The TEV dataset has separate terms from its provider.
+Code is released under the [MIT License](LICENSE). Source datasets retain their providers' terms.
