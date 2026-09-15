@@ -107,14 +107,26 @@ def freeze_predictions(
     return _atomic_json(Path(path), payload)
 
 
-def register_confirmation(path: Path, *, registration_uri: str) -> Path:
+def register_confirmation(
+    path: Path,
+    *,
+    registration_uri: str,
+    registration_artifacts: list[Path] | None = None,
+) -> Path:
     payload = read_outcome_lock(path)
     if payload["state"] != "predictions_frozen":
         raise ValueError("Confirmation can only be registered after predictions are frozen")
     parsed = urlparse(registration_uri)
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         raise ValueError("Registration URI must be a public HTTP(S) URL")
-    payload["registration"] = {"uri": registration_uri, "recorded_at": _now()}
+    artifacts = {
+        str(Path(item)): sha256_file(Path(item)) for item in (registration_artifacts or [])
+    }
+    payload["registration"] = {
+        "uri": registration_uri,
+        "recorded_at": _now(),
+        "artifacts": artifacts,
+    }
     payload["state"] = "registered"
     return _atomic_json(Path(path), payload)
 
