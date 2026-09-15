@@ -1,0 +1,16 @@
+{
+  "status": "development_only_exploratory",
+  "protein_pairs": 11,
+  "tasks": 22,
+  "predictors": 95,
+  "shared_variants": 53499,
+  "median_paired_outcome_spearman": 0.3249763381721793,
+  "median_predictor_agreement": 0.9999999999999999,
+  "median_effective_rank": 6.455976651110612,
+  "median_pcs_90pct": 17.5,
+  "mean_crossfit_linear_spearman": 0.5937728897989373,
+  "mean_crossfit_best_single_spearman": 0.5097386889678232,
+  "mean_crossfit_linear_top_recall": 0.2421362188178427,
+  "mean_crossfit_best_single_top_recall": 0.2069318085923064,
+  "confirmation_artifacts_accessed": false
+}

@@ -1,0 +1,18 @@
+{
+  "config": "configs/predictor-span-pilot-v1.json",
+  "config_sha256": "7a3c69f1893bd41f4c90ce08e9cfdcc47891a4847405359e10e24e1eb43c6dc9",
+  "implementation": "src/variantshift/predictor_span_pilot.py",
+  "implementation_sha256": "a5ce162432886528b1260640385d4d2ca3258acbd3662a59e45ac6fc993ab1ed",
+  "tests": "tests/test_predictor_span_pilot.py",
+  "tests_sha256": "9f12f13527ea5fda21e37d8f5874ffe8cd77f65c5f3d9ab329625d789b80600c",
+  "score_archive": "data/raw/proteingym/zero_shot_substitutions_scores.zip",
+  "score_archive_sha256": "3fd7cdb5e78f1d43cabfabfeb6578c252b63af23ba2ab44db0094dc3a42de36d",
+  "protected_confirmation_inputs": [],
+  "outputs": {
+    "PREDICTOR_SPAN_PILOT.md": "1b04b8b1b8ee7c2d20fa70f8f974a8bce399abbd69df7c3e6265bde555d66b62",
+    "paired-phenotype-audit.csv": "e49f8011bdea6d00fefadda924f009ec67c22c97adc8454da54adaba1418f964",
+    "protein-pair-bootstrap.csv": "b278d55914ff78269dd4f32c41e9bee78b3b73a9b9738be84a5296cf95a770a4",
+    "summary.json": "515b52446f0e322e9f9c86a1556f2c7df9c6da15e8121ca419c1cd1ef34c2c1a",
+    "task-panel-recoverability.csv": "44931dfacfe68f2cb0a35a403e533897606cece7b8fd2fb08b043587551d43f5"
+  }
+}
